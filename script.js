@@ -58,7 +58,7 @@ function prevSection(current) {
 }
 
 // ✅ URL DEĞİŞKENİ DOĞRU ŞEKİLDE TANIMLANDI
-var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzpaZ9Ok4PZ66DiSEnKQFOzaKdkYBcWNnxV5FjA25v1kPL_d8svxcccO_IDJXPMQs2iPw/exec';
+var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxFZEcebGWpUR1xjiFmcaKsfOnrW-31rSmdoLIhjppc_YbTpqOJYHzQKJ2eJIL9LMUwZQ/exec';
 
 document.getElementById('mainForm').addEventListener('submit', function(e) {
     e.preventDefault();
