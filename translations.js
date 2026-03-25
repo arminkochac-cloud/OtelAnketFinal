@@ -77,6 +77,9 @@ const translations = {
         generalComments: "Genel Düşünce ve Yorumlarınız",
         willReturnQuestion: "Tekrar Gelir Misiniz?",
         wouldRecommend: "Bizi Çevrenize Tavsiye Eder Misiniz?",
+        // TR içinde thankYouTitle'dan önce:
+kvkkText: "Kişisel verilerimin Concordia Celes Hotel tarafından misafir memnuniyeti amacıyla işlenmesine onay veriyorum.",
+kvkkLink: "KVKK Aydınlatma Metni",
         thankYouTitle: "Teşekkür Ederiz!",
         thankYouMessage: "Değerli görüşleriniz bizim için çok önemli.",
         newSurvey: "Yeni Anket"
@@ -159,6 +162,9 @@ const translations = {
         generalComments: "General Comments",
         willReturnQuestion: "Would You Return?",
         wouldRecommend: "Would You Recommend Us?",
+        // TR içinde thankYouTitle'dan önce:
+kvkkText: "Kişisel verilerimin Concordia Celes Hotel tarafından misafir memnuniyeti amacıyla işlenmesine onay veriyorum.",
+kvkkLink: "KVKK Aydınlatma Metni",
         thankYouTitle: "Thank You!",
         thankYouMessage: "Your valuable feedback is very important to us.",
         newSurvey: "New Survey"
@@ -241,6 +247,8 @@ const translations = {
         generalComments: "Allgemeine Kommentare",
         willReturnQuestion: "Würden Sie wiederkommen?",
         wouldRecommend: "Würden Sie uns empfehlen?",
+        kvkkText: "Ich stimme der Verarbeitung meiner persönlichen Daten durch das Concordia Celes Hotel zu.",
+kvkkLink: "Datenschutzerklärung",
         thankYouTitle: "Vielen Dank!",
         thankYouMessage: "Ihr wertvolles Feedback ist uns sehr wichtig.",
         newSurvey: "Neue Umfrage"
@@ -323,6 +331,8 @@ const translations = {
         generalComments: "Общие Комментарии",
         willReturnQuestion: "Вернётесь ли Вы к нам?",
         wouldRecommend: "Порекомендуете ли Вы нас?",
+        kvkkText: "Я согласен на обработку моих персональных данных отелем Concordia Celes для целей удовлетворённости гостей.",
+kvkkLink: "Политика конфиденциальности",
         thankYouTitle: "Спасибо!",
         thankYouMessage: "Ваш отзыв очень важен для нас.",
         newSurvey: "Новая Анкета"
@@ -405,6 +415,8 @@ const translations = {
         generalComments: "Ogólne Komentarze",
         willReturnQuestion: "Czy Wrócisz?",
         wouldRecommend: "Czy Polecisz Nas?",
+        kvkkText: "Wyrażam zgodę na przetwarzanie moich danych osobowych przez hotel Concordia Celes w celu badania satysfakcji gości.",
+kvkkLink: "Polityka Prywatności",
         thankYouTitle: "Dziękujemy!",
         thankYouMessage: "Twoja opinia jest dla nas bardzo ważna.",
         newSurvey: "Nowa Ankieta"
@@ -487,6 +499,8 @@ const translations = {
         generalComments: "Comentarii Generale",
         willReturnQuestion: "Veți Reveni?",
         wouldRecommend: "Ne Veți Recomanda?",
+        kvkkText: "Sunt de acord cu prelucrarea datelor mele personale de către Concordia Celes Hotel în scopul satisfacției oaspeților.",
+kvkkLink: "Politica de Confidențialitate",
         thankYouTitle: "Vă Mulțumim!",
         thankYouMessage: "Feedback-ul dvs. valoros este foarte important pentru noi.",
         newSurvey: "Chestionar Nou"
