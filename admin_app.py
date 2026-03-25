@@ -380,12 +380,16 @@ st.set_page_config(
 )
 
 st.markdown("""
-    <h1 style='text-align:center; color:#1a73e8;'>
-        🏨 Concordia Celes Hotel
-    </h1>
-    <h3 style='text-align:center; color:#666;'>
-        📊 Misafir Memnuniyet Yönetim Paneli
-    </h3>
+    <div style='text-align:center; padding:20px;'>
+        <img src='https://arminkochac-cloud.github.io/OtelAnketFinal/logo.png' 
+        width='150' style='margin-bottom:10px;'>
+        <h1 style='color:#1a73e8;'>
+            Concordia Celes Hotel
+        </h1>
+        <h3 style='color:#666;'>
+            📊 Misafir Memnuniyet Yönetim Paneli
+        </h3>
+    </div>
     <hr>
 """, unsafe_allow_html=True)
 
