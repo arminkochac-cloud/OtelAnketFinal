@@ -414,7 +414,21 @@ st.markdown("""
         </div>
     </div>
 """, unsafe_allow_html=True)
-
+# Üstteki boşluğu kaldır
+st.markdown("""
+    <style>
+        #root > div:nth-child(1) > div > div > div > div > section > div {
+            padding-top: 0rem;
+        }
+        .block-container {
+            padding-top: 0rem;
+            padding-bottom: 0rem;
+        }
+        header {display: none !important;}
+        #MainMenu {visibility: hidden;}
+        footer {visibility: hidden;}
+    </style>
+""", unsafe_allow_html=True)
 
 df_all = load_data()
 
