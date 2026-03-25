@@ -120,6 +120,15 @@ function highlightStars(stars, value) {
 function nextSection(current) {
     var section = document.getElementById('section' + current);
     
+    // KVKK kontrolü (sadece section 1)
+    if(current === 1) {
+        var kvkk = document.getElementById('kvkkOnay');
+        if(kvkk && !kvkk.checked) {
+            alert("Lütfen KVKK metnini onaylayın!");
+            return;
+        }
+    }
+    
     // Text ve select kontrol
     var inputs = section.querySelectorAll(
         'input[type="text"][required], select[required]'
@@ -194,7 +203,26 @@ function resetForm() {
         s.classList.remove('active');
     });
     document.getElementById('section1').classList.add('active');
-    
+    // KVKK Fonksiyonları
+function showKvkk() {
+    document.getElementById('kvkkModal')
+        .style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeKvkk() {
+    document.getElementById('kvkkModal')
+        .style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// Modal dışına tıklayınca kapat
+document.addEventListener('click', function(e) {
+    var modal = document.getElementById('kvkkModal');
+    if(e.target === modal) {
+        closeKvkk();
+    }
+});
     // Tarihleri sıfırla
     var today = new Date();
     var yyyy = today.getFullYear();
