@@ -381,14 +381,14 @@ st.set_page_config(
 st.markdown("""
     <div style='
         background: linear-gradient(135deg, #1a1a3e, #2d2d7e);
-        padding: 30px;
-        border-radius: 15px;
+        padding: 15px;
+        border-radius: 5px;
         text-align: center;
-        margin-bottom: 20px;
+        margin-bottom: 10px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     '>
         <img src='https://arminkochac-cloud.github.io/OtelAnketFinal/logo.png' 
-        width='120' 
+        width='75' 
         style='margin-bottom:15px; 
         background:white; 
         padding:10px; 
