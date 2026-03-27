@@ -812,7 +812,23 @@ def create_pdf_report(df, dep_df, staff_df, puan, time_mode):
     pdf = FPDF()
     pdf.add_page()
     
-    # Font ekle
+    # Turkce karakter donusumu
+    def tr(text):
+        text = str(text)
+        text = text.replace('İ', 'I')
+        text = text.replace('ı', 'i')
+        text = text.replace('Ğ', 'G')
+        text = text.replace('ğ', 'g')
+        text = text.replace('Ü', 'U')
+        text = text.replace('ü', 'u')
+        text = text.replace('Ş', 'S')
+        text = text.replace('ş', 's')
+        text = text.replace('Ö', 'O')
+        text = text.replace('ö', 'o')
+        text = text.replace('Ç', 'C')
+        text = text.replace('ç', 'c')
+        return text
+    
     pdf.set_font("Helvetica", "B", 20)
     
     # Başlık
@@ -826,7 +842,7 @@ def create_pdf_report(df, dep_df, staff_df, puan, time_mode):
     pdf.set_text_color(255, 255, 255)
     pdf.cell(0, 8, "Misafir Memnuniyet Raporu", 
              align='C', ln=True)
-    pdf.cell(0, 8, f"Filtre: {time_mode}", 
+    pdf.cell(0, 8, f"Filtre: {tr(time_mode)}", 
              align='C', ln=True)
     
     # Tarih
@@ -840,7 +856,7 @@ def create_pdf_report(df, dep_df, staff_df, puan, time_mode):
     
     pdf.set_y(50)
     
-    # Genel Özet
+    # Genel Ozet
     pdf.set_font("Helvetica", "B", 14)
     pdf.set_text_color(26, 26, 62)
     pdf.cell(0, 10, "GENEL OZET", ln=True)
@@ -891,7 +907,6 @@ def create_pdf_report(df, dep_df, staff_df, puan, time_mode):
     pdf.cell(60, 8, "Puan (100 uzerinden)", 
              border=1, fill=True, align='C', ln=True)
     
-    medals = ["1.", "2.", "3."]
     for i, row in enumerate(dep_df.itertuples()):
         if i % 2 == 0:
             pdf.set_fill_color(240, 240, 255)
@@ -899,8 +914,7 @@ def create_pdf_report(df, dep_df, staff_df, puan, time_mode):
             pdf.set_fill_color(255, 255, 255)
         pdf.set_text_color(0, 0, 0)
         pdf.set_font("Helvetica", "", 10)
-        
-        dep_name = row.Departman[:40]
+        dep_name = tr(row.Departman)[:40]
         pdf.cell(130, 8, dep_name, 
                  border=1, fill=True)
         pdf.cell(60, 8, f"{row.Skor:.1f}/100", 
@@ -908,7 +922,7 @@ def create_pdf_report(df, dep_df, staff_df, puan, time_mode):
     
     pdf.ln(8)
     
-    # En Çok Övülen Personel
+    # En Cok Ovulen Personel
     if not staff_df.empty:
         pdf.set_font("Helvetica", "B", 14)
         pdf.set_text_color(26, 26, 62)
@@ -924,23 +938,29 @@ def create_pdf_report(df, dep_df, staff_df, puan, time_mode):
         pdf.cell(60, 8, "Ovgu Sayisi", 
                  border=1, fill=True, align='C', ln=True)
         
-        for i, row in enumerate(staff_df.head(10).itertuples()):
+        for i, row in enumerate(
+            staff_df.head(10).itertuples()
+        ):
             if i % 2 == 0:
                 pdf.set_fill_color(240, 240, 255)
             else:
                 pdf.set_fill_color(255, 255, 255)
             pdf.set_text_color(0, 0, 0)
             pdf.set_font("Helvetica", "", 10)
-            pdf.cell(130, 8, str(row.Personel), 
+            pdf.cell(130, 8, tr(str(row.Personel)), 
                      border=1, fill=True)
             pdf.cell(60, 8, str(row._2), 
-                     border=1, fill=True, align='C', ln=True)
+                     border=1, fill=True, 
+                     align='C', ln=True)
     
     pdf.ln(8)
     
     # Yorumlar
     if "generalComments" in df.columns:
-        comments = df["generalComments"].fillna("").astype(str).str.strip()
+        comments = (
+            df["generalComments"]
+            .fillna("").astype(str).str.strip()
+        )
         comments = comments[comments != ""]
         
         if not comments.empty:
@@ -950,20 +970,18 @@ def create_pdf_report(df, dep_df, staff_df, puan, time_mode):
             pdf.line(10, pdf.get_y(), 200, pdf.get_y())
             pdf.ln(3)
             
-            pdf.set_font("Helvetica", "", 9)
-            pdf.set_text_color(0, 0, 0)
-            
             for i, (idx, comment) in enumerate(
                 comments.head(10).items()
             ):
                 name = df.loc[idx, "fullName"] \
-                    if "fullName" in df.columns else "Misafir"
+                    if "fullName" in df.columns \
+                    else "Misafir"
                 pdf.set_font("Helvetica", "B", 9)
-                pdf.cell(0, 6, f"{i+1}. {name}:", ln=True)
+                pdf.cell(0, 6, 
+                         f"{i+1}. {tr(str(name))}:", 
+                         ln=True)
                 pdf.set_font("Helvetica", "", 9)
-                
-                # Uzun yorumları kes
-                comment_short = str(comment)[:150]
+                comment_short = tr(str(comment))[:150]
                 if len(str(comment)) > 150:
                     comment_short += "..."
                 pdf.multi_cell(0, 5, comment_short)
@@ -973,12 +991,13 @@ def create_pdf_report(df, dep_df, staff_df, puan, time_mode):
     pdf.set_y(-20)
     pdf.set_font("Helvetica", "I", 8)
     pdf.set_text_color(150, 150, 150)
-    pdf.cell(0, 10, 
-             "Concordia Celes Hotel - Misafir Memnuniyet Sistemi", 
-             align='C')
+    pdf.cell(
+        0, 10,
+        "Concordia Celes Hotel - Misafir Memnuniyet Sistemi",
+        align='C'
+    )
     
     return pdf.output()
-
 # PDF İndir Butonu
 try:
     turkey_tz = pytz.timezone('Europe/Istanbul')
