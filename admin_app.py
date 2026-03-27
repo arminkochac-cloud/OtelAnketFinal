@@ -381,53 +381,53 @@ st.set_page_config(
 st.markdown("""
     <div style='
         background: linear-gradient(135deg, #1a1a3e, #2d2d7e);
-        padding: 12px 20px;
+        padding: 15px 20px;
         border-radius: 10px;
-        text-align: center;
         margin-bottom: 15px;
         box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 15px;
+        gap: 20px;
     '>
-        <img src='https://arminkochac-cloud.github.io/OtelAnketFinal/logo.png' 
-        width='60' 
-        style='background:white; 
-        padding:5px; 
-        border-radius:8px;'>
+        <div style='
+            background:white;
+            padding:8px;
+            border-radius:10px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+        '>
+            <img src='https://arminkochac-cloud.github.io/OtelAnketFinal/logo.png' 
+            width='120'
+            style='display:block;'>
+        </div>
         <div>
             <h2 style='
                 color:white; 
-                font-size:1.4em;
-                margin:0;
+                font-size:1.6em;
+                margin:0 0 5px 0;
+                font-weight:bold;
             '>
                 Concordia Celes Hotel
             </h2>
             <p style='
                 color:#FFD700;
-                font-size:0.9em;
-                margin:2px 0 0 0;
+                font-size:1.1em;
+                margin:0 0 3px 0;
+                letter-spacing:3px;
             '>
-                ⭐⭐⭐⭐⭐ 📊 Misafir Memnuniyet Yönetim Paneli
+                ★★★★★
+            </p>
+            <p style='
+                color:#ccc;
+                font-size:0.9em;
+                margin:0;
+            '>
+                📊 Misafir Memnuniyet Yönetim Paneli
             </p>
         </div>
     </div>
-""", unsafe_allow_html=True)
-# Üstteki boşluğu kaldır
-st.markdown("""
-    <style>
-        #root > div:nth-child(1) > div > div > div > div > section > div {
-            padding-top: 0rem;
-        }
-        .block-container {
-            padding-top: 0rem;
-            padding-bottom: 0rem;
-        }
-        header {display: none !important;}
-        #MainMenu {visibility: hidden;}
-        footer {visibility: hidden;}
-    </style>
 """, unsafe_allow_html=True)
 
 df_all = load_data()
