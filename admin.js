@@ -2,8 +2,8 @@
 // CONCORDİA CELES HOTEL - ADMIN PANEL JAVASCRIPT
 // ============================================================================
 
-// GOOGLE SCRIPTS URL (Buraya kendi Google Apps Script URL'nizi yapıştırın)
-var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxQXQnpJIwj4vvKbSrEVJUmKWGQxJyJiKls2m-hLbMdHpD0cBSewzGGYPe3gtkhBWGR/exec
+// GOOGLE SCRIPTS URL
+var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxQXQnpJIwj4vvKbSrEVJUmKWGQxJyJiKls2m-hLbMdHpD0cBSewzGGYPe3gtkhBWGR/exec';
 // ============================================================================
 // SAYFA YÜKLENDİĞİNDE ÇALIŞACAK FONKSİYONLAR
 // ============================================================================
