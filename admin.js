@@ -3,7 +3,7 @@
 // ============================================================================
 
 // GOOGLE SCRIPTS URL (Son deploy URL'inizi buraya yapıştırın)
-var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxQXQnpJIwj4vvKbSrEVJUmKWGQxJyJiKls2m-hLbMdHpD0cBSewzGGYPe3gtkhBWGR/exec';
+var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzTqaJ46w-ffPiBB7S8h-3dlC-d7XZnl-NzJCb6SHCbbf5UKCFW8W9fp0jE1KVsXGzY0g/exec
 // 
 // ============================================================================
 // SAYFA YÜKLENDİĞİNDE ÇALIŞACAK FONKSİYONLAR
