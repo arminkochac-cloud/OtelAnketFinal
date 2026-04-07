@@ -211,16 +211,51 @@ function computeOverallScore(item) {
 }
 
 // YENİ: genel ortalama hesaplama
+Tamam. O zaman **genel ortalama için en sağlam sürümü** veriyorum.  
+Bu blok, `RATING_FIELDS`’a tam bağlı kalmadan satırdaki tüm puan alanlarını tarar.
+
+## 1) `calculateGeneralAverage()` fonksiyonunu bununla değiştirin
+
+```javascript
 function calculateGeneralAverage(rows) {
     var total = 0;
     var count = 0;
 
+    var ignoreKeys = {
+        tarih: true,
+        date: true,
+        timestamp: true,
+        fullName: true,
+        adSoyad: true,
+        name: true,
+        isim: true,
+        roomNumber: true,
+        odaNo: true,
+        room: true,
+        oda: true,
+        nationality: true,
+        ulkesi: true,
+        country: true,
+        praisedStaff: true,
+        generalComments: true,
+        yorum: true,
+        comment: true,
+        notes: true,
+        email: true,
+        gender: true,
+        checkIn: true,
+        checkOut: true,
+        welcomeGreeting: true
+    };
+
     for (var i = 0; i < rows.length; i++) {
         var row = rows[i].raw || rows[i];
-
         var rowValues = [];
-        for (var j = 0; j < RATING_FIELDS.length; j++) {
-            var key = RATING_FIELDS[j];
+
+        for (var key in row) {
+            if (!Object.prototype.hasOwnProperty.call(row, key)) continue;
+            if (ignoreKeys[key]) continue;
+
             var n = normalizeRatingValue(row[key]);
             if (n !== null) {
                 rowValues.push(n);
@@ -229,9 +264,10 @@ function calculateGeneralAverage(rows) {
 
         if (rowValues.length > 0) {
             var sum = 0;
-            for (var k = 0; k < rowValues.length; k++) {
-                sum += rowValues[k];
+            for (var j = 0; j < rowValues.length; j++) {
+                sum += rowValues[j];
             }
+
             total += sum / rowValues.length;
             count++;
         }
@@ -239,6 +275,42 @@ function calculateGeneralAverage(rows) {
 
     return count ? (total / count) : null;
 }
+```
+
+---
+
+## 2) `renderDashboard()` içinde şu satır aynen kalsın
+
+```javascript
+var avg = calculateGeneralAverage(rows);
+setText('#generalAvg', rows.length ? String(Math.round(avg || 0)) : '0');
+```
+
+---
+
+## 3) Son olarak
+`admin.html` içinde script sürümünü bir artırın:
+
+```html
+<script src="admin.js?v=11"></script>
+```
+
+Sonra:
+
+- **Ctrl + F5**
+- ya da gizli sekmede açın
+
+---
+
+## Neden bu çözüm daha sağlam?
+Çünkü bazen:
+- sütun adları değişiyor
+- bazı alanlar boş geliyor
+- bazı alanlar string oluyor
+
+Bu yeni fonksiyon, bunların hepsine daha toleranslıdır.
+
+İsterseniz bir sonraki mesajda size **sadece genel ortalamayı hesaplayan mini test kodu** da verebilirim; tarayıcı konsoluna yapıştırıp sonucu hemen görürsünüz.
 
 function groupByKey(rows, keyName) {
     var map = {};
