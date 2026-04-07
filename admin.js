@@ -210,13 +210,29 @@ function computeOverallScore(item) {
     return averageOfFields(item, RATING_FIELDS);
 }
 
-function getAverage(rows) {
+// YENİ: genel ortalama hesaplama
+function calculateGeneralAverage(rows) {
     var total = 0;
     var count = 0;
 
     for (var i = 0; i < rows.length; i++) {
-        if (typeof rows[i].score === 'number' && !isNaN(rows[i].score)) {
-            total += rows[i].score;
+        var row = rows[i].raw || rows[i];
+
+        var rowValues = [];
+        for (var j = 0; j < RATING_FIELDS.length; j++) {
+            var key = RATING_FIELDS[j];
+            var n = normalizeRatingValue(row[key]);
+            if (n !== null) {
+                rowValues.push(n);
+            }
+        }
+
+        if (rowValues.length > 0) {
+            var sum = 0;
+            for (var k = 0; k < rowValues.length; k++) {
+                sum += rowValues[k];
+            }
+            total += sum / rowValues.length;
             count++;
         }
     }
@@ -569,7 +585,7 @@ function renderDashboard(data) {
     console.log('🎨 renderDashboard çalıştı! Veri sayısı:', rows.length);
 
     // Genel Ortalama
-    var avg = getAverage(rows);
+    var avg = calculateGeneralAverage(rows);
     setText('#generalAvg', rows.length ? String(Math.round(avg || 0)) : '0');
 
     // İstatistikler
