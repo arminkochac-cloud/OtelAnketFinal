@@ -860,7 +860,84 @@
             ✓ Anladım, Kapat
         </button>
     </div>
-</div>    
+</div> 
+ <script>
+let currentSectionIndex = 0;
+
+function getSections() {
+    return Array.from(document.querySelectorAll('.section'));
+}
+
+function showSection(index) {
+    const sections = getSections();
+    if (!sections.length) return;
+
+    if (index < 0) index = 0;
+    if (index >= sections.length) index = sections.length - 1;
+
+    sections.forEach((sec, i) => {
+        sec.classList.toggle('active', i === index);
+    });
+
+    currentSectionIndex = index;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function validateCurrentSection() {
+    const sections = getSections();
+    const active = sections[currentSectionIndex];
+    if (!active) return true;
+
+    const requiredFields = active.querySelectorAll('[required]');
+    for (const el of requiredFields) {
+        if (el.type === 'radio') {
+            const group = active.querySelectorAll(`input[name="${el.name}"]`);
+            const checked = Array.from(group).some(r => r.checked);
+            if (!checked) {
+                alert('Lütfen zorunlu alanları doldurun.');
+                return false;
+            }
+        } else if (!el.value.trim()) {
+            alert('Lütfen zorunlu alanları doldurun.');
+            el.focus();
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function nextSection(step = 1) {
+    if (step > 0 && !validateCurrentSection()) return;
+    showSection(currentSectionIndex + step);
+}
+
+function initStars() {
+    document.querySelectorAll('.stars').forEach(stars => {
+        const inputs = stars.querySelectorAll('input[type="radio"]');
+
+        inputs.forEach(input => {
+            input.addEventListener('change', () => {
+                const name = input.name;
+                const value = parseInt(input.value, 10);
+
+                stars.querySelectorAll('label').forEach(label => {
+                    const radio = label.querySelector('input[type="radio"]');
+                    if (!radio || radio.name !== name) return;
+
+                    const radioVal = parseInt(radio.value, 10);
+                    label.classList.toggle('selected', radioVal <= value);
+                });
+            });
+        });
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    initStars();
+    showSection(0);
+});
+</script>   
 </body>
 </html>
 <script src="script.js?v=999"></script>
