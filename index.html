@@ -861,7 +861,8 @@
         </button>
     </div>
 </div> 
- <script>
+ 'use strict';
+
 let currentSectionIndex = 0;
 
 function getSections() {
@@ -872,8 +873,8 @@ function showSection(index) {
     const sections = getSections();
     if (!sections.length) return;
 
-    if (index < 0) index = 0;
-    if (index >= sections.length) index = sections.length - 1;
+    // İndex sınırlarını koru
+    index = Math.max(0, Math.min(index, sections.length - 1));
 
     sections.forEach((sec, i) => {
         sec.classList.toggle('active', i === index);
@@ -881,6 +882,7 @@ function showSection(index) {
 
     currentSectionIndex = index;
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    updateProgress();
 }
 
 function validateCurrentSection() {
@@ -890,7 +892,10 @@ function validateCurrentSection() {
 
     const requiredFields = active.querySelectorAll('[required]');
     for (const el of requiredFields) {
-        if (el.type === 'radio') {
+        // 🔑 GİZLİ ELEMANLARI ATLA (focus hatasını önler)
+        if (el.offsetParent === null && el.type !== 'hidden') continue;
+
+        if (el.type === 'radio' || el.type === 'checkbox') {
             const group = active.querySelectorAll(`input[name="${el.name}"]`);
             const checked = Array.from(group).some(r => r.checked);
             if (!checked) {
@@ -899,11 +904,11 @@ function validateCurrentSection() {
             }
         } else if (!el.value.trim()) {
             alert('Lütfen zorunlu alanları doldurun.');
-            el.focus();
+            // 🔑 SADECE GÖRÜNÜRSE FOCUS YAP
+            if (el.offsetParent !== null) el.focus();
             return false;
         }
     }
-
     return true;
 }
 
@@ -912,32 +917,34 @@ function nextSection(step = 1) {
     showSection(currentSectionIndex + step);
 }
 
+function prevSection() {
+    showSection(currentSectionIndex - 1);
+}
+
 function initStars() {
-    document.querySelectorAll('.stars').forEach(stars => {
-        const inputs = stars.querySelectorAll('input[type="radio"]');
-
-        inputs.forEach(input => {
-            input.addEventListener('change', () => {
-                const name = input.name;
-                const value = parseInt(input.value, 10);
-
-                stars.querySelectorAll('label').forEach(label => {
-                    const radio = label.querySelector('input[type="radio"]');
-                    if (!radio || radio.name !== name) return;
-
-                    const radioVal = parseInt(radio.value, 10);
-                    label.classList.toggle('selected', radioVal <= value);
-                });
+    document.querySelectorAll('.stars').forEach(container => {
+        const stars = container.querySelectorAll('.star');
+        stars.forEach((star, i) => {
+            star.addEventListener('click', () => {
+                stars.forEach((s, j) => s.classList.toggle('selected', j <= i));
+                const input = container.querySelector('input[type="hidden"], input[type="radio"]');
+                if (input) input.value = i + 1;
             });
         });
     });
 }
 
+function updateProgress() {
+    const sections = getSections();
+    const percent = Math.round(((currentSectionIndex + 1) / sections.length) * 100);
+    const bar = document.querySelector('.progress-fill');
+    const text = document.querySelector('.progress-bar');
+    if (bar) bar.style.width = percent + '%';
+    if (text) text.textContent = `%${percent}`;
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     initStars();
     showSection(0);
+    updateProgress();
 });
-</script>   
-</body>
-</html>
-<script src="script.js?v=999"></script>
