@@ -44,7 +44,16 @@
             color: inherit;
         }
 
-        /* HEADER */
+        /* =========================
+           PRINT HEADER (screen hidden)
+           ========================= */
+        .print-header {
+            display: none;
+        }
+
+        /* =========================
+           HEADER
+           ========================= */
         .topbar {
             position: sticky;
             top: 0;
@@ -170,7 +179,9 @@
             color: #fff;
         }
 
-        /* QUICK SUMMARY */
+        /* =========================
+           QUICK SUMMARY
+           ========================= */
         .summary-wrap {
             width: min(1440px, calc(100% - 24px));
             margin: 18px auto 0;
@@ -285,7 +296,9 @@
             color: var(--muted);
         }
 
-        /* MAIN CONTAINER */
+        /* =========================
+           MAIN CONTAINER
+           ========================= */
         .container {
             width: min(1440px, calc(100% - 24px));
             margin: 18px auto 32px;
@@ -569,6 +582,134 @@
             overflow-y: auto;
         }
 
+        /* =========================
+           PRINT / PDF STYLE
+           ========================= */
+        @media print {
+            @page {
+                size: A4 landscape;
+                margin: 10mm;
+            }
+
+            body {
+                background: #fff !important;
+                color: #000 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .topbar,
+            .toolbar,
+            .summary-wrap,
+            #timeFilter,
+            button,
+            a.btn-gray,
+            a.btn-blue,
+            .loading,
+            .spinner {
+                display: none !important;
+            }
+
+            .print-header {
+                display: block !important;
+                margin-bottom: 14px;
+                padding-bottom: 12px;
+                border-bottom: 1px solid #ddd;
+            }
+
+            .container {
+                width: 100% !important;
+                margin: 0 !important;
+            }
+
+            .dashboard-grid {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
+                gap: 10px !important;
+            }
+
+            .card {
+                box-shadow: none !important;
+                border: 1px solid #d9d9d9 !important;
+                break-inside: avoid;
+                page-break-inside: avoid;
+                margin-bottom: 8px !important;
+                background: #fff !important;
+            }
+
+            .card.full-width {
+                grid-column: 1 / -1 !important;
+            }
+
+            .top-container {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
+                gap: 10px !important;
+            }
+
+            .top-box {
+                box-shadow: none !important;
+                border: 1px solid #d9d9d9 !important;
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+
+            .chart-container {
+                min-height: auto !important;
+                border: 1px solid #e5e7eb !important;
+            }
+
+            table {
+                width: 100% !important;
+                border-collapse: collapse !important;
+                font-size: 11px !important;
+            }
+
+            thead th {
+                background: #f2f2f2 !important;
+                color: #000 !important;
+                border: 1px solid #ddd !important;
+                padding: 6px !important;
+            }
+
+            tbody td {
+                border: 1px solid #ddd !important;
+                padding: 6px !important;
+                color: #000 !important;
+            }
+
+            tbody tr:hover {
+                background: transparent !important;
+            }
+
+            .summary-card,
+            .insight-card,
+            .comment-card {
+                box-shadow: none !important;
+                border: 1px solid #d9d9d9 !important;
+            }
+
+            .avg-score {
+                color: #000 !important;
+            }
+
+            h3, h4 {
+                color: #000 !important;
+            }
+
+            .comment-feed,
+            .insights-grid,
+            .summary-grid {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+
+            a {
+                text-decoration: none !important;
+                color: #000 !important;
+            }
+        }
+
         @media (max-width: 1100px) {
             .summary-grid {
                 grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -635,6 +776,20 @@
 </head>
 <body>
 
+    <!-- PRINT HEADER -->
+    <div class="print-header">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">
+            <img src="https://arminkochac-cloud.github.io/ConcordiaCelesHotelOnlineAnket/logo.png" alt="Logo" style="width:52px;height:52px;object-fit:contain;">
+            <div>
+                <div style="font-size:18px; font-weight:800; color:#111;">Concordia Celes Hotel</div>
+                <div style="font-size:12px; color:#666;">Admin Dashboard PDF Raporu</div>
+            </div>
+        </div>
+        <div style="font-size:12px; color:#666;">
+            Rapor Tarihi: <span id="printDate"></span>
+        </div>
+    </div>
+
     <!-- TOP BAR -->
     <div class="topbar">
         <div class="topbar-inner">
@@ -656,11 +811,12 @@
                     <option value="1">Bugün</option>
                 </select>
 
-                <button class="btn-green" onclick="loadAndRenderData()">🔄 Yenile</button>
-                <button class="btn-green" onclick="exportData()">⬇ İndir</button>
-                <button class="btn-red" onclick="clearData()">🗑 Temizle</button>
-                <a class="btn-gray" href="index.html" target="_blank">📝 Anket</a>
-                <a class="btn-blue" href="guestinfo.html" target="_blank">👤 Guest Info</a>
+                <button class="btn-green no-print" onclick="loadAndRenderData()">🔄 Yenile</button>
+                <button class="btn-green no-print" onclick="exportData()">⬇ İndir</button>
+                <button class="btn-blue no-print" onclick="window.print()">📄 PDF Raporu Al</button>
+                <button class="btn-red no-print" onclick="clearData()">🗑 Temizle</button>
+                <a class="btn-gray no-print" href="index.html" target="_blank">📝 Anket</a>
+                <a class="btn-blue no-print" href="guestinfo.html" target="_blank">👤 Guest Info</a>
             </div>
         </div>
     </div>
@@ -863,7 +1019,7 @@
         </div>
     </div>
 
-    <script src="admin.js?v=16"></script>
+    <script src="admin.js?v=17"></script>
 
     <script>
         (function () {
@@ -951,14 +1107,26 @@
                 var recTotal = recYes + recNo;
                 var retTotal = retYes + retNo;
 
-                document.getElementById('sumTotal').textContent = total;
-                document.getElementById('sumAvg').textContent = avgValue;
-                document.getElementById('sumRecommend').textContent = recTotal ? Math.round((recYes * 100) / recTotal) + '%' : '0%';
-                document.getElementById('sumReturn').textContent = retTotal ? Math.round((retYes * 100) / retTotal) + '%' : '0%';
-                document.getElementById('sumComments').textContent = comments;
+                var sumTotal = document.getElementById('sumTotal');
+                var sumAvg = document.getElementById('sumAvg');
+                var sumRecommend = document.getElementById('sumRecommend');
+                var sumReturn = document.getElementById('sumReturn');
+                var sumComments = document.getElementById('sumComments');
+
+                if (sumTotal) sumTotal.textContent = total;
+                if (sumAvg) sumAvg.textContent = avgValue;
+                if (sumRecommend) sumRecommend.textContent = recTotal ? Math.round((recYes * 100) / recTotal) + '%' : '0%';
+                if (sumReturn) sumReturn.textContent = retTotal ? Math.round((retYes * 100) / retTotal) + '%' : '0%';
+                if (sumComments) sumComments.textContent = comments;
             }
 
             document.addEventListener('DOMContentLoaded', function () {
+                // Print header date
+                var printDate = document.getElementById('printDate');
+                if (printDate) {
+                    printDate.textContent = new Date().toLocaleString('tr-TR');
+                }
+
                 updateSummaryCards();
 
                 var timeFilter = document.getElementById('timeFilter');
