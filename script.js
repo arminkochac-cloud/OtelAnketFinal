@@ -257,7 +257,6 @@ function syncStarContainer(container) {
         if (hiddenInput) hiddenInput.value = '';
         syncStarContainer(container);
     }
-}
 
 // ---------------------------------------------------------------------------
 // CHAR COUNTER
