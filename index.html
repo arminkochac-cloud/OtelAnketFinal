@@ -1,115 +1,44 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title data-i18n="pageTitle">Misafir Anketi</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Otel Misafir Anket Sistemi</title>
+    <link rel="stylesheet" href="style.css?v=1" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="container">
-    <!-- DİL SEÇİCİ -->
-    <div class="lang-bar">
-      <button onclick="setLang('tr')" class="lang-btn active" data-lang="tr">🇹 TR</button>
-      <button onclick="setLang('en')" class="lang-btn" data-lang="en">🇬🇧 EN</button>
-      <button onclick="setLang('de')" class="lang-btn" data-lang="de">🇩 DE</button>
-      <button onclick="setLang('ru')" class="lang-btn" data-lang="ru">🇷🇺 RU</button>
-      <button onclick="setLang('pl')" class="lang-btn" data-lang="pl">🇵🇱 PL</button>
-      <button onclick="setLang('ro')" class="lang-btn" data-lang="ro">🇷🇴 RO</button>
-    </div>
 
-    <div class="header">
-      <h1 data-i18n="surveyTitle">Misafir Memnuniyet Anketi</h1>
-      <div class="progress-bar"><div id="progressFill"></div></div>
-    </div>
-
-    <form id="anketForm" novalidate>
-      <!-- ADIM 1: BİLGİLER -->
-      <div class="step active" data-step="1">
-        <h2 data-i18n="step1Title">👤 Genel Bilgiler</h2>
-        <div class="field">
-          <label data-i18n="fullName">Ad Soyad *</label>
-          <input type="text" name="fullName" required data-i18n-placeholder="fullNamePh" placeholder="Adınız Soyadınız">
-        </div>
-        <div class="field">
-          <label data-i18n="roomNo">Oda Numarası *</label>
-          <input type="text" name="roomNumber" required data-i18n-placeholder="roomNoPh" placeholder="Örn: 305">
-        </div>
-        <div class="field kvkk">
-          <label class="check">
-            <input type="checkbox" name="kvkk" required>
-            <span data-i18n="kvkkText">KVKK aydınlatma metnini okudum, onay veriyorum.</span>
-            <a href="#" onclick="openKvkk(); return false;" data-i18n="kvkkLink">Metni Gör</a>
-          </label>
-        </div>
-        <div class="nav"><div></div><button type="button" class="btn next" onclick="nextStep()" data-i18n="nextBtn">İleri →</button></div>
-      </div>
-
-      <!-- ADIM 2: PUANLAMA -->
-      <div class="step" data-step="2">
-        <h2 data-i18n="step2Title">⭐ Değerlendirme</h2>
-        
-        <div class="rating-item">
-          <label data-i18n="receptionLabel">Resepsiyon Hizmeti</label>
-          <div class="stars" data-field="reception">
-            <span class="star" data-value="1">★</span><span class="star" data-value="2">★</span><span class="star" data-value="3">★</span><span class="star" data-value="4">★</span><span class="star" data-value="5">★</span>
-            <input type="hidden" name="reception" required>
-          </div>
-        </div>
-
-        <div class="rating-item">
-          <label data-i18n="cleaningLabel">Temizlik & Düzen</label>
-          <div class="stars" data-field="cleaning">
-            <span class="star" data-value="1">★</span><span class="star" data-value="2">★</span><span class="star" data-value="3">★</span><span class="star" data-value="4">★</span><span class="star" data-value="5">★</span>
-            <input type="hidden" name="cleaning" required>
-          </div>
-        </div>
-
-        <div class="rating-item">
-          <label data-i18n="foodLabel">Yiyecek & İçecek</label>
-          <div class="stars" data-field="food">
-            <span class="star" data-value="1">★</span><span class="star" data-value="2">★</span><span class="star" data-value="3">★</span><span class="star" data-value="4">★</span><span class="star" data-value="5">★</span>
-            <input type="hidden" name="food" required>
-          </div>
-        </div>
-
-        <div class="nav">
-          <button type="button" class="btn prev" onclick="prevStep()" data-i18n="prevBtn">← Geri</button>
-          <button type="button" class="btn next" onclick="nextStep()" data-i18n="nextBtn">İleri →</button>
-        </div>
-      </div>
-
-      <!-- ADIM 3: GÖNDER -->
-      <div class="step" data-step="3">
-        <h2 data-i18n="step3Title">💬 Yorum & Gönder</h2>
-        <div class="field">
-          <label data-i18n="commentLabel">Öneri veya Şikayetiniz (İsteğe bağlı)</label>
-          <textarea name="comment" rows="3" data-i18n-placeholder="commentPh" placeholder="Düşüncelerinizi paylaşın..."></textarea>
-        </div>
-        <div class="nav">
-          <button type="button" class="btn prev" onclick="prevStep()" data-i18n="prevBtn">← Geri</button>
-          <button type="button" class="btn submit" onclick="submitForm()" data-i18n="submitBtn">✅ Anketi Gönder</button>
-        </div>
-      </div>
-    </form>
-
-    <!-- TEŞEKKÜR EKRANI -->
-    <div id="thankScreen" class="step thank-screen">
-      <div class="thank-icon">🎉</div>
-      <h2 data-i18n="thankTitle">Teşekkür Ederiz!</h2>
-      <p data-i18n="thankMsg">Değerli görüşleriniz başarıyla kaydedildi.</p>
-      <button class="btn" onclick="location.reload()" data-i18n="newSurvey">Yeni Anket</button>
-    </div>
+    <div id="app"></div>
 
     <!-- KVKK MODAL -->
-    <div id="kvkkModal" class="modal">
-      <div class="modal-content">
-        <h3 data-i18n="kvkkModalTitle">KVKK Aydınlatma Metni</h3>
-        <p data-i18n="kvkkModalText">Kişisel verileriniz anket değerlendirme ve hizmet kalitesi artırma amaçlarıyla işlenmektedir. Verileriniz 2 yıl süreyle saklanacak olup, dilediğiniz zaman silinmesini talep edebilirsiniz.</p>
-        <button class="btn" onclick="closeKvkk()" data-i18n="closeBtn">Kapat</button>
-      </div>
+    <div id="kvkkModal" class="kvkk-modal" style="display:none;">
+        <div class="kvkk-content">
+            <h2>🔒 KVKK Aydınlatma Metni</h2>
+            <hr>
+            <p><b>Veri Sorumlusu:</b><br>Concordia Celes Hotel<br>info@concordiaceles.com</p>
+            <p><b>Toplanan Kişisel Veriler:</b><br>Ad Soyad, Cinsiyet, Uyruk, Oda Numarası, Giriş-Çıkış Tarihi, E-posta Adresi, Memnuniyet Puanları</p>
+            <p><b>İşleme Amacı:</b><br>Misafir memnuniyetini ölçmek ve hizmet kalitesini artırmak</p>
+            <p><b>Saklama Süresi:</b><br>Verileriniz 2 yıl süreyle saklanacaktır.</p>
+            <p><b>Haklarınız:</b><br>
+                ✅ Verilerinize erişim hakkı<br>
+                ✅ Düzeltme talep etme hakkı<br>
+                ✅ Silme talep etme hakkı<br>
+                ✅ İşlemeye itiraz hakkı
+            </p>
+            <p><b>İletişim:</b><br>📧 info@concordiaceles.com<br>🌐 www.concordiaceles.com</p>
+            <button type="button" class="btn btn-next" onclick="closeKvkk()">✓ Anladım, Kapat</button>
+        </div>
     </div>
-  </div>
-  <script src="script.js"></script>
+
+    <!-- TEŞEKKÜR EKRANI -->
+    <div class="thank-you" id="thankYou" style="display:none;">
+        <div class="thank-icon">🎉</div>
+        <h2>Teşekkür Ederiz!</h2>
+        <p>Değerli görüşleriniz bizim için çok önemli.</p>
+        <button type="button" class="btn btn-submit" onclick="resetForm()">Yeni Anket</button>
+    </div>
+
+    <script src="script.js?v=1"></script>
 </body>
 </html>
