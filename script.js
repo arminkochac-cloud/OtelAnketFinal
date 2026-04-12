@@ -95,24 +95,42 @@ function syncStarContainer(container) {
 }
 
 function initStars() {
-    var containers = document.querySelectorAll('.rating-item .stars[data-name]');
+    console.log('⭐ Yıldız tıklama sistemi güncelleniyor...');
+    document.querySelectorAll('.stars').forEach(container => {
+        if (container.dataset.ready === '1') return;
+        container.dataset.ready = '1';
 
-    for (var c = 0; c < containers.length; c++) {
-        var container = containers[c];
+        const stars = container.querySelectorAll('.star');
+        const radios = container.querySelectorAll('input[type="radio"]');
 
-        if (container.getAttribute('data-ready') !== '1') {
-            container.setAttribute('data-ready', '1');
-
-            var radios = container.querySelectorAll('input[type="radio"]');
-            for (var r = 0; r < radios.length; r++) {
-                radios[r].addEventListener('change', function () {
-                    syncStarContainer(container);
+        stars.forEach((star, index) => {
+            star.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const value = index + 1; // 1'den 5'e puan
+                
+                // 1. Görsel güncelleme (tıklanan ve öncesi sarı, sonrası gri)
+                stars.forEach((s, i) => {
+                    s.classList.toggle('active', i < value);
                 });
-            }
-        }
 
-        syncStarContainer(container);
-    }
+                // 2. Radio butonunu senkronize et (form gönderimi için şart)
+                if (radios[index]) {
+                    radios[index].checked = true;
+                    // Diğer radio'ları temizle
+                    radios.forEach((r, i) => {
+                        if (i !== index) r.checked = false;
+                    });
+                    // Form validasyonunu tetikle
+                    radios[index].dispatchEvent(new Event('change', { bubbles: true }));
+                }
+                
+                console.log(`✅ Puan seçildi: ${value} | Input: ${radios[index]?.name || 'hidden'}`);
+            });
+        });
+    });
+    console.log('✅ Yıldız tıklama sistemi aktif. Yuvarlaklar gizlendi.');
 }
 
 // ---------------------------------------------------------------------------
