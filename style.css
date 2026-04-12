@@ -80,3 +80,30 @@ input[type="text"], input[type="email"], input[type="date"], select, textarea { 
     color: #1a73e8;
     text-decoration: underline;
 }s
+/* YILDIZLAR */
+.stars {
+    display: inline-flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.stars .star {
+    cursor: pointer;
+    font-size: 32px;
+    line-height: 1;
+    color: #d9d9d9;
+    transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.stars .star:hover {
+    transform: translateY(-1px);
+}
+
+.stars .star.selected {
+    color: var(--warning-color);
+}
+
+.stars .star input {
+    display: none;
+}
