@@ -1,73 +1,1205 @@
-:root {
-  --bg: #f8fafc; --card: #ffffff; --text: #1e293b; --text-light: #64748b;
-  --primary: #1e293b; --accent: #3b82f6; --success: #10b981; --error: #ef4444;
-  --border: #e2e8f0; --radius: 12px; --shadow: 0 4px 12px rgba(0,0,0,0.08);
+Tabii. Aşağıya **birbirine tam uyumlu, temiz ve minimal çalışan 3 dosyayı** veriyorum:
+
+- `index.html`
+- `style.css`
+- `script.js`
+
+## Önemli
+Eski dosyaların içeriğini **tamamen silip** bunlarla değiştirin.  
+Ayrıca **`translations.js` kullanmayın**; şu an bu paket ona ihtiyaç duymuyor.  
+Bu, önceki çakışmaları da kaldırır.
+
+---
+
+# 1) `index.html`
+
+```html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Otel Misafir Anket Sistemi</title>
+    <link rel="stylesheet" href="style.css?v=1" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div id="app"></div>
+
+    <!-- KVKK MODAL -->
+    <div id="kvkkModal" class="kvkk-modal" style="display:none;">
+        <div class="kvkk-content">
+            <h2>🔒 KVKK Aydınlatma Metni</h2>
+            <hr>
+            <p><b>Veri Sorumlusu:</b><br>Concordia Celes Hotel<br>info@concordiaceles.com</p>
+            <p><b>Toplanan Kişisel Veriler:</b><br>Ad Soyad, Cinsiyet, Uyruk, Oda Numarası, Giriş-Çıkış Tarihi, E-posta Adresi, Memnuniyet Puanları</p>
+            <p><b>İşleme Amacı:</b><br>Misafir memnuniyetini ölçmek ve hizmet kalitesini artırmak</p>
+            <p><b>Saklama Süresi:</b><br>Verileriniz 2 yıl süreyle saklanacaktır.</p>
+            <p><b>Haklarınız:</b><br>
+                ✅ Verilerinize erişim hakkı<br>
+                ✅ Düzeltme talep etme hakkı<br>
+                ✅ Silme talep etme hakkı<br>
+                ✅ İşlemeye itiraz hakkı
+            </p>
+            <p><b>İletişim:</b><br>📧 info@concordiaceles.com<br>🌐 www.concordiaceles.com</p>
+            <button type="button" class="btn btn-next" onclick="closeKvkk()">✓ Anladım, Kapat</button>
+        </div>
+    </div>
+
+    <!-- TEŞEKKÜR EKRANI -->
+    <div class="thank-you" id="thankYou" style="display:none;">
+        <div class="thank-icon">🎉</div>
+        <h2>Teşekkür Ederiz!</h2>
+        <p>Değerli görüşleriniz bizim için çok önemli.</p>
+        <button type="button" class="btn btn-submit" onclick="resetForm()">Yeni Anket</button>
+    </div>
+
+    <script src="script.js?v=1"></script>
+</body>
+</html>
+```
+
+---
+
+# 2) `style.css`
+
+```css
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-body { background: var(--bg); color: var(--text); padding: 20px; min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; }
-.container { background: var(--card); width: 100%; max-width: 650px; border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; margin: 20px auto; }
 
-/* DİL ÇUBUĞU */
-.lang-bar { display: flex; justify-content: center; gap: 8px; padding: 12px; background: #f1f5f9; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
-.lang-btn { padding: 6px 10px; border: 1px solid var(--border); background: #fff; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; transition: 0.2s; }
-.lang-btn:hover { background: #e2e8f0; }
-.lang-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+:root {
+    --primary-color: #1a1a3e;
+    --secondary-color: #2d2d6b;
+    --accent-color: #fc5c7d;
+    --success-color: #28a745;
+    --warning-color: #f5b301;
+    --danger-color: #dc3545;
+    --bg: #0f1233;
+    --card: #ffffff;
+    --text: #222;
+    --muted: #666;
+    --border: #e6e6e6;
+    --shadow: 0 14px 40px rgba(0,0,0,0.12);
+}
 
-/* HEADER & İLERLEME */
-.header { padding: 20px; text-align: center; border-bottom: 1px solid var(--border); }
-.header h1 { font-size: 20px; margin-bottom: 12px; }
-.progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
-#progressFill { height: 100%; width: 33%; background: var(--accent); transition: width 0.3s ease; }
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #0c0c1d 0%, #1a1a3e 50%, #0c0c1d 100%);
+    min-height: 100vh;
+    padding: 20px;
+    color: var(--text);
+}
 
-/* ADIMLAR */
-.step { display: none; padding: 24px; animation: fadeIn 0.3s ease; }
-.step.active { display: block; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-h2 { font-size: 18px; margin-bottom: 16px; color: var(--primary); }
+.container {
+    max-width: 980px;
+    margin: 0 auto;
+}
 
-/* FORM ALANLARI */
-.field { margin-bottom: 16px; }
-.field label { display: block; margin-bottom: 6px; font-weight: 500; font-size: 14px; }
-input, textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; transition: 0.2s; }
-input:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
-.kvkk .check { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; cursor: pointer; }
-.kvkk a { color: var(--accent); text-decoration: underline; margin-left: 4px; }
+.survey-form {
+    background: var(--card);
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
 
-/* YILDIZ PUANLAMA */
-.rating-item { margin-bottom: 18px; }
-.rating-item label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; }
-.stars { display: inline-flex; gap: 6px; align-items: center; }
-.stars input[type="radio"], .stars input[type="hidden"] { display: none !important; }
-.star { font-size: 30px; color: #cbd5e1; cursor: pointer; user-select: none; transition: color 0.2s, transform 0.2s; line-height: 1; padding: 2px; }
-.star:hover { transform: scale(1.15); color: #fbbf24; }
-.star.active { color: #f59e0b !important; }
-.stars.error .star { color: var(--error) !important; }
+.header {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: #fff;
+    text-align: center;
+    padding: 34px 24px 28px;
+    position: relative;
+}
 
-/* BUTONLAR */
-.nav { display: flex; justify-content: space-between; margin-top: 24px; gap: 12px; }
-.btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 14px; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; }
-.btn:hover { opacity: 0.9; transform: translateY(-1px); }
-.btn.next, .btn.submit { background: var(--primary); color: #fff; }
-.btn.prev { background: var(--border); color: var(--text); }
-.btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.header img {
+    display: block;
+    margin: 0 auto 10px;
+}
 
-/* TEŞEKKÜR EKRANI */
-.thank-screen { text-align: center; padding: 60px 24px; }
-.thank-icon { font-size: 48px; margin-bottom: 16px; }
-.thank-screen h2 { font-size: 24px; margin-bottom: 10px; }
-.thank-screen p { color: var(--text-light); margin-bottom: 24px; }
+.header h1 {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.header p {
+    font-size: 15px;
+    opacity: 0.92;
+}
+
+.progress-container {
+    width: calc(100% - 48px);
+    margin: 18px auto 0;
+    background: #ececec;
+    border-radius: 999px;
+    height: 26px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #ff5e7a, #ff7a59);
+    border-radius: 999px;
+    transition: width 0.35s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+form#mainForm {
+    padding: 28px 24px 24px;
+}
+
+.section {
+    display: none;
+    animation: fadeIn 0.25s ease;
+}
+
+.section.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.section-icon {
+    font-size: 28px;
+}
+
+.section-title h2 {
+    font-size: 22px;
+    font-weight: 800;
+    color: #222;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #222;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="date"],
+select,
+textarea {
+    width: 100%;
+    padding: 13px 14px;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    background: #fff;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="date"]:focus,
+select:focus,
+textarea:focus {
+    border-color: #8f9cff;
+    box-shadow: 0 0 0 3px rgba(143,156,255,0.12);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 110px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.rating-item {
+    background: #fafbff;
+    padding: 16px 16px 14px;
+    border: 1px solid #eff2f7;
+    border-radius: 16px;
+    margin-bottom: 12px;
+}
+
+.rating-item label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.btn-group {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 2px solid #eee;
+}
+
+.btn {
+    padding: 12px 22px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 700;
+    font-family: inherit;
+    transition: transform 0.15s ease, opacity 0.15s ease, box-shadow 0.15s ease;
+    white-space: nowrap;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    opacity: 0.96;
+}
+
+.btn-prev {
+    background: #ececec;
+    color: #333;
+}
+
+.btn-next {
+    background: var(--primary-color);
+    color: #fff;
+}
+
+.btn-submit {
+    background: var(--success-color);
+    color: #fff;
+}
+
+.gender-buttons,
+.yes-no-buttons {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.gender-btn,
+.yn-btn {
+    position: relative;
+    cursor: pointer;
+}
+
+.gender-btn input,
+.yn-btn input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.gender-btn span,
+.yn-btn span {
+    display: block;
+    padding: 12px 20px;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    text-align: center;
+    background: #fff;
+    min-width: 110px;
+    transition: 0.2s;
+}
+
+.gender-btn input:checked + span,
+.yn-btn input:checked + span {
+    background: var(--primary-color);
+    color: #fff;
+    border-color: var(--primary-color);
+}
+
+.kvkk-box {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    padding: 14px;
+}
+
+.kvkk-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+    line-height: 1.5;
+}
+
+.kvkk-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-top: 3px;
+    cursor: pointer;
+    accent-color: #1a1a3e;
+    flex-shrink: 0;
+}
+
+.kvkk-label a {
+    color: #1a73e8;
+    text-decoration: underline;
+}
+
+.char-count {
+    display: block;
+    margin-top: 6px;
+    font-size: 12px;
+    color: #777;
+    text-align: right;
+}
+
+/* STAR RATING */
+.stars {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+    line-height: 1;
+}
+
+.stars .star {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    font-size: 34px;
+    line-height: 1;
+    color: #d9d9d9;
+    transition: transform 0.15s ease, color 0.15s ease;
+    pointer-events: auto;
+    background: transparent;
+    border: 0;
+    padding: 0 2px;
+}
+
+.stars .star:hover {
+    transform: translateY(-1px);
+}
+
+.stars .star input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    width: 1px;
+    height: 1px;
+}
+
+.stars .star span {
+    pointer-events: none;
+    display: inline-block;
+    color: #d9d9d9;
+    transition: color 0.15s ease;
+}
+
+.stars .star.selected span {
+    color: #f5b301 !important;
+}
+
+.stars .star:focus-within span {
+    color: #f5b301;
+}
 
 /* KVKK MODAL */
-.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
-.modal-content { background: #fff; padding: 24px; border-radius: var(--radius); max-width: 450px; width: 100%; text-align: center; box-shadow: var(--shadow); }
-.modal-content h3 { margin-bottom: 12px; }
-.modal-content p { font-size: 14px; line-height: 1.5; color: var(--text-light); margin-bottom: 20px; }
+.kvkk-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.72);
+    z-index: 9999;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.kvkk-content {
+    background: #fff;
+    max-width: 620px;
+    margin: 30px auto;
+    border-radius: 18px;
+    padding: 28px;
+    box-shadow: var(--shadow);
+}
+
+.kvkk-content h2 {
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.kvkk-content hr {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 14px 0 18px;
+}
+
+.kvkk-content p {
+    margin-bottom: 14px;
+    line-height: 1.55;
+}
+
+/* THANK YOU */
+.thank-you {
+    max-width: 980px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 22px;
+    box-shadow: var(--shadow);
+    padding: 60px 24px;
+    text-align: center;
+}
+
+.thank-icon {
+    font-size: 54px;
+    margin-bottom: 14px;
+}
+
+.thank-you h2 {
+    font-size: 30px;
+    margin-bottom: 10px;
+    color: #1f1f2d;
+}
+
+.thank-you p {
+    color: #555;
+    margin-bottom: 24px;
+}
 
 /* RESPONSIVE */
-@media (max-width: 600px) {
-  body { padding: 10px; }
-  .container { margin: 10px auto; }
-  .nav { flex-direction: column-reverse; }
-  .btn { width: 100%; }
-  .lang-btn { font-size: 12px; padding: 5px 8px; }
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    .header h1 {
+        font-size: 24px;
+    }
+
+    .section-title h2 {
+        font-size: 18px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .btn-group {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    .gender-btn span,
+    .yn-btn span {
+        min-width: 92px;
+    }
+
+    .stars .star {
+        font-size: 30px;
+    }
+
+    .thank-you h2 {
+        font-size: 24px;
+    }
 }
+```
+
+---
+
+# 3) `script.js`
+
+```javascript
+// ============================================================================
+// CONCORDIA CELES HOTEL - FRONTEND SCRIPT
+// CLEAN FINAL VERSION
+// KVKK MODAL + STAR RATING + SECTION NAVIGATION + FORM SUBMISSION
+// ============================================================================
+
+var GOOGLE_SCRIPT_URL = 'PASTE_YOUR_APPS_SCRIPT_EXEC_URL_HERE';
+// Buraya kendi çalışan /exec URL'nizi yazın.
+
+var currentSectionIndex = 0;
+
+// ---------------------------------------------------------------------------
+// FORM SECTIONS
+// ---------------------------------------------------------------------------
+function getSections() {
+    return Array.prototype.slice.call(document.querySelectorAll('.section'));
+}
+
+function updateProgressBar() {
+    var progressBar = document.getElementById('progressBar');
+    var progressText = document.getElementById('progressText');
+    var sections = getSections();
+
+    if (!progressBar || !progressText || sections.length < 2) return;
+
+    var percent = Math.round((currentSectionIndex / (sections.length - 1)) * 100);
+    if (percent < 0) percent = 0;
+    if (percent > 100) percent = 100;
+
+    progressBar.style.width = percent + '%';
+    progressText.textContent = percent + '%';
+}
+
+function showSection(index) {
+    var sections = getSections();
+    if (!sections.length) return;
+
+    if (index < 0) index = 0;
+    if (index >= sections.length) index = sections.length - 1;
+
+    for (var i = 0; i < sections.length; i++) {
+        sections[i].classList.toggle('active', i === index);
+    }
+
+    currentSectionIndex = index;
+    updateProgressBar();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function validateCurrentSection() {
+    var sections = getSections();
+    var active = sections[currentSectionIndex];
+    if (!active) return true;
+
+    // Required alanlar
+    var requiredFields = active.querySelectorAll('[required]');
+    var processedRadioNames = [];
+
+    for (var i = 0; i < requiredFields.length; i++) {
+        var el = requiredFields[i];
+
+        if (el.type === 'radio') {
+            if (processedRadioNames.indexOf(el.name) !== -1) continue;
+            processedRadioNames.push(el.name);
+
+            var group = active.querySelectorAll('input[name="' + el.name + '"]');
+            var checked = false;
+
+            for (var j = 0; j < group.length; j++) {
+                if (group[j].checked) {
+                    checked = true;
+                    break;
+                }
+            }
+
+            if (!checked) {
+                alert('Lütfen zorunlu alanları doldurun.');
+                return false;
+            }
+        } else if (el.type === 'checkbox') {
+            if (!el.checked) {
+                alert('Lütfen zorunlu alanları doldurun.');
+                return false;
+            }
+        } else if (!String(el.value || '').trim()) {
+            alert('Lütfen zorunlu alanları doldurun.');
+            el.focus();
+            return false;
+        }
+    }
+
+    // Yıldız puanları
+    var hiddenRatings = active.querySelectorAll('.rating-item input[type="hidden"][name]');
+    for (var k = 0; k < hiddenRatings.length; k++) {
+        if (!String(hiddenRatings[k].value || '').trim()) {
+            alert('Lütfen bu bölümdeki tüm soruları puanlayın.');
+            return false;
+        }
+    }
+
+    return true;
+}
+
+// Butonlar 1-based section number gönderiyor
+// nextSection(2) => section2
+// prevSection(1) => section1
+function nextSection(sectionNumber) {
+    if (typeof sectionNumber === 'undefined') {
+        sectionNumber = currentSectionIndex + 1;
+    }
+
+    if (!validateCurrentSection()) return;
+    showSection(sectionNumber - 1);
+}
+
+function prevSection(sectionNumber) {
+    if (typeof sectionNumber === 'undefined') {
+        sectionNumber = currentSectionIndex + 1;
+    }
+
+    showSection(Math.max(0, sectionNumber - 1));
+}
+
+// ---------------------------------------------------------------------------
+// KVKK MODAL
+// ---------------------------------------------------------------------------
+function showKvkk() {
+    var modal = document.getElementById('kvkkModal');
+    if (modal) modal.style.display = 'block';
+}
+
+function closeKvkk() {
+    var modal = document.getElementById('kvkkModal');
+    if (modal) modal.style.display = 'none';
+}
+
+window.addEventListener('click', function (e) {
+    var modal = document.getElementById('kvkkModal');
+    if (modal && e.target === modal) {
+        closeKvkk();
+    }
+});
+
+window.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+        closeKvkk();
+    }
+});
+
+// ---------------------------------------------------------------------------
+// STAR RATING
+// ---------------------------------------------------------------------------
+function syncStarContainer(container) {
+    var fieldName = container.getAttribute('data-name');
+    var hiddenInput = container.parentElement.querySelector('input[type="hidden"][name="' + fieldName + '"]');
+    var value = parseInt((hiddenInput && hiddenInput.value) ? hiddenInput.value : '0', 10) || 0;
+
+    var stars = container.querySelectorAll('.star');
+    for (var i = 0; i < stars.length; i++) {
+        var starValue = parseInt(stars[i].getAttribute('data-value'), 10);
+        stars[i].classList.toggle('selected', starValue <= value);
+    }
+}
+
+function initStars() {
+    var containers = document.querySelectorAll('.rating-item .stars[data-name]');
+
+    for (var c = 0; c < containers.length; c++) {
+        var container = containers[c];
+
+        if (container.getAttribute('data-ready') === '1') {
+            syncStarContainer(container);
+            continue;
+        }
+
+        container.setAttribute('data-ready', '1');
+
+        var fieldName = container.getAttribute('data-name');
+        var hiddenInput = container.parentElement.querySelector('input[type="hidden"][name="' + fieldName + '"]');
+
+        // 5 yıldız oluştur
+        var html = '';
+        for (var i = 5; i >= 1; i--) {
+            html += '<button type="button" class="star" data-value="' + i + '" aria-label="' + i + ' yıldız">★</button>';
+        }
+        container.innerHTML = html;
+
+        var stars = container.querySelectorAll('.star');
+
+        function setRating(value) {
+            if (hiddenInput) hiddenInput.value = String(value);
+            syncStarContainer(container);
+        }
+
+        for (var s = 0; s < stars.length; s++) {
+            (function (starEl) {
+                var value = parseInt(starEl.getAttribute('data-value'), 10);
+
+                starEl.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    setRating(value);
+                });
+
+                starEl.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setRating(value);
+                    }
+                });
+            })(stars[s]);
+        }
+
+        if (hiddenInput) hiddenInput.value = '';
+        syncStarContainer(container);
+    }
+}
+
+// ---------------------------------------------------------------------------
+// CHAR COUNTER
+// ---------------------------------------------------------------------------
+function initCharCounter() {
+    var textarea = document.querySelector('textarea[name="generalComments"]');
+    var counter = document.querySelector('.char-count');
+
+    if (!textarea || !counter) return;
+
+    function update() {
+        counter.textContent = textarea.value.length + ' / 500';
+    }
+
+    textarea.addEventListener('input', update);
+    update();
+}
+
+// ---------------------------------------------------------------------------
+// DATE HELPERS
+// ---------------------------------------------------------------------------
+function setDefaultDates() {
+    var checkIn = document.getElementById('checkInDate');
+    var checkOut = document.getElementById('checkOutDate');
+
+    if (!checkIn || !checkOut) return;
+
+    var today = new Date();
+    var yyyy = today.getFullYear();
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var dd = String(today.getDate()).padStart(2, '0');
+    var todayStr = yyyy + '-' + mm + '-' + dd;
+
+    checkIn.min = todayStr;
+    checkOut.min = todayStr;
+
+    checkIn.addEventListener('change', function () {
+        if (checkIn.value) {
+            checkOut.min = checkIn.value;
+            if (checkOut.value && checkOut.value < checkIn.value) {
+                checkOut.value = checkIn.value;
+            }
+        }
+    });
+}
+
+// ---------------------------------------------------------------------------
+// FORM SUBMISSION
+// ---------------------------------------------------------------------------
+function collectFormData(form) {
+    var fd = new FormData(form);
+    var data = {};
+
+    fd.forEach(function (value, key) {
+        data[key] = value;
+    });
+
+    var kvkk = document.getElementById('kvkkOnay');
+    data.kvkkOnay = kvkk ? kvkk.checked : false;
+
+    data.date = new Date().toLocaleString('tr-TR');
+
+    return data;
+}
+
+function validateEntireForm(form) {
+    if (!form) return false;
+
+    var requiredFields = form.querySelectorAll('[required]');
+    var processedRadioNames = [];
+
+    for (var i = 0; i < requiredFields.length; i++) {
+        var el = requiredFields[i];
+
+        if (el.type === 'radio') {
+            if (processedRadioNames.indexOf(el.name) !== -1) continue;
+            processedRadioNames.push(el.name);
+
+            var group = form.querySelectorAll('input[name="' + el.name + '"]');
+            var checked = false;
+
+            for (var j = 0; j < group.length; j++) {
+                if (group[j].checked) {
+                    checked = true;
+                    break;
+                }
+            }
+
+            if (!checked) {
+                alert('Lütfen zorunlu alanları doldurun.');
+                return false;
+            }
+        } else if (el.type === 'checkbox') {
+            if (!el.checked) {
+                alert('Lütfen zorunlu alanları doldurun.');
+                return false;
+            }
+        } else if (!String(el.value || '').trim()) {
+            alert('Lütfen zorunlu alanları doldurun.');
+            el.focus();
+            return false;
+        }
+    }
+
+    // Tüm yıldız alanları dolu mu?
+    var hiddenRatings = form.querySelectorAll('.rating-item input[type="hidden"][name]');
+    for (var k = 0; k < hiddenRatings.length; k++) {
+        if (!String(hiddenRatings[k].value || '').trim()) {
+            alert('Lütfen tüm departman sorularını puanlayın.');
+            return false;
+        }
+    }
+
+    return true;
+}
+
+async function submitSurvey(form) {
+    var data = collectFormData(form);
+
+    try {
+        var body = new URLSearchParams();
+        body.append('data', JSON.stringify(data));
+
+        var res = await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            body: body
+        });
+
+        if (!res.ok) {
+            throw new Error('HTTP ' + res.status);
+        }
+
+        var json = await res.json();
+
+        if (json.status === 'success') {
+            showThankYou();
+        } else {
+            alert('Gönderim hatası: ' + (json.message || 'Bilinmeyen hata'));
+        }
+    } catch (err) {
+        console.error(err);
+        alert('Anket gönderilemedi. Lütfen tekrar deneyin.');
+    }
+}
+
+function showThankYou() {
+    var survey = document.getElementById('surveyForm');
+    var thank = document.getElementById('thankYou');
+
+    if (survey) survey.style.display = 'none';
+    if (thank) thank.style.display = 'block';
+}
+
+function resetForm() {
+    var form = document.getElementById('mainForm');
+    var thank = document.getElementById('thankYou');
+    var survey = document.getElementById('surveyForm');
+
+    if (form) form.reset();
+    if (thank) thank.style.display = 'none';
+    if (survey) survey.style.display = 'block';
+
+    currentSectionIndex = 0;
+    showSection(0);
+    initStars();
+    initCharCounter();
+}
+
+// ---------------------------------------------------------------------------
+// APP BUILD
+// ---------------------------------------------------------------------------
+function q(name, label) {
+    return ''
+        + '<div class="rating-item">'
+        + '<label>' + label + '</label>'
+        + '<div class="stars" data-name="' + name + '"></div>'
+        + '<input type="hidden" name="' + name + '">'
+        + '</div>';
+}
+
+function renderApp() {
+    var html = '';
+
+    html += '<div class="container">';
+    html += '  <div class="survey-form" id="surveyForm">';
+
+    html += '    <div class="header">';
+    html += '      <img src="logo.png?v=1" alt="Hotel Logo" style="width:120px;margin-bottom:10px;">';
+    html += '      <h1>Concordia Celes Hotel</h1>';
+    html += '      <p>Misafir Memnuniyet Anketi</p>';
+    html += '    </div>';
+
+    html += '    <div class="progress-container">';
+    html += '      <div class="progress-bar" id="progressBar"><span id="progressText">0%</span></div>';
+    html += '    </div>';
+
+    html += '    <form id="mainForm" novalidate>';
+
+    // SECTION 1
+    html += '      <div class="section active" id="section1">';
+    html += '        <div class="section-title"><span class="section-icon">👤</span><h2>GENEL BİLGİLER</h2></div>';
+
+    html += '        <div class="form-group"><label>Ad Soyad *</label><input type="text" name="fullName" required></div>';
+
+    html += '        <div class="form-group">';
+    html += '          <label>Cinsiyetiniz *</label>';
+    html += '          <div class="gender-buttons">';
+    html += '            <label class="gender-btn"><input type="radio" name="gender" value="Kadın" required><span>👩 Kadın</span></label>';
+    html += '            <label class="gender-btn"><input type="radio" name="gender" value="Erkek"><span>👨 Erkek</span></label>';
+    html += '          </div>';
+    html += '        </div>';
+
+    html += '        <div class="form-group">';
+    html += '          <label>Uyruğu *</label>';
+    html += '          <select name="nationality" required>';
+    html += '            <option value="">Seçiniz...</option>';
+    html += '            <option value="Türkiye">🇹🇷 Türkiye</option>';
+    html += '            <option value="Germany">🇩🇪 Almanya</option>';
+    html += '            <option value="United Kingdom">🇬🇧 İngiltere</option>';
+    html += '            <option value="Russia">🇷🇺 Rusya</option>';
+    html += '            <option value="Poland">🇵🇱 Polonya</option>';
+    html += '            <option value="Romania">🇷🇴 Romanya</option>';
+    html += '            <option value="France">🇫🇷 Fransa</option>';
+    html += '            <option value="Netherlands">🇳🇱 Hollanda</option>';
+    html += '            <option value="Italy">🇮🇹 İtalya</option>';
+    html += '            <option value="USA">🇺🇸 ABD</option>';
+    html += '            <option value="Other">Diğer</option>';
+    html += '          </select>';
+    html += '        </div>';
+
+    html += '        <div class="form-group"><label>Oda Numarası *</label><input type="text" name="roomNumber" required placeholder="Örn: 305"></div>';
+
+    html += '        <div class="form-row">';
+    html += '          <div class="form-group"><label>Giriş Tarihi *</label><input type="date" name="checkIn" id="checkInDate" required></div>';
+    html += '          <div class="form-group"><label>Çıkış Tarihi *</label><input type="date" name="checkOut" id="checkOutDate" required></div>';
+    html += '        </div>';
+
+    html += '        <div class="form-group"><label>Mail Adresi</label><input type="email" name="email" placeholder="ornek@email.com"></div>';
+
+    html += '        <div class="form-group">';
+    html += '          <div class="kvkk-box">';
+    html += '            <label class="kvkk-label">';
+    html += '              <input type="checkbox" name="kvkkOnay" id="kvkkOnay">';
+    html += '              <span>Kişisel verilerimin Concordia Celes Hotel tarafından misafir memnuniyeti amacıyla işlenmesine onay veriyorum. <a href="#" onclick="showKvkk(); return false;">📄 KVKK Aydınlatma Metni</a></span>';
+    html += '            </label>';
+    html += '          </div>';
+    html += '        </div>';
+
+    html += '        <div class="btn-group"><div></div><button type="button" class="btn btn-next" onclick="nextSection(2)">İleri →</button></div>';
+    html += '      </div>';
+
+    // SECTION 2
+    html += '      <div class="section" id="section2">';
+    html += '        <div class="section-title"><span class="section-icon">🛎️</span><h2>ÖN BÜRO RESEPSİYON</h2></div>';
+    html += q('welcomeGreeting', 'Giriş Karşılama');
+    html += q('checkInProcess', 'Check-In İşlemleri');
+    html += q('facilityInfo', 'Tesis Hakkında Bilgilendirme');
+    html += q('frontDeskCare', 'Personelin İlgi ve Nezaketi');
+    html += q('bellboyService', 'Bellboy Hizmetleri');
+    html += '        <div class="btn-group"><button type="button" class="btn btn-prev" onclick="prevSection(1)">← Geri</button><button type="button" class="btn btn-next" onclick="nextSection(3)">İleri →</button></div>';
+    html += '      </div>';
+
+    // SECTION 3
+    html += '      <div class="section" id="section3">';
+    html += '        <div class="section-title"><span class="section-icon">🤝</span><h2>GUEST RELATION</h2></div>';
+    html += q('grWelcomeQuality', 'Karşılama Kalitesi');
+    html += q('problemSolving', 'Sorunları Çözüme Kavuşturma');
+    html += q('guestFollowUp', 'Misafir Takibi');
+    html += '        <div class="btn-group"><button type="button" class="btn btn-prev" onclick="prevSection(2)">← Geri</button><button type="button" class="btn btn-next" onclick="nextSection(4)">İleri →</button></div>';
+    html += '      </div>';
+
+    // SECTION 4
+    html += '      <div class="section" id="section4">';
+    html += '        <div class="section-title"><span class="section-icon">🧹</span><h2>KAT HİZMETLERİ</h2></div>';
+    html += q('initialRoomCleaning', 'İlk Varışınızda Oda Temizliği');
+    html += q('roomAppearance', 'Oda Fiziki Görünümü ve Konforu');
+    html += q('dailyRoomCleaning', 'Konaklama Süresince Oda Temizliği ve Düzeni');
+    html += q('minibarService', 'Minibar Hizmeti');
+    html += q('publicAreaCleaning', 'Genel Alan Temizliği');
+    html += q('beachPoolCleaning', 'Sahil ve Havuz Çevre Temizliği');
+    html += q('housekeepingStaffCare', 'Personelin İlgi ve Nezaketi');
+    html += '        <div class="btn-group"><button type="button" class="btn btn-prev" onclick="prevSection(3)">← Geri</button><button type="button" class="btn btn-next" onclick="nextSection(5)">İleri →</button></div>';
+    html += '      </div>';
+
+    // SECTION 5
+    html += '      <div class="section" id="section5">';
+    html += '        <div class="section-title"><span class="section-icon">🍽️</span><h2>MUTFAK</h2></div>';
+    html += q('breakfastVariety', 'Kahvaltı Büfesi Çeşitliliği');
+    html += q('breakfastQuality', 'Kahvaltı Büfesi Sunumu ve Kalitesi');
+    html += q('lunchVariety', 'Öğle Yemeği Büfesi Çeşitliliği');
+    html += q('lunchQuality', 'Öğle Yemeği Sunumu ve Kalitesi');
+    html += q('dinnerVariety', 'Akşam Yemeği Büfesi Çeşitliliği');
+    html += q('dinnerQuality', 'Akşam Yemeği Sunumu ve Kalitesi');
+    html += q('alacarteQuality', 'A La Carte Restaurant Yemeği Sunumu ve Kalitesi');
+    html += q('kitchenHygiene', 'Mutfağın Hijyeni ve Temizliği');
+    html += q('foodStaffCare', 'Personelin İlgi ve Nezaketi');
+    html += '        <div class="btn-group"><button type="button" class="btn btn-prev" onclick="prevSection(4)">← Geri</button><button type="button" class="btn btn-next" onclick="nextSection(6)">İleri →</button></div>';
+    html += '      </div>';
+
+    // SECTION 6
+    html += '      <div class="section" id="section6">';
+    html += '        <div class="section-title"><span class="section-icon">🍸</span><h2>BARLAR</h2></div>';
+    html += q('poolBarQuality', 'Pool Bar Servis Kalitesi');
+    html += q('lobbyBarQuality', 'Lobby Bar Servis Kalitesi');
+    html += q('snackBarQuality', 'Snack Bar Servis Kalitesi');
+    html += q('drinkQuality', 'İçki Kalitesi ve Sunumu');
+    html += q('barHygiene', 'Barların Hijyen ve Temizliği');
+    html += q('barStaffCare', 'Personelin İlgi ve Nezaketi');
+    html += '        <div class="btn-group"><button type="button" class="btn btn-prev" onclick="prevSection(5)">← Geri</button><button type="button" class="btn btn-next" onclick="nextSection(7)">İleri →</button></div>';
+    html += '      </div>';
+
+    // SECTION 7
+    html += '      <div class="section" id="section7">';
+    html += '        <div class="section-title"><span class="section-icon">🍴</span><h2>RESTAURANT HİZMETLERİ</h2></div>';
+    html += q('restaurantLayout', 'Restaurant Düzeni ve Kalitesi');
+    html += q('restaurantCapacity', 'Restaurant Yer Yeterliliği');
+    html += q('restaurantHygiene', 'Restaurant Hijyen ve Temizliği');
+    html += q('snackbarRestaurant', 'Snackbar Restaurant Hizmeti');
+    html += q('alacarteRestaurant', 'Alacarte Restaurant Hizmeti ve Personel İlgisi');
+    html += q('restaurantStaffCare', 'Personelin İlgi ve Nezaketi');
+    html += '        <div class="btn-group"><button type="button" class="btn btn-prev" onclick="prevSection(6)">← Geri</button><button type="button" class="btn btn-next" onclick="nextSection(8)">İleri →</button></div>';
+    html += '      </div>';
+
+    // SECTION 8
+    html += '      <div class="section" id="section8">';
+    html += '        <div class="section-title"><span class="section-icon">🔧</span><h2>TEKNİK SERVİS</h2></div>';
+    html += q('roomTechnicalSystems', 'Oda Teknik Sistemleri');
+    html += q('maintenanceResponse', 'Arıza Bildirimi ve Giderme');
+    html += q('environmentLighting', 'Çevre Aydınlatma ve Düzeni');
+    html += q('poolWaterCleaning', 'Havuz Suyu Temizliği');
+    html += q('technicalStaffCare', 'Personelin İlgi ve Nezaketi');
+    html += '        <div class="btn-group"><button type="button" class="btn btn-prev" onclick="prevSection(7)">← Geri</button><button type="button" class="btn btn-next" onclick="nextSection(9)">İleri →</button></div>';
+    html += '      </div>';
+
+    // SECTION 9
+    html += '      <div class="section" id="section9">';
+    html += '        <div class="section-title"><span class="section-icon">🎭</span><h2>EĞLENCE HİZMETLERİ</h2></div>';
+    html += q('daytimeActivities', 'Animasyon Ekibi ile Gündüz Aktiviteleri');
+    html += q('sportsAreas', 'Aktivite ve Spor Alanları ve Ekipmanları');
+    html += q('eveningShows', 'Akşam Aktiviteleri ve Showlar');
+    html += q('miniclubActivities', 'Miniclub Aktiviteleri');
+    html += q('entertainmentStaffCare', 'Personelin İlgi ve Nezaketi');
+    html += '        <div class="btn-group"><button type="button" class="btn btn-prev" onclick="prevSection(8)">← Geri</button><button type="button" class="btn btn-next" onclick="nextSection(10)">İleri →</button></div>';
+    html += '      </div>';
+
+    // SECTION 10
+    html += '      <div class="section" id="section10">';
+    html += '        <div class="section-title"><span class="section-icon">⭐</span><h2>DİĞER HİZMETLER</h2></div>';
+    html += q('landscaping', 'Genel Düzenleme / Peyzaj');
+    html += q('spaServices', 'Sauna-Hamam Hizmetleri');
+    html += q('shopBehavior', 'Hotel Genel Esnaf Davranışları');
+    html += q('priceQuality', 'Fiyat Kalitesi ve İlişkisi');
+    html += '        <div class="btn-group"><button type="button" class="btn btn-prev" onclick="prevSection(9)">← Geri</button><button type="button" class="btn btn-next" onclick="nextSection(11)">İleri →</button></div>';
+    html += '      </div>';
+
+    // SECTION 11
+    html += '      <div class="section" id="section11">';
+    html += '        <div class="section-title"><span class="section-icon">📝</span><h2>ÖNERİLERİNİZ</h2></div>';
+
+    html += '        <div class="form-group">';
+    html += '          <label>Otelimizde Daha Önce Bulundunuz Mu? *</label>';
+    html += '          <div class="yes-no-buttons">';
+    html += '            <label class="yn-btn"><input type="radio" name="previousStay" value="Evet" required><span>Evet</span></label>';
+    html += '            <label class="yn-btn"><input type="radio" name="previousStay" value="Hayır"><span>Hayır</span></label>';
+    html += '          </div>';
+    html += '        </div>';
+
+    html += '        <div class="form-group"><label>Hizmetinden Dolayı Övgüye Bulunduğunuz Personelin İsmi</label><input type="text" name="praisedStaff"></div>';
+
+    html += '        <div class="form-group"><label>Genel Düşünce ve Yorumlarınız (0-500 karakter)</label><textarea name="generalComments" maxlength="500" rows="4"></textarea><small class="char-count">0 / 500</small></div>';
+
+    html += '        <div class="form-group">';
+    html += '          <label>Tekrar Gelir Misiniz? *</label>';
+    html += '          <div class="yes-no-buttons">';
+    html += '            <label class="yn-btn"><input type="radio" name="willReturn" value="Evet" required><span>Evet</span></label>';
+    html += '            <label class="yn-btn"><input type="radio" name="willReturn" value="Hayır"><span>Hayır</span></label>';
+    html += '          </div>';
+    html += '        </div>';
+
+    html += '        <div class="form-group">';
+    html += '          <label>Bizi Çevrenize Tavsiye Eder Misiniz? *</label>';
+    html += '          <div class="yes-no-buttons">';
+    html += '            <label class="yn-btn"><input type="radio" name="wouldRecommend" value="Evet" required><span>Evet</span></label>';
+    html += '            <label class="yn-btn"><input type="radio" name="wouldRecommend" value="Hayır"><span>Hayır</span></label>';
+    html += '          </div>';
+    html += '        </div>';
+
+    html += '        <div class="btn-group"><button type="button" class="btn btn-prev" onclick="prevSection(10)">← Geri</button><button type="submit" class="btn btn-submit">✅ Anketi Gönder</button></div>';
+    html += '      </div>';
+
+    html += '    </form>';
+    html += '  </div>';
+    html += '</div>';
+
+    document.getElementById('app').innerHTML = html;
+
+    // Events
+    var form = document.getElementById('mainForm');
+    if (form) {
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (!validateEntireForm(form)) return;
+            submitSurvey(form);
+        });
+    }
+
+    initStars();
+    initCharCounter();
+    setDefaultDates();
+    showSection(0);
+}
+
+// ---------------------------------------------------------------------------
+// DOM READY
+// ---------------------------------------------------------------------------
+document.addEventListener('DOMContentLoaded', function () {
+    renderApp();
+});
+
+// ---------------------------------------------------------------------------
+// GLOBAL FUNCTIONS
+// ---------------------------------------------------------------------------
+window.nextSection = nextSection;
+window.prevSection = prevSection;
+window.showKvkk = showKvkk;
+window.closeKvkk = closeKvkk;
+window.resetForm = resetForm;
+window.initStars = initStars;
+```
+
+---
+
+# Son yapmanız gereken
+1. **`index.html`** içeriğini tamamen değiştirin
+2. **`style.css`** içeriğini tamamen değiştirin
+3. **`script.js`** içeriğini tamamen değiştirin
+4. `script.js` içindeki şu satırı kendi çalışan Apps Script URL’nizle değiştirin:
+```javascript
+var GOOGLE_SCRIPT_URL = 'PASTE_YOUR_APPS_SCRIPT_EXEC_URL_HERE';
+```
+5. Tarayıcıda **Ctrl + F5**
+6. Gerekirse GitHub’a commit/push
+
+---
+
+# Önemli not
+Bu paket:
+- `translations.js` kullanmıyor
+- eski inline scriptleri istemiyor
+- yıldızları button tabanlı çalıştırıyor
+- KVKK’yı sadece modal yapıyor
+- bölüm geçişlerini sadeleştiriyor
+
+---
+
+İsterseniz bir sonraki mesajda size **Apps Script `Code.gs` tarafını da bu pakete uyumlu son sürüm** olarak tek parça vereyim.
