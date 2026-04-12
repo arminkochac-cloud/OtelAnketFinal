@@ -346,28 +346,3 @@ textarea {
 .stars .star span {
     pointer-events: none;
 }
-/* ⭐ YILDIZ PUANLAMA - YUVARLAKLARI GİZLE & YILDIZLARI AKTİFLEŞTİR */
-.stars {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  justify-content: flex-start;
-}
-.stars input[type="radio"] {
-  display: none !important; /* Küçük yuvarlakları tamamen kaldır */
-}
-.stars .star {
-  font-size: 32px;
-  color: #d1d5db; /* Seçili değilken gri */
-  cursor: pointer;
-  user-select: none;
-  transition: color 0.2s, transform 0.2s;
-  line-height: 1;
-}
-.stars .star:hover {
-  transform: scale(1.15);
-  color: #fbbf24; /* Hover'da açık sarı */
-}
-.stars .star.active {
-  color: #f59e0b !important; /* Seçilince koyu sarı */
-}
