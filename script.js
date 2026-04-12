@@ -146,49 +146,46 @@ function syncStarContainer(container) {
 }
 
 function initStars() {
-    var containers = document.querySelectorAll('.rating-item .stars[data-name]');
-
-    for (var c = 0; c < containers.length; c++) {
-        var container = containers[c];
-
-        if (container.dataset.ready === '1') {
-            syncStarContainer(container);
-            continue;
-        }
-
+    document.querySelectorAll('.rating-item .stars[data-name]').forEach(container => {
+        if (container.dataset.ready === '1') return;
         container.dataset.ready = '1';
 
-        var fieldName = container.getAttribute('data-name');
-        var hiddenInput = container.parentElement.querySelector('input[type="hidden"][name="' + fieldName + '"]');
+        const fieldName = container.getAttribute('data-name');
+        const hiddenInput = container.parentElement.querySelector(
+            'input[type="hidden"][name="' + fieldName + '"]'
+        );
 
         // 5 yıldız oluştur
-        var html = '';
-        for (var i = 1; i <= 5; i++) {
-            html += '<span class="star" data-value="' + i + '" role="button" tabindex="0" aria-label="' + i + ' yıldız">★</span>';
+        let html = '';
+        for (let i = 1; i <= 5; i++) {
+            html += '<button type="button" class="star" data-value="' + i + '" aria-label="' + i + ' yıldız">★</button>';
         }
         container.innerHTML = html;
 
-        var stars = Array.from(container.querySelectorAll('.star'));
+        const stars = Array.from(container.querySelectorAll('.star'));
 
         function setRating(value) {
             if (hiddenInput) hiddenInput.value = String(value);
-            syncStarContainer(container);
+
+            stars.forEach(function (star) {
+                const starValue = parseInt(star.getAttribute('data-value'), 10);
+                star.classList.toggle('selected', starValue <= value);
+            });
         }
 
         stars.forEach(function (star) {
-            var value = parseInt(star.getAttribute('data-value'), 10);
+            const value = parseInt(star.getAttribute('data-value'), 10);
 
-            star.addEventListener('click', function () {
+            star.addEventListener('click', function (e) {
+                e.preventDefault();
                 setRating(value);
             });
-
-            star.addEventListener('keydown', function (e) {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    setRating(value);
-                }
-            });
         });
+
+        // başlangıçta boş olsun
+        if (hiddenInput) hiddenInput.value = '';
+    });
+}
 
         syncStarContainer(container);
     }
