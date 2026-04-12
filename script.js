@@ -1,41 +1,38 @@
 // ============================================================================
 // CONCORDIA CELES HOTEL - FRONTEND SCRIPT
-// FINAL CLEAN VERSION
+// CLEAN FINAL VERSION
 // KVKK MODAL + STAR RATING + SECTION NAVIGATION + FORM SUBMISSION
 // ============================================================================
 
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxQXQnpJIwj4vvKbSrEVJUmKWGQxJyJiKls2m-hLbMdHpD0cBSewzGGYPe3gtkhBWGR/exec';
-// Eğer kendi /exec linkiniz farklıysa bu satırı değiştirin.
+const GOOGLE_SCRIPT_URL = 'PASTE_YOUR_APPS_SCRIPT_EXEC_URL_HERE';
+// Yukarıya kendi çalışan /exec URL'nizi koyun.
 
 let currentSectionIndex = 0;
 
-// ---------------------------------------------------------------------------
-// SECTIONS
-// ---------------------------------------------------------------------------
 function getSections() {
     return Array.from(document.querySelectorAll('.section'));
 }
 
 function updateProgressBar() {
-    const progressBar = document.getElementById('progressBar');
-    const progressText = document.getElementById('progressText');
-    const sections = getSections();
+    var progressBar = document.getElementById('progressBar');
+    var progressText = document.getElementById('progressText');
+    var sections = getSections();
 
     if (!progressBar || !progressText || sections.length < 2) return;
 
-    const percent = Math.round(((currentSectionIndex + 1) / sections.length) * 100);
+    var percent = Math.round(((currentSectionIndex + 1) / sections.length) * 100);
     progressBar.style.width = percent + '%';
     progressText.textContent = percent + '%';
 }
 
 function showSection(index) {
-    const sections = getSections();
+    var sections = getSections();
     if (!sections.length) return;
 
     if (index < 0) index = 0;
     if (index >= sections.length) index = sections.length - 1;
 
-    sections.forEach((sec, i) => {
+    sections.forEach(function (sec, i) {
         sec.classList.toggle('active', i === index);
     });
 
@@ -45,40 +42,38 @@ function showSection(index) {
 }
 
 function validateCurrentSection() {
-    const sections = getSections();
-    const active = sections[currentSectionIndex];
+    var sections = getSections();
+    var active = sections[currentSectionIndex];
     if (!active) return true;
 
-    // Sadece aktif bölümdeki görünür required alanları kontrol et
-    const requiredFields = Array.from(active.querySelectorAll('[required]')).filter(el => {
-        return el.offsetParent !== null; // görünür mü?
-    });
+    // Aktif bölümdeki required alanlar
+    var requiredFields = active.querySelectorAll('[required]');
+    for (var i = 0; i < requiredFields.length; i++) {
+        var el = requiredFields[i];
 
-    for (const el of requiredFields) {
         if (el.type === 'radio') {
-            const group = active.querySelectorAll(`input[name="${el.name}"]`);
-            const checked = Array.from(group).some(r => r.checked);
-
+            var group = active.querySelectorAll('input[name="' + el.name + '"]');
+            var checked = Array.from(group).some(function (r) { return r.checked; });
             if (!checked) {
-                alert(`Lütfen "${el.name}" alanını doldurun.`);
+                alert('Lütfen zorunlu alanları doldurun.');
                 return false;
             }
         } else if (el.type === 'checkbox') {
             if (!el.checked) {
-                alert('Lütfen KVKK onayını işaretleyin.');
+                alert('Lütfen zorunlu alanları doldurun.');
                 return false;
             }
         } else if (!String(el.value || '').trim()) {
-            alert(`Lütfen "${el.name}" alanını doldurun.`);
+            alert('Lütfen zorunlu alanları doldurun.');
             el.focus();
             return false;
         }
     }
 
-    // Yıldız puanlarını kontrol et
-    const hiddenRatings = Array.from(active.querySelectorAll('.rating-item input[type="hidden"][name]'));
-    for (const hidden of hiddenRatings) {
-        if (!String(hidden.value || '').trim()) {
+    // Sadece aktif bölümdeki yıldızlar dolu mu?
+    var hiddenRatings = active.querySelectorAll('.rating-item input[type="hidden"][name]');
+    for (var j = 0; j < hiddenRatings.length; j++) {
+        if (!String(hiddenRatings[j].value || '').trim()) {
             alert('Lütfen bu bölümdeki tüm soruları puanlayın.');
             return false;
         }
@@ -87,15 +82,23 @@ function validateCurrentSection() {
     return true;
 }
 
-// HTML’de butonlar section numarası gönderiyor:
+// HTML'de butonlar section numarası gönderiyor:
 // nextSection(1) => section2
 // nextSection(2) => section3
-function nextSection(sectionNumber = currentSectionIndex + 1) {
+function nextSection(sectionNumber) {
+    if (typeof sectionNumber === 'undefined') {
+        sectionNumber = currentSectionIndex + 1;
+    }
+
     if (!validateCurrentSection()) return;
     showSection(sectionNumber);
 }
 
-function prevSection(sectionNumber = currentSectionIndex + 1) {
+function prevSection(sectionNumber) {
+    if (typeof sectionNumber === 'undefined') {
+        sectionNumber = currentSectionIndex + 1;
+    }
+
     showSection(Math.max(0, sectionNumber - 2));
 }
 
@@ -103,23 +106,22 @@ function prevSection(sectionNumber = currentSectionIndex + 1) {
 // KVKK MODAL
 // ---------------------------------------------------------------------------
 function showKvkk() {
-    const modal = document.getElementById('kvkkModal');
+    var modal = document.getElementById('kvkkModal');
     if (modal) modal.style.display = 'block';
 }
 
 function closeKvkk() {
-    const modal = document.getElementById('kvkkModal');
+    var modal = document.getElementById('kvkkModal');
     if (modal) modal.style.display = 'none';
 }
 
 window.addEventListener('click', function (e) {
-    const modal = document.getElementById('kvkkModal');
-    if (e.target === modal) {
+    var modal = document.getElementById('kvkkModal');
+    if (modal && e.target === modal) {
         closeKvkk();
     }
 });
 
-// ESC ile kapat
 window.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
         closeKvkk();
@@ -132,52 +134,55 @@ window.addEventListener('keydown', function (e) {
 // KVKK kısmına uygulanmaz
 // ---------------------------------------------------------------------------
 function syncStarContainer(container) {
-    const fieldName = container.getAttribute('data-name');
-    const hiddenInput = container.parentElement.querySelector(`input[type="hidden"][name="${fieldName}"]`);
-    const value = parseInt((hiddenInput && hiddenInput.value) ? hiddenInput.value : '0', 10) || 0;
+    var fieldName = container.getAttribute('data-name');
+    var hiddenInput = container.parentElement.querySelector('input[type="hidden"][name="' + fieldName + '"]');
+    var value = parseInt((hiddenInput && hiddenInput.value) ? hiddenInput.value : '0', 10) || 0;
 
-    container.querySelectorAll('.star').forEach(label => {
-        const starValue = parseInt(label.getAttribute('data-value'), 10);
-        label.classList.toggle('selected', starValue <= value);
-    });
+    var labels = container.querySelectorAll('.star');
+    for (var i = 0; i < labels.length; i++) {
+        var starValue = parseInt(labels[i].getAttribute('data-value'), 10);
+        labels[i].classList.toggle('selected', starValue <= value);
+    }
 }
 
 function initStars() {
-    document.querySelectorAll('.rating-item .stars[data-name]').forEach(container => {
+    var containers = document.querySelectorAll('.rating-item .stars[data-name]');
+
+    for (var c = 0; c < containers.length; c++) {
+        var container = containers[c];
+
         if (container.dataset.ready === '1') {
             syncStarContainer(container);
-            return;
+            continue;
         }
 
         container.dataset.ready = '1';
 
-        const fieldName = container.getAttribute('data-name');
-        const hiddenInput = container.parentElement.querySelector(`input[type="hidden"][name="${fieldName}"]`);
+        var fieldName = container.getAttribute('data-name');
+        var hiddenInput = container.parentElement.querySelector('input[type="hidden"][name="' + fieldName + '"]');
 
-        // 1-5 yıldız oluştur
-        let html = '';
-        for (let i = 1; i <= 5; i++) {
-            html += `
-                <span class="star" data-value="${i}" role="button" tabindex="0" aria-label="${i} yıldız">
-                    ★
-                </span>
-            `;
+        // 5 yıldız oluştur
+        var html = '';
+        for (var i = 1; i <= 5; i++) {
+            html += '<span class="star" data-value="' + i + '" role="button" tabindex="0" aria-label="' + i + ' yıldız">★</span>';
         }
         container.innerHTML = html;
 
-        const stars = Array.from(container.querySelectorAll('.star'));
+        var stars = Array.from(container.querySelectorAll('.star'));
 
         function setRating(value) {
             if (hiddenInput) hiddenInput.value = String(value);
             syncStarContainer(container);
         }
 
-        stars.forEach(star => {
-            const value = parseInt(star.getAttribute('data-value'), 10);
+        stars.forEach(function (star) {
+            var value = parseInt(star.getAttribute('data-value'), 10);
 
-            star.addEventListener('click', () => setRating(value));
+            star.addEventListener('click', function () {
+                setRating(value);
+            });
 
-            star.addEventListener('keydown', (e) => {
+            star.addEventListener('keydown', function (e) {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
                     setRating(value);
@@ -186,21 +191,21 @@ function initStars() {
         });
 
         syncStarContainer(container);
-    });
+    }
 }
 
 // ---------------------------------------------------------------------------
 // CHAR COUNTER
 // ---------------------------------------------------------------------------
 function initCharCounter() {
-    const textarea = document.querySelector('textarea[name="generalComments"]');
-    const counter = document.querySelector('.char-count');
+    var textarea = document.querySelector('textarea[name="generalComments"]');
+    var counter = document.querySelector('.char-count');
 
     if (!textarea || !counter) return;
 
-    const update = () => {
-        counter.textContent = `${textarea.value.length} / 500`;
-    };
+    function update() {
+        counter.textContent = textarea.value.length + ' / 500';
+    }
 
     textarea.addEventListener('input', update);
     update();
@@ -210,21 +215,21 @@ function initCharCounter() {
 // DATES
 // ---------------------------------------------------------------------------
 function setDefaultDates() {
-    const checkIn = document.getElementById('checkInDate');
-    const checkOut = document.getElementById('checkOutDate');
+    var checkIn = document.getElementById('checkInDate');
+    var checkOut = document.getElementById('checkOutDate');
 
     if (!checkIn || !checkOut) return;
 
-    const today = new Date();
-    const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, '0');
-    const dd = String(today.getDate()).padStart(2, '0');
-    const todayStr = `${yyyy}-${mm}-${dd}`;
+    var today = new Date();
+    var yyyy = today.getFullYear();
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var dd = String(today.getDate()).padStart(2, '0');
+    var todayStr = yyyy + '-' + mm + '-' + dd;
 
     checkIn.min = todayStr;
     checkOut.min = todayStr;
 
-    checkIn.addEventListener('change', () => {
+    checkIn.addEventListener('change', function () {
         if (checkIn.value) {
             checkOut.min = checkIn.value;
             if (checkOut.value && checkOut.value < checkIn.value) {
@@ -238,17 +243,16 @@ function setDefaultDates() {
 // FORM DATA / SUBMISSION
 // ---------------------------------------------------------------------------
 function collectFormData(form) {
-    const fd = new FormData(form);
-    const data = {};
+    var fd = new FormData(form);
+    var data = {};
 
-    for (const [key, value] of fd.entries()) {
+    fd.forEach(function (value, key) {
         data[key] = value;
-    }
+    });
 
-    const kvkk = document.getElementById('kvkkOnay');
+    var kvkk = document.getElementById('kvkkOnay');
     data.kvkkOnay = kvkk ? kvkk.checked : false;
 
-    // İsteğe bağlı: submit sırasında otomatik tarih
     data.date = new Date().toLocaleString('tr-TR');
 
     return data;
@@ -257,17 +261,18 @@ function collectFormData(form) {
 function validateEntireForm(form) {
     if (!form) return false;
 
-    // Tüm required alanlar
-    const requiredFields = form.querySelectorAll('[required]');
-    const processedRadioNames = new Set();
+    var requiredFields = form.querySelectorAll('[required]');
+    var processedRadioNames = new Set();
 
-    for (const el of requiredFields) {
+    for (var i = 0; i < requiredFields.length; i++) {
+        var el = requiredFields[i];
+
         if (el.type === 'radio') {
             if (processedRadioNames.has(el.name)) continue;
             processedRadioNames.add(el.name);
 
-            const group = form.querySelectorAll(`input[name="${el.name}"]`);
-            const checked = Array.from(group).some(r => r.checked);
+            var group = form.querySelectorAll('input[name="' + el.name + '"]');
+            var checked = Array.from(group).some(function (r) { return r.checked; });
             if (!checked) {
                 alert('Lütfen zorunlu alanları doldurun.');
                 return false;
@@ -285,9 +290,9 @@ function validateEntireForm(form) {
     }
 
     // Tüm yıldız alanları dolu mu?
-    const hiddenRatings = form.querySelectorAll('.rating-item input[type="hidden"][name]');
-    for (const hidden of hiddenRatings) {
-        if (!String(hidden.value || '').trim()) {
+    var hiddenRatings = form.querySelectorAll('.rating-item input[type="hidden"][name]');
+    for (var j = 0; j < hiddenRatings.length; j++) {
+        if (!String(hiddenRatings[j].value || '').trim()) {
             alert('Lütfen tüm departman sorularını puanlayın.');
             return false;
         }
@@ -297,23 +302,23 @@ function validateEntireForm(form) {
 }
 
 async function submitSurvey(form) {
-    const data = collectFormData(form);
+    var data = collectFormData(form);
 
-    // KVKK zorunlu olsun istiyorsanız burayı açın:
+    // KVKK zorunlu olsun istiyorsanız açın:
     // if (!data.kvkkOnay) {
     //     alert('KVKK onayı gereklidir.');
     //     return;
     // }
 
     try {
-        const url = GOOGLE_SCRIPT_URL + '?data=' + encodeURIComponent(JSON.stringify(data));
-        const res = await fetch(url, { method: 'GET', cache: 'no-store' });
+        var url = GOOGLE_SCRIPT_URL + '?data=' + encodeURIComponent(JSON.stringify(data));
+        var res = await fetch(url, { method: 'GET', cache: 'no-store' });
 
         if (!res.ok) {
             throw new Error('HTTP ' + res.status);
         }
 
-        const json = await res.json();
+        var json = await res.json();
 
         if (json.status === 'success') {
             showThankYou();
@@ -327,17 +332,17 @@ async function submitSurvey(form) {
 }
 
 function showThankYou() {
-    const survey = document.getElementById('surveyForm');
-    const thank = document.getElementById('thankYou');
+    var survey = document.getElementById('surveyForm');
+    var thank = document.getElementById('thankYou');
 
     if (survey) survey.style.display = 'none';
     if (thank) thank.style.display = 'block';
 }
 
 function resetForm() {
-    const form = document.getElementById('mainForm');
-    const thank = document.getElementById('thankYou');
-    const survey = document.getElementById('surveyForm');
+    var form = document.getElementById('mainForm');
+    var thank = document.getElementById('thankYou');
+    var survey = document.getElementById('surveyForm');
 
     if (form) form.reset();
     if (thank) thank.style.display = 'none';
@@ -350,7 +355,7 @@ function resetForm() {
 }
 
 // ---------------------------------------------------------------------------
-// LANGUAGE HELPERS (translations.js varsa onunla çalışır)
+// LANGUAGE HELPERS
 // ---------------------------------------------------------------------------
 if (typeof window.changeLanguage !== 'function') {
     window.changeLanguage = function () {
@@ -361,8 +366,8 @@ if (typeof window.changeLanguage !== 'function') {
 if (typeof window.setLanguage !== 'function') {
     window.setLanguage = function () {
         console.warn('setLanguage() translations.js içinde tanımlı değil.');
-        const surveyForm = document.getElementById('surveyForm');
-        const languageSelector = document.getElementById('languageSelector');
+        var surveyForm = document.getElementById('surveyForm');
+        var languageSelector = document.getElementById('languageSelector');
         if (surveyForm) surveyForm.style.display = 'block';
         if (languageSelector) languageSelector.style.display = 'none';
     };
@@ -377,7 +382,7 @@ document.addEventListener('DOMContentLoaded', function () {
     setDefaultDates();
     showSection(0);
 
-    const form = document.getElementById('mainForm');
+    var form = document.getElementById('mainForm');
     if (form) {
         form.addEventListener('submit', function (e) {
             e.preventDefault();
