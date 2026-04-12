@@ -81,40 +81,10 @@ input[type="text"], input[type="email"], input[type="date"], select, textarea { 
     text-decoration: underline;
 }s
 /* YILDIZ STİLLERİ */
-.stars {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    flex-wrap: wrap;
-    margin-top: 8px;
-}
-
 .stars .star {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
     cursor: pointer;
-    font-size: 34px;
-    line-height: 1;
-    color: #d9d9d9;
-    transition: transform 0.15s ease, color 0.15s ease;
     user-select: none;
-    position: relative;
-    z-index: 2;
     pointer-events: auto;
-}
-
-.stars .star:hover {
-    transform: translateY(-1px);
-    color: #f5b301;
-}
-
-.stars .star.selected {
-    color: #f5b301 !important;
-}
-
-.stars .star input {
-    display: none;
 }
 
 .stars .star span {
