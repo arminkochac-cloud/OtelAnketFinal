@@ -171,49 +171,60 @@ function initStars() {
         var container = containers[c];
 
         if (container.getAttribute('data-ready') === '1') {
-            syncStarContainer(container);
             continue;
         }
-
         container.setAttribute('data-ready', '1');
 
         var fieldName = container.getAttribute('data-name');
-        var hiddenInput = container.parentElement.querySelector('input[type="hidden"][name="' + fieldName + '"]');
+        var hiddenInput = container.parentElement.querySelector(
+            'input[type="hidden"][name="' + fieldName + '"]'
+        );
 
-        // 5 yıldız oluştur
+        // 5 yıldız oluştur: label + radio
         var html = '';
         for (var i = 5; i >= 1; i--) {
-            html += '<button type="button" class="star" data-value="' + i + '" aria-label="' + i + ' yıldız">★</button>';
+            html +=
+                '<label class="star" data-value="' + i + '">' +
+                    '<input type="radio" name="' + fieldName + '_rating" value="' + i + '">' +
+                    '<span>★</span>' +
+                '</label>';
         }
         container.innerHTML = html;
 
+        var radios = container.querySelectorAll('input[type="radio"]');
         var stars = container.querySelectorAll('.star');
 
-        function setRating(value) {
-            if (hiddenInput) hiddenInput.value = String(value);
-            syncStarContainer(container);
+        function updateStars() {
+            var checked = container.querySelector('input[type="radio"]:checked');
+            var value = checked ? parseInt(checked.value, 10) : 0;
+
+            if (hiddenInput) {
+                hiddenInput.value = value ? String(value) : '';
+            }
+
+            for (var j = 0; j < stars.length; j++) {
+                var starValue = parseInt(stars[j].getAttribute('data-value'), 10);
+                stars[j].classList.toggle('selected', starValue <= value);
+            }
         }
 
-        for (var s = 0; s < stars.length; s++) {
-            (function (starEl) {
-                var value = parseInt(starEl.getAttribute('data-value'), 10);
-
-                starEl.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    setRating(value);
-                });
-
-                starEl.addEventListener('keydown', function (e) {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        setRating(value);
-                    }
-                });
-            })(stars[s]);
+        for (var k = 0; k < radios.length; k++) {
+            radios[k].addEventListener('change', updateStars);
         }
+
+        // label tıklaması her zaman çalışsın
+        stars.forEach(function (star) {
+            star.addEventListener('click', function () {
+                var radio = star.querySelector('input[type="radio"]');
+                if (radio) {
+                    radio.checked = true;
+                    radio.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            });
+        });
 
         if (hiddenInput) hiddenInput.value = '';
-        syncStarContainer(container);
+        updateStars();
     }
 }
 
