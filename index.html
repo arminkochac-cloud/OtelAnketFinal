@@ -873,6 +873,64 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 </script>
+<!-- KVKK MODAL -->
+<div id="kvkkModal" style="
+    display:none;
+    position:fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    background:rgba(0,0,0,0.7);
+    z-index:9999;
+    overflow-y:auto;
+    padding:20px;
+">
+    <div style="
+        background:white;
+        margin:20px auto;
+        padding:30px;
+        max-width:600px;
+        border-radius:15px;
+    ">
+        <h2 style="color:#1a1a3e;">🔒 KVKK Aydınlatma Metni</h2>
+        <hr>
 
+        <p><b>Veri Sorumlusu:</b><br>
+        Concordia Celes Hotel<br>
+        info@concordiaceles.com</p>
+
+        <p><b>Toplanan Kişisel Veriler:</b><br>
+        Ad Soyad, Cinsiyet, Uyruk, Oda Numarası, Giriş-Çıkış Tarihi, E-posta Adresi, Memnuniyet Puanları</p>
+
+        <p><b>İşleme Amacı:</b><br>
+        Misafir memnuniyetini ölçmek ve hizmet kalitesini artırmak</p>
+
+        <p><b>Saklama Süresi:</b><br>
+        Verileriniz 2 yıl süreyle saklanacaktır.</p>
+
+        <p><b>Haklarınız:</b><br>
+        ✅ Verilerinize erişim hakkı<br>
+        ✅ Düzeltme talep etme hakkı<br>
+        ✅ Silme talep etme hakkı<br>
+        ✅ İşlemeye itiraz hakkı</p>
+
+        <p><b>İletişim:</b><br>
+        📧 info@concordiaceles.com<br>
+        🌐 www.concordiaceles.com</p>
+
+        <button onclick="closeKvkk()" style="
+            background:#1a1a3e;
+            color:white;
+            padding:12px 30px;
+            border:none;
+            border-radius:8px;
+            cursor:pointer;
+            font-size:16px;
+            margin-top:15px;
+            width:100%;
+        ">
+            ✓ Anladım, Kapat
+        </button>
+    </div>
+</div>
 </body>
 </html>
