@@ -301,19 +301,18 @@ textarea {
     color: #777;
     text-align: right;
 }
-
 /* STAR RATING */
 .stars {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
     flex-wrap: wrap;
     margin-top: 8px;
     line-height: 1;
 }
 
 .stars input[type="radio"] {
-    display: none;
+    display: none !important;
 }
 
 .stars .star {
@@ -337,8 +336,13 @@ textarea {
 
 .stars .star:hover {
     transform: translateY(-1px);
+    color: #f5b301;
 }
 
 .stars .star.selected {
     color: #f5b301 !important;
+}
+
+.stars .star span {
+    pointer-events: none;
 }
