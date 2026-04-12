@@ -49,30 +49,34 @@ function validateCurrentSection() {
     const active = sections[currentSectionIndex];
     if (!active) return true;
 
-    // 1) Required alanlar
-    const requiredFields = active.querySelectorAll('[required]');
+    // Sadece aktif bölümdeki görünür required alanları kontrol et
+    const requiredFields = Array.from(active.querySelectorAll('[required]')).filter(el => {
+        return el.offsetParent !== null; // görünür mü?
+    });
+
     for (const el of requiredFields) {
         if (el.type === 'radio') {
             const group = active.querySelectorAll(`input[name="${el.name}"]`);
             const checked = Array.from(group).some(r => r.checked);
+
             if (!checked) {
-                alert('Lütfen zorunlu alanları doldurun.');
+                alert(`Lütfen "${el.name}" alanını doldurun.`);
                 return false;
             }
         } else if (el.type === 'checkbox') {
             if (!el.checked) {
-                alert('Lütfen zorunlu alanları doldurun.');
+                alert('Lütfen KVKK onayını işaretleyin.');
                 return false;
             }
         } else if (!String(el.value || '').trim()) {
-            alert('Lütfen zorunlu alanları doldurun.');
+            alert(`Lütfen "${el.name}" alanını doldurun.`);
             el.focus();
             return false;
         }
     }
 
-    // 2) Bu bölümdeki yıldız puanları
-    const hiddenRatings = active.querySelectorAll('.rating-item input[type="hidden"][name]');
+    // Yıldız puanlarını kontrol et
+    const hiddenRatings = Array.from(active.querySelectorAll('.rating-item input[type="hidden"][name]'));
     for (const hidden of hiddenRatings) {
         if (!String(hidden.value || '').trim()) {
             alert('Lütfen bu bölümdeki tüm soruları puanlayın.');
