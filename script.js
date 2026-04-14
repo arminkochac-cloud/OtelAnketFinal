@@ -102,13 +102,17 @@ function ratingItemHtml(fieldName, label) {
 
 function syncStarContainer(container) {
     var fieldName = container.getAttribute('data-name');
-    var checked = container.querySelector('input[type="radio"][name="' + fieldName + '"]:checked');
-    var value = checked ? parseInt(checked.value, 10) : 0;
+    var hiddenInput = container.parentElement.querySelector('input[type="hidden"][name="' + fieldName + '"]');
 
-    var labels = container.querySelectorAll('label.star');
-    for (var i = 0; i < labels.length; i++) {
-        var starValue = parseInt(labels[i].getAttribute('data-value'), 10);
-        labels[i].classList.toggle('selected', starValue <= value);
+    var value = 0;
+    if (hiddenInput && hiddenInput.value) {
+        value = parseInt(hiddenInput.value, 10) || 0;
+    }
+
+    var stars = container.querySelectorAll('.star');
+    for (var i = 0; i < stars.length; i++) {
+        var starValue = parseInt(stars[i].getAttribute('data-value'), 10);
+        stars[i].classList.toggle('selected', starValue <= value);
     }
 }
 
@@ -116,20 +120,48 @@ function initStars() {
     var containers = document.querySelectorAll('.rating-item .stars[data-name]');
 
     for (var c = 0; c < containers.length; c++) {
-        var container = containers[c];
-
-        if (container.getAttribute('data-ready') !== '1') {
+        (function (container) {
+            if (container.getAttribute('data-ready') === '1') {
+                syncStarContainer(container);
+                return;
+            }
             container.setAttribute('data-ready', '1');
 
-            var radios = container.querySelectorAll('input[type="radio"]');
-            for (var r = 0; r < radios.length; r++) {
-                radios[r].addEventListener('change', function () {
-                    syncStarContainer(container);
-                });
-            }
-        }
+            var fieldName = container.getAttribute('data-name');
+            var hiddenInput = container.parentElement.querySelector('input[type="hidden"][name="' + fieldName + '"]');
 
-        syncStarContainer(container);
+            // Yıldızları oluştur
+            container.innerHTML = '';
+
+            for (var i = 5; i >= 1; i--) {
+                (function (value) {
+                    var btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'star';
+                    btn.setAttribute('data-value', value);
+                    btn.setAttribute('aria-label', value + ' yıldız');
+                    btn.textContent = '★';
+
+                    btn.addEventListener('click', function (e) {
+                        e.preventDefault();
+
+                        if (hiddenInput) {
+                            hiddenInput.value = String(value);
+                        }
+
+                        syncStarContainer(container);
+                    });
+
+                    container.appendChild(btn);
+                })(i);
+            }
+
+            if (hiddenInput) {
+                hiddenInput.value = '';
+            }
+
+            syncStarContainer(container);
+        })(containers[c]);
     }
 }
 
