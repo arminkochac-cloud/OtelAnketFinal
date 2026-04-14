@@ -40,25 +40,28 @@ function validateStep(step) {
 }
 
 function initStars() {
-    console.log('⭐ Yıldız sistemi (LTR) başlatılıyor...');
+    console.log('⭐ Yıldız sistemi (LTR Force) başlatılıyor...');
     document.querySelectorAll('.stars').forEach(container => {
         if (container.dataset.ready === '1') return;
         container.dataset.ready = '1';
         
-        // Radio'ları gizle
+        // JS ile de yönü zorla
+        container.style.direction = 'ltr';
+        container.style.unicodeBidi = 'isolate';
+
         container.querySelectorAll('input[type="radio"]').forEach(r => r.style.display = 'none');
 
-        // Yıldızları temizle ve yeniden oluştur (1'den 5'e)
+        // Yıldızları oluştur
         container.innerHTML = '';
         for (let i = 1; i <= 5; i++) {
             const star = document.createElement('span');
             star.className = 'star';
             star.textContent = '★';
             star.dataset.value = i;
-            container.appendChild(star); // Sola ekler, sırayla dizilir
+            container.appendChild(star);
         }
         
-        const stars = container.querySelectorAll('.star');
+        const stars = Array.from(container.querySelectorAll('.star'));
         const hidden = container.parentElement.querySelector('input[type="hidden"]') || 
                        container.querySelector('input[type="hidden"]');
         if (!hidden) return;
@@ -67,22 +70,26 @@ function initStars() {
             star.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                const val = index + 1; // 1, 2, 3, 4, 5
+                
+                // Görsel konuma göre değer ata (Sağdan sola ise ters çevir)
+                const rect = container.getBoundingClientRect();
+                const clickX = e.clientX - rect.left;
+                const starWidth = rect.width / 5;
+                // Sol taraftan hesapla
+                const visualIndex = Math.floor(clickX / starWidth); 
+                const val = visualIndex + 1;
+
                 hidden.value = val;
                 
-                // SOL'DAN SAĞ'A DOLDURMA MANTIĞI
-                stars.forEach((s, idx) => {
-                    if (idx < val) {
-                        s.classList.add('selected');
-                    } else {
-                        s.classList.remove('selected');
-                    }
+                // Soldan sağa doldur
+                stars.forEach((s, i) => {
+                    s.classList.toggle('selected', i < val);
                 });
-                console.log(`✅ Puan: ${val}/5 (Soldan sağa)`);
+                console.log(`✅ Puan: ${val}/5 (Görsel Konum: ${visualIndex})`);
             });
         });
     });
-    console.log('✅ Yıldız sistemi düzgün çalışıyor.');
+    console.log('✅ Yön düzeltildi. Soldan sağa aktif.');
 }
 function updateProgress() {
     const bar = document.getElementById('progressBar');
