@@ -850,27 +850,63 @@ function closeKvkk() {
     if (modal) modal.style.display = 'none';
 }
 
-function resetForm() {
-    const form = document.getElementById('mainForm');
-    const thank = document.getElementById('thankYou');
-    const survey = document.getElementById('surveyForm');
+window.addEventListener('click', function(e) {
+    const modal = document.getElementById('kvkkModal');
+    if (e.target === modal) {
+        closeKvkk();
+    }
+});
 
-    if (form) form.reset();
-    if (thank) thank.style.display = 'none';
-    if (survey) survey.style.display = 'block';
+function initStars() {
+    document.querySelectorAll('.stars').forEach(container => {
+        const fieldName = container.getAttribute('data-name');
+        if (!fieldName) return;
 
-    currentSectionIndex = 0;
-    showSection(0);
+        // Bir kez oluştur
+        if (container.dataset.ready === '1') return;
+        container.dataset.ready = '1';
+
+        const hiddenInput = container.parentElement.querySelector(`input[type="hidden"][name="${fieldName}"]`);
+
+        // 5 yıldız oluştur
+        let html = '';
+        for (let i = 5; i >= 1; i--) {
+            html += `
+                <label class="star" title="${i}">
+                    <input type="radio" name="${fieldName}_rating" value="${i}">
+                    <span>★</span>
+                </label>
+            `;
+        }
+        container.innerHTML = html;
+
+        const radios = container.querySelectorAll(`input[name="${fieldName}_rating"]`);
+
+        function updateStars() {
+            const checked = Array.from(radios).find(r => r.checked);
+            const value = checked ? parseInt(checked.value, 10) : 0;
+
+            if (hiddenInput) {
+                hiddenInput.value = value || '';
+            }
+
+            container.querySelectorAll('.star').forEach(label => {
+                const radio = label.querySelector('input[type="radio"]');
+                const radioVal = parseInt(radio.value, 10);
+                label.classList.toggle('selected', radioVal <= value);
+            });
+        }
+
+        radios.forEach(radio => {
+            radio.addEventListener('change', updateStars);
+        });
+
+        updateStars();
+    });
 }
 
 document.addEventListener('DOMContentLoaded', function () {
     initStars();
-    showSection(0);
-
-    const printDate = document.getElementById('printDate');
-    if (printDate) {
-        printDate.textContent = new Date().toLocaleString('tr-TR');
-    }
 });
 </script>
 <!-- KVKK MODAL -->
