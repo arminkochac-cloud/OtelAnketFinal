@@ -117,53 +117,47 @@ function syncStarContainer(container) {
 }
 
 function initStars() {
-    var containers = document.querySelectorAll('.rating-item .stars[data-name]');
+    console.log('⭐ Yıldız sistemi düzeltiliyor...');
+    document.querySelectorAll('.stars').forEach(container => {
+        if (container.dataset.ready === '1') return;
+        container.dataset.ready = '1';
 
-    for (var c = 0; c < containers.length; c++) {
-        (function (container) {
-            if (container.getAttribute('data-ready') === '1') {
-                syncStarContainer(container);
-                return;
-            }
-            container.setAttribute('data-ready', '1');
+        const stars = container.querySelectorAll('.star');
+        const hiddenInput = container.querySelector('input[type="hidden"]');
+        
+        if (!hiddenInput) return;
 
-            var fieldName = container.getAttribute('data-name');
-            var hiddenInput = container.parentElement.querySelector('input[type="hidden"][name="' + fieldName + '"]');
+        stars.forEach((star, index) => {
+            const value = index + 1; // 1, 2, 3, 4, 5
+            star.dataset.value = value;
 
-            // Yıldızları oluştur
-            container.innerHTML = '';
+            star.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
 
-            for (var i = 5; i >= 1; i--) {
-                (function (value) {
-                    var btn = document.createElement('button');
-                    btn.type = 'button';
-                    btn.className = 'star';
-                    btn.setAttribute('data-value', value);
-                    btn.setAttribute('aria-label', value + ' yıldız');
-                    btn.textContent = '★';
+                // 1. Değeri kaydet
+                hiddenInput.value = value;
+                
+                // 2. Görsel Güncelleme (Tıklanan ve öncesini sarı yap)
+                stars.forEach((s, i) => {
+                    if (i < value) {
+                        s.classList.add('active');
+                    } else {
+                        s.classList.remove('active');
+                    }
+                });
 
-                    btn.addEventListener('click', function (e) {
-                        e.preventDefault();
-
-                        if (hiddenInput) {
-                            hiddenInput.value = String(value);
-                        }
-
-                        syncStarContainer(container);
-                    });
-
-                    container.appendChild(btn);
-                })(i);
-            }
-
-            if (hiddenInput) {
-                hiddenInput.value = '';
-            }
-
-            syncStarContainer(container);
-        })(containers[c]);
-    }
+                // 3. Validasyon tetikle
+                hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+                console.log(`✅ Puan: ${value}/5`);
+            });
+        });
+    });
+    console.log('✅ Yıldız sistemi düzgün çalışıyor.');
 }
+
+// Sayfa yüklendiğinde çalıştır
+document.addEventListener('DOMContentLoaded', initStars);
 
 // ---------------------------------------------------------------------------
 // BUTTONS / VALIDATION
