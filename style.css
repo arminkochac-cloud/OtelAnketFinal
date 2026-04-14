@@ -312,18 +312,16 @@ textarea {
     overflow-y: auto;
     padding: 20px;
 }
-/* STAR RATING */
+/* =========================
+   STAR RATING - CLEAN
+   ========================= */
 .stars {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
     flex-wrap: wrap;
     margin-top: 8px;
     line-height: 1;
-}
-
-.stars input[type="radio"] {
-    display: none !important;
 }
 
 .stars .star {
@@ -332,17 +330,14 @@ textarea {
     justify-content: center;
     cursor: pointer;
     user-select: none;
-    position: relative;
-    font-size: 34px;
+    font-size: 36px;
     line-height: 1;
     color: #d9d9d9;
     transition: transform 0.15s ease, color 0.15s ease;
-    pointer-events: auto;
     background: transparent;
     border: 0;
     padding: 0 2px;
-    appearance: none;
-    -webkit-appearance: none;
+    outline: none;
 }
 
 .stars .star:hover {
@@ -352,12 +347,7 @@ textarea {
 
 .stars .star.selected {
     color: #f5b301 !important;
-}
-
-.stars .star span {
-    pointer-events: none;
-}
-.kvkk-content {
+}.kvkk-content {
     background: #fff;
     max-width: 620px;
     margin: 30px auto;
