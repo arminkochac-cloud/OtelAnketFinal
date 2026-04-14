@@ -1,16 +1,47 @@
+Tabii. Aşağıya **tam temiz, baştan sona çalışan `script.js`** veriyorum.  
+Bu sürümde:
+
+- **HTML içinde yıldız oluşturma yok**
+- **Radio + label ile puanlama var**
+- **KVKK sadece modal**
+- **Bölüm geçişi çalışır**
+- **Form Apps Script’e gönderilir**
+- **Mavi ekran / syntax hatası olmaması için sade tutuldu**
+
+> Bu dosya, benim önce verdiğim **`<div id="app"></div>`** kullanan minimal `index.html` ile uyumludur.  
+> `index.html` içinde ayrıca `kvkkModal` ve `thankYou` alanlarının bulunduğunu varsayar.
+
+---
+
+# `script.js` — tam temiz sürüm
+
+```javascript
 // ============================================================================
 // CONCORDIA CELES HOTEL - FRONTEND SCRIPT
 // CLEAN FINAL VERSION
-// KVKK MODAL + STAR RATING + SECTION NAVIGATION + FORM SUBMISSION
+// Render app into #app
+// Radio + label star rating
+// KVKK modal
+// Section navigation
+// Form submission to Apps Script
 // ============================================================================
 
-var GOOGLE_SCRIPT_URL = https://script.google.com/macros/s/AKfycbxQXQnpJIwj4vvKbSrEVJUmKWGQxJyJiKls2m-hLbMdHpD0cBSewzGGYPe3gtkhBWGR/exec';
+var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxQXQnpJIwj4vvKbSrEVJUmKWGQxJyJiKls2m-hLbMdHpD0cBSewzGGYPe3gtkhBWGR/exec';
 
 var currentSectionIndex = 0;
 
 // ---------------------------------------------------------------------------
-// FORM SECTIONS
+// UTILS
 // ---------------------------------------------------------------------------
+function escapeHtml(text) {
+    return String(text === undefined || text === null ? '' : text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
 function getSections() {
     return Array.prototype.slice.call(document.querySelectorAll('.section'));
 }
@@ -46,12 +77,90 @@ function showSection(index) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+// ---------------------------------------------------------------------------
+// STAR HTML HELPERS
+// ---------------------------------------------------------------------------
+function starGroupHtml(fieldName) {
+    var html = '';
+    for (var i = 1; i <= 5; i++) {
+        html += ''
+            + '<input type="radio" id="' + fieldName + '_' + i + '" name="' + fieldName + '" value="' + i + '">'
+            + '<label class="star" for="' + fieldName + '_' + i + '" data-value="' + i + '">★</label>';
+    }
+    return html;
+}
+
+function ratingItemHtml(fieldName, label) {
+    return ''
+        + '<div class="rating-item">'
+        + '  <label>' + escapeHtml(label) + '</label>'
+        + '  <div class="stars" data-name="' + fieldName + '">'
+        +        starGroupHtml(fieldName)
+        + '  </div>'
+        + '</div>';
+}
+
+function syncStarContainer(container) {
+    var fieldName = container.getAttribute('data-name');
+    var checked = container.querySelector('input[type="radio"][name="' + fieldName + '"]:checked');
+    var value = checked ? parseInt(checked.value, 10) : 0;
+
+    var labels = container.querySelectorAll('label.star');
+    for (var i = 0; i < labels.length; i++) {
+        var starValue = parseInt(labels[i].getAttribute('data-value'), 10);
+        labels[i].classList.toggle('selected', starValue <= value);
+    }
+}
+
+function initStars() {
+    var containers = document.querySelectorAll('.rating-item .stars[data-name]');
+
+    for (var c = 0; c < containers.length; c++) {
+        var container = containers[c];
+
+        if (container.getAttribute('data-ready') !== '1') {
+            container.setAttribute('data-ready', '1');
+
+            var radios = container.querySelectorAll('input[type="radio"]');
+            for (var r = 0; r < radios.length; r++) {
+                radios[r].addEventListener('change', function () {
+                    syncStarContainer(container);
+                });
+            }
+        }
+
+        syncStarContainer(container);
+    }
+}
+
+// ---------------------------------------------------------------------------
+// BUTTONS / VALIDATION
+// ---------------------------------------------------------------------------
+// nextSection(2) => section2
+// prevSection(1) => section1
+function nextSection(sectionNumber) {
+    if (typeof sectionNumber === 'undefined') {
+        sectionNumber = currentSectionIndex + 2;
+    }
+
+    if (!validateCurrentSection()) return;
+    showSection(sectionNumber - 1);
+}
+
+function prevSection(sectionNumber) {
+    if (typeof sectionNumber === 'undefined') {
+        sectionNumber = currentSectionIndex + 1;
+    }
+
+    showSection(sectionNumber - 1);
+}
+
 function validateCurrentSection() {
     var sections = getSections();
     var active = sections[currentSectionIndex];
     if (!active) return true;
 
-    // Required alanlar
+    // Required fields
     var requiredFields = active.querySelectorAll('[required]');
     var processedRadioNames = [];
 
@@ -88,36 +197,17 @@ function validateCurrentSection() {
         }
     }
 
-    // Yıldız puanları
-    var hiddenRatings = active.querySelectorAll('.rating-item input[type="hidden"][name]');
-    for (var k = 0; k < hiddenRatings.length; k++) {
-        if (!String(hiddenRatings[k].value || '').trim()) {
+    // Star groups in this section
+    var ratingGroups = active.querySelectorAll('.rating-item .stars[data-name]');
+    for (var k = 0; k < ratingGroups.length; k++) {
+        var checked = ratingGroups[k].querySelector('input[type="radio"]:checked');
+        if (!checked) {
             alert('Lütfen bu bölümdeki tüm soruları puanlayın.');
             return false;
         }
     }
 
     return true;
-}
-
-// Butonlar 1-based section number gönderiyor
-// nextSection(2) => section2
-// prevSection(1) => section1
-function nextSection(sectionNumber) {
-    if (typeof sectionNumber === 'undefined') {
-        sectionNumber = currentSectionIndex + 1;
-    }
-
-    if (!validateCurrentSection()) return;
-    showSection(sectionNumber - 1);
-}
-
-function prevSection(sectionNumber) {
-    if (typeof sectionNumber === 'undefined') {
-        sectionNumber = currentSectionIndex + 1;
-    }
-
-    showSection(Math.max(0, sectionNumber - 1));
 }
 
 // ---------------------------------------------------------------------------
@@ -147,83 +237,7 @@ window.addEventListener('keydown', function (e) {
 });
 
 // ---------------------------------------------------------------------------
-// STAR RATING
-// ---------------------------------------------------------------------------
-function syncStarContainer(container) {
-    var fieldName = container.getAttribute('data-name');
-    var hiddenInput = container.parentElement.querySelector('input[type="hidden"][name="' + fieldName + '"]');
-    var value = parseInt((hiddenInput && hiddenInput.value) ? hiddenInput.value : '0', 10) || 0;
-
-    var stars = container.querySelectorAll('.star');
-    for (var i = 0; i < stars.length; i++) {
-        var starValue = parseInt(stars[i].getAttribute('data-value'), 10);
-        stars[i].classList.toggle('selected', starValue <= value);
-    }
-}
-
-function initStars() {
-    var containers = document.querySelectorAll('.rating-item .stars[data-name]');
-
-    for (var c = 0; c < containers.length; c++) {
-        var container = containers[c];
-
-        if (container.getAttribute('data-ready') === '1') {
-            syncStarContainer(container);
-            continue;
-        }
-
-        container.setAttribute('data-ready', '1');
-
-        var fieldName = container.getAttribute('data-name');
-        var hiddenInput = container.parentElement.querySelector(
-            'input[type="hidden"][name="' + fieldName + '"]'
-        );
-
-        // Önce container'ı temizle
-        container.innerHTML = '';
-
-        // 5 yıldız oluştur (DOM ile, string HTML yok)
-        for (var i = 5; i >= 1; i--) {
-            (function (value) {
-                var btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'star';
-                btn.setAttribute('data-value', String(value));
-                btn.setAttribute('aria-label', value + ' yıldız');
-                btn.textContent = '★';
-
-                btn.addEventListener('click', function (e) {
-                    e.preventDefault();
-
-                    if (hiddenInput) {
-                        hiddenInput.value = String(value);
-                    }
-
-                    syncStarContainer(container);
-                });
-
-                btn.addEventListener('keydown', function (e) {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        btn.click();
-                    }
-                });
-
-                container.appendChild(btn);
-            })(i);
-        }
-
-        // Eğer önceden değer varsa işaretle
-        if (hiddenInput) {
-            hiddenInput.value = hiddenInput.value || '';
-        }
-
-        syncStarContainer(container);
-    }
-}
-
-// ---------------------------------------------------------------------------
-// CHAR COUNTER
+// FORM HELPERS
 // ---------------------------------------------------------------------------
 function initCharCounter() {
     var textarea = document.querySelector('textarea[name="generalComments"]');
@@ -239,9 +253,6 @@ function initCharCounter() {
     update();
 }
 
-// ---------------------------------------------------------------------------
-// DATE HELPERS
-// ---------------------------------------------------------------------------
 function setDefaultDates() {
     var checkIn = document.getElementById('checkInDate');
     var checkOut = document.getElementById('checkOutDate');
@@ -267,9 +278,6 @@ function setDefaultDates() {
     });
 }
 
-// ---------------------------------------------------------------------------
-// FORM SUBMISSION
-// ---------------------------------------------------------------------------
 function collectFormData(form) {
     var fd = new FormData(form);
     var data = {};
@@ -280,7 +288,6 @@ function collectFormData(form) {
 
     var kvkk = document.getElementById('kvkkOnay');
     data.kvkkOnay = kvkk ? kvkk.checked : false;
-
     data.date = new Date().toLocaleString('tr-TR');
 
     return data;
@@ -325,10 +332,11 @@ function validateEntireForm(form) {
         }
     }
 
-    // Tüm yıldız alanları dolu mu?
-    var hiddenRatings = form.querySelectorAll('.rating-item input[type="hidden"][name]');
-    for (var k = 0; k < hiddenRatings.length; k++) {
-        if (!String(hiddenRatings[k].value || '').trim()) {
+    // All rating groups must be selected
+    var ratingGroups = form.querySelectorAll('.rating-item .stars[data-name]');
+    for (var k = 0; k < ratingGroups.length; k++) {
+        var checked = ratingGroups[k].querySelector('input[type="radio"]:checked');
+        if (!checked) {
             alert('Lütfen tüm departman sorularını puanlayın.');
             return false;
         }
@@ -387,25 +395,231 @@ function resetForm() {
     showSection(0);
     initStars();
     initCharCounter();
+    setDefaultDates();
 }
 
 // ---------------------------------------------------------------------------
-// APP BUILD
+// APP RENDER
 // ---------------------------------------------------------------------------
-function q(name, label) {
-    return ''
-        + '<div class="rating-item">'
-        + '<label>' + label + '</label>'
-        + '<div class="stars" data-name="' + name + '"></div>'
-        + '<input type="hidden" name="' + name + '">'
-        + '</div>';
+var SECTION_DEFS = [
+    {
+        id: 'section2',
+        icon: '🛎️',
+        title: 'ÖN BÜRO RESEPSİYON',
+        prev: 1,
+        next: 3,
+        items: [
+            ['welcomeGreeting', 'Giriş Karşılama'],
+            ['checkInProcess', 'Check-In İşlemleri'],
+            ['facilityInfo', 'Tesis Hakkında Bilgilendirme'],
+            ['frontDeskCare', 'Personelin İlgi ve Nezaketi'],
+            ['bellboyService', 'Bellboy Hizmetleri']
+        ]
+    },
+    {
+        id: 'section3',
+        icon: '🤝',
+        title: 'GUEST RELATION',
+        prev: 2,
+        next: 4,
+        items: [
+            ['grWelcomeQuality', 'Karşılama Kalitesi'],
+            ['problemSolving', 'Sorunları Çözüme Kavuşturma'],
+            ['guestFollowUp', 'Misafir Takibi']
+        ]
+    },
+    {
+        id: 'section4',
+        icon: '🧹',
+        title: 'KAT HİZMETLERİ',
+        prev: 3,
+        next: 5,
+        items: [
+            ['initialRoomCleaning', 'İlk Varışınızda Oda Temizliği'],
+            ['roomAppearance', 'Oda Fiziki Görünümü ve Konforu'],
+            ['dailyRoomCleaning', 'Konaklama Süresince Oda Temizliği ve Düzeni'],
+            ['minibarService', 'Minibar Hizmeti'],
+            ['publicAreaCleaning', 'Genel Alan Temizliği'],
+            ['beachPoolCleaning', 'Sahil ve Havuz Çevre Temizliği'],
+            ['housekeepingStaffCare', 'Personelin İlgi ve Nezaketi']
+        ]
+    },
+    {
+        id: 'section5',
+        icon: '🍽️',
+        title: 'MUTFAK',
+        prev: 4,
+        next: 6,
+        items: [
+            ['breakfastVariety', 'Kahvaltı Büfesi Çeşitliliği'],
+            ['breakfastQuality', 'Kahvaltı Büfesi Sunumu ve Kalitesi'],
+            ['lunchVariety', 'Öğle Yemeği Büfesi Çeşitliliği'],
+            ['lunchQuality', 'Öğle Yemeği Sunumu ve Kalitesi'],
+            ['dinnerVariety', 'Akşam Yemeği Büfesi Çeşitliliği'],
+            ['dinnerQuality', 'Akşam Yemeği Sunumu ve Kalitesi'],
+            ['alacarteQuality', 'A La Carte Restaurant Yemeği Sunumu ve Kalitesi'],
+            ['kitchenHygiene', 'Mutfağın Hijyeni ve Temizliği'],
+            ['foodStaffCare', 'Personelin İlgi ve Nezaketi']
+        ]
+    },
+    {
+        id: 'section6',
+        icon: '🍸',
+        title: 'BARLAR',
+        prev: 5,
+        next: 7,
+        items: [
+            ['poolBarQuality', 'Pool Bar Servis Kalitesi'],
+            ['lobbyBarQuality', 'Lobby Bar Servis Kalitesi'],
+            ['snackBarQuality', 'Snack Bar Servis Kalitesi'],
+            ['drinkQuality', 'İçki Kalitesi ve Sunumu'],
+            ['barHygiene', 'Barların Hijyen ve Temizliği'],
+            ['barStaffCare', 'Personelin İlgi ve Nezaketi']
+        ]
+    },
+    {
+        id: 'section7',
+        icon: '🍴',
+        title: 'RESTAURANT HİZMETLERİ',
+        prev: 6,
+        next: 8,
+        items: [
+            ['restaurantLayout', 'Restaurant Düzeni ve Kalitesi'],
+            ['restaurantCapacity', 'Restaurant Yer Yeterliliği'],
+            ['restaurantHygiene', 'Restaurant Hijyen ve Temizliği'],
+            ['snackbarRestaurant', 'Snackbar Restaurant Hizmeti'],
+            ['alacarteRestaurant', 'Alacarte Restaurant Hizmeti ve Personel İlgisi'],
+            ['restaurantStaffCare', 'Personelin İlgi ve Nezaketi']
+        ]
+    },
+    {
+        id: 'section8',
+        icon: '🔧',
+        title: 'TEKNİK SERVİS',
+        prev: 7,
+        next: 9,
+        items: [
+            ['roomTechnicalSystems', 'Oda Teknik Sistemleri'],
+            ['maintenanceResponse', 'Arıza Bildirimi ve Giderme'],
+            ['environmentLighting', 'Çevre Aydınlatma ve Düzeni'],
+            ['poolWaterCleaning', 'Havuz Suyu Temizliği'],
+            ['technicalStaffCare', 'Personelin İlgi ve Nezaketi']
+        ]
+    },
+    {
+        id: 'section9',
+        icon: '🎭',
+        title: 'EĞLENCE HİZMETLERİ',
+        prev: 8,
+        next: 10,
+        items: [
+            ['daytimeActivities', 'Animasyon Ekibi ile Gündüz Aktiviteleri'],
+            ['sportsAreas', 'Aktivite ve Spor Alanları ve Ekipmanları'],
+            ['eveningShows', 'Akşam Aktiviteleri ve Showlar'],
+            ['miniclubActivities', 'Miniclub Aktiviteleri'],
+            ['entertainmentStaffCare', 'Personelin İlgi ve Nezaketi']
+        ]
+    },
+    {
+        id: 'section10',
+        icon: '⭐',
+        title: 'DİĞER HİZMETLER',
+        prev: 9,
+        next: 11,
+        items: [
+            ['landscaping', 'Genel Düzenleme / Peyzaj'],
+            ['spaServices', 'Sauna-Hamam Hizmetleri'],
+            ['shopBehavior', 'Hotel Genel Esnaf Davranışları'],
+            ['priceQuality', 'Fiyat Kalitesi ve İlişkisi']
+        ]
+    },
+    {
+        id: 'section11',
+        icon: '📝',
+        title: 'ÖNERİLERİNİZ',
+        prev: 10,
+        next: null,
+        items: []
+    }
+];
+
+function buildSection(def) {
+    var html = '';
+    html += '<div class="section" id="' + def.id + '">';
+    html += '  <div class="section-title">';
+    html += '    <span class="section-icon">' + def.icon + '</span>';
+    html += '    <h2>' + escapeHtml(def.title) + '</h2>';
+    html += '  </div>';
+
+    for (var i = 0; i < def.items.length; i++) {
+        html += ratingItemHtml(def.items[i][0], def.items[i][1]);
+    }
+
+    if (def.id === 'section11') {
+        html += '  <div class="form-group">';
+        html += '    <label>Otelimizde Daha Önce Bulundunuz Mu? *</label>';
+        html += '    <div class="yes-no-buttons">';
+        html += '      <label class="yn-btn"><input type="radio" name="previousStay" value="Evet" required><span>Evet</span></label>';
+        html += '      <label class="yn-btn"><input type="radio" name="previousStay" value="Hayır"><span>Hayır</span></label>';
+        html += '    </div>';
+        html += '  </div>';
+
+        html += '  <div class="form-group">';
+        html += '    <label>Hizmetinden Dolayı Övgüye Bulunduğunuz Personelin İsmi</label>';
+        html += '    <input type="text" name="praisedStaff">';
+        html += '  </div>';
+
+        html += '  <div class="form-group">';
+        html += '    <label>Genel Düşünce ve Yorumlarınız (0-500 karakter)</label>';
+        html += '    <textarea name="generalComments" maxlength="500" rows="4"></textarea>';
+        html += '    <small class="char-count">0 / 500</small>';
+        html += '  </div>';
+
+        html += '  <div class="form-group">';
+        html += '    <label>Tekrar Gelir Misiniz? *</label>';
+        html += '    <div class="yes-no-buttons">';
+        html += '      <label class="yn-btn"><input type="radio" name="willReturn" value="Evet" required><span>Evet</span></label>';
+        html += '      <label class="yn-btn"><input type="radio" name="willReturn" value="Hayır"><span>Hayır</span></label>';
+        html += '    </div>';
+        html += '  </div>';
+
+        html += '  <div class="form-group">';
+        html += '    <label>Bizi Çevrenize Tavsiye Eder Misiniz? *</label>';
+        html += '    <div class="yes-no-buttons">';
+        html += '      <label class="yn-btn"><input type="radio" name="wouldRecommend" value="Evet" required><span>Evet</span></label>';
+        html += '      <label class="yn-btn"><input type="radio" name="wouldRecommend" value="Hayır"><span>Hayır</span></label>';
+        html += '    </div>';
+        html += '  </div>';
+
+        html += '  <div class="btn-group">';
+        html += '    <button type="button" class="btn btn-prev" onclick="prevSection(10)">← Geri</button>';
+        html += '    <button type="submit" class="btn btn-submit">✅ Anketi Gönder</button>';
+        html += '  </div>';
+    } else {
+        html += '  <div class="btn-group">';
+        if (def.prev !== null && def.prev !== undefined) {
+            html += '    <button type="button" class="btn btn-prev" onclick="prevSection(' + def.prev + ')">← Geri</button>';
+        } else {
+            html += '    <div></div>';
+        }
+
+        if (def.next !== null && def.next !== undefined) {
+            html += '    <button type="button" class="btn btn-next" onclick="nextSection(' + def.next + ')">İleri →</button>';
+        } else {
+            html += '    <button type="submit" class="btn btn-submit">✅ Anketi Gönder</button>';
+        }
+        html += '  </div>';
+    }
+
+    html += '</div>';
+    return html;
 }
 
 function renderApp() {
     var html = '';
 
     html += '<div class="container">';
-    html += '  <div class="survey-form" id="surveyForm">';
+    html += '  <div class="survey-form" id="surveyForm" style="display:block;">';
 
     html += '    <div class="header">';
     html += '      <img src="logo.png?v=1" alt="Hotel Logo" style="width:120px;margin-bottom:10px;">';
@@ -421,9 +635,15 @@ function renderApp() {
 
     // SECTION 1
     html += '      <div class="section active" id="section1">';
-    html += '        <div class="section-title"><span class="section-icon">👤</span><h2>GENEL BİLGİLER</h2></div>';
+    html += '        <div class="section-title">';
+    html += '          <span class="section-icon">👤</span>';
+    html += '          <h2>GENEL BİLGİLER</h2>';
+    html += '        </div>';
 
-    html += '        <div class="form-group"><label>Ad Soyad *</label><input type="text" name="fullName" required></div>';
+    html += '        <div class="form-group">';
+    html += '          <label>Ad Soyad *</label>';
+    html += '          <input type="text" name="fullName" required>';
+    html += '        </div>';
 
     html += '        <div class="form-group">';
     html += '          <label>Cinsiyetiniz *</label>';
@@ -451,165 +671,46 @@ function renderApp() {
     html += '          </select>';
     html += '        </div>';
 
-    html += '        <div class="form-group"><label>Oda Numarası *</label><input type="text" name="roomNumber" required placeholder="Örn: 305"></div>';
-
-    html += '        <div class="form-row">';
-    html += '          <div class="form-group"><label>Giriş Tarihi *</label><input type="date" name="checkIn" id="checkInDate" required></div>';
-    html += '          <div class="form-group"><label>Çıkış Tarihi *</label><input type="date" name="checkOut" id="checkOutDate" required></div>';
+    html += '        <div class="form-group">';
+    html += '          <label>Oda Numarası *</label>';
+    html += '          <input type="text" name="roomNumber" required placeholder="Örn: 305">';
     html += '        </div>';
 
-    html += '        <div class="form-group"><label>Mail Adresi</label><input type="email" name="email" placeholder="ornek@email.com"></div>';
+    html += '        <div class="form-row">';
+    html += '          <div class="form-group">';
+    html += '            <label>Giriş Tarihi *</label>';
+    html += '            <input type="date" name="checkIn" id="checkInDate" required>';
+    html += '          </div>';
+    html += '          <div class="form-group">';
+    html += '            <label>Çıkış Tarihi *</label>';
+    html += '            <input type="date" name="checkOut" id="checkOutDate" required>';
+    html += '          </div>';
+    html += '        </div>';
+
+    html += '        <div class="form-group">';
+    html += '          <label>Mail Adresi</label>';
+    html += '          <input type="email" name="email" placeholder="ornek@email.com">';
+    html += '        </div>';
 
     html += '        <div class="form-group">';
     html += '          <div class="kvkk-box">';
     html += '            <label class="kvkk-label">';
-    html += '              <input type="checkbox" name="kvkkOnay" id="kvkkOnay">';
+    html += '              <input type="checkbox" name="kvkkOnay" id="kvkkOnay" required>';
     html += '              <span>Kişisel verilerimin Concordia Celes Hotel tarafından misafir memnuniyeti amacıyla işlenmesine onay veriyorum. <a href="#" onclick="showKvkk(); return false;">📄 KVKK Aydınlatma Metni</a></span>';
     html += '            </label>';
     html += '          </div>';
     html += '        </div>';
 
-    html += '        <div class="btn-group"><div></div><button type="button" class="btn btn-next" onclick="nextSection(2)">İleri →</button></div>';
-    html += '      </div>';
-
-    // SECTION 2
-    html += '      <div class="section" id="section2">';
-    html += '        <div class="section-title"><span class="section-icon">🛎️</span><h2>ÖN BÜRO RESEPSİYON</h2></div>';
-    html += q('welcomeGreeting', 'Giriş Karşılama');
-    html += q('checkInProcess', 'Check-In İşlemleri');
-    html += q('facilityInfo', 'Tesis Hakkında Bilgilendirme');
-    html += q('frontDeskCare', 'Personelin İlgi ve Nezaketi');
-    html += q('bellboyService', 'Bellboy Hizmetleri');
-    html += '        <div class="btn-group"><button type="button" class="btn btn-prev" onclick="prevSection(1)">← Geri</button><button type="button" class="btn btn-next" onclick="nextSection(3)">İleri →</button></div>';
-    html += '      </div>';
-
-    // SECTION 3
-    html += '      <div class="section" id="section3">';
-    html += '        <div class="section-title"><span class="section-icon">🤝</span><h2>GUEST RELATION</h2></div>';
-    html += q('grWelcomeQuality', 'Karşılama Kalitesi');
-    html += q('problemSolving', 'Sorunları Çözüme Kavuşturma');
-    html += q('guestFollowUp', 'Misafir Takibi');
-    html += '        <div class="btn-group"><button type="button" class="btn btn-prev" onclick="prevSection(2)">← Geri</button><button type="button" class="btn btn-next" onclick="nextSection(4)">İleri →</button></div>';
-    html += '      </div>';
-
-    // SECTION 4
-    html += '      <div class="section" id="section4">';
-    html += '        <div class="section-title"><span class="section-icon">🧹</span><h2>KAT HİZMETLERİ</h2></div>';
-    html += q('initialRoomCleaning', 'İlk Varışınızda Oda Temizliği');
-    html += q('roomAppearance', 'Oda Fiziki Görünümü ve Konforu');
-    html += q('dailyRoomCleaning', 'Konaklama Süresince Oda Temizliği ve Düzeni');
-    html += q('minibarService', 'Minibar Hizmeti');
-    html += q('publicAreaCleaning', 'Genel Alan Temizliği');
-    html += q('beachPoolCleaning', 'Sahil ve Havuz Çevre Temizliği');
-    html += q('housekeepingStaffCare', 'Personelin İlgi ve Nezaketi');
-    html += '        <div class="btn-group"><button type="button" class="btn btn-prev" onclick="prevSection(3)">← Geri</button><button type="button" class="btn btn-next" onclick="nextSection(5)">İleri →</button></div>';
-    html += '      </div>';
-
-    // SECTION 5
-    html += '      <div class="section" id="section5">';
-    html += '        <div class="section-title"><span class="section-icon">🍽️</span><h2>MUTFAK</h2></div>';
-    html += q('breakfastVariety', 'Kahvaltı Büfesi Çeşitliliği');
-    html += q('breakfastQuality', 'Kahvaltı Büfesi Sunumu ve Kalitesi');
-    html += q('lunchVariety', 'Öğle Yemeği Büfesi Çeşitliliği');
-    html += q('lunchQuality', 'Öğle Yemeği Sunumu ve Kalitesi');
-    html += q('dinnerVariety', 'Akşam Yemeği Büfesi Çeşitliliği');
-    html += q('dinnerQuality', 'Akşam Yemeği Sunumu ve Kalitesi');
-    html += q('alacarteQuality', 'A La Carte Restaurant Yemeği Sunumu ve Kalitesi');
-    html += q('kitchenHygiene', 'Mutfağın Hijyeni ve Temizliği');
-    html += q('foodStaffCare', 'Personelin İlgi ve Nezaketi');
-    html += '        <div class="btn-group"><button type="button" class="btn btn-prev" onclick="prevSection(4)">← Geri</button><button type="button" class="btn btn-next" onclick="nextSection(6)">İleri →</button></div>';
-    html += '      </div>';
-
-    // SECTION 6
-    html += '      <div class="section" id="section6">';
-    html += '        <div class="section-title"><span class="section-icon">🍸</span><h2>BARLAR</h2></div>';
-    html += q('poolBarQuality', 'Pool Bar Servis Kalitesi');
-    html += q('lobbyBarQuality', 'Lobby Bar Servis Kalitesi');
-    html += q('snackBarQuality', 'Snack Bar Servis Kalitesi');
-    html += q('drinkQuality', 'İçki Kalitesi ve Sunumu');
-    html += q('barHygiene', 'Barların Hijyen ve Temizliği');
-    html += q('barStaffCare', 'Personelin İlgi ve Nezaketi');
-    html += '        <div class="btn-group"><button type="button" class="btn btn-prev" onclick="prevSection(5)">← Geri</button><button type="button" class="btn btn-next" onclick="nextSection(7)">İleri →</button></div>';
-    html += '      </div>';
-
-    // SECTION 7
-    html += '      <div class="section" id="section7">';
-    html += '        <div class="section-title"><span class="section-icon">🍴</span><h2>RESTAURANT HİZMETLERİ</h2></div>';
-    html += q('restaurantLayout', 'Restaurant Düzeni ve Kalitesi');
-    html += q('restaurantCapacity', 'Restaurant Yer Yeterliliği');
-    html += q('restaurantHygiene', 'Restaurant Hijyen ve Temizliği');
-    html += q('snackbarRestaurant', 'Snackbar Restaurant Hizmeti');
-    html += q('alacarteRestaurant', 'Alacarte Restaurant Hizmeti ve Personel İlgisi');
-    html += q('restaurantStaffCare', 'Personelin İlgi ve Nezaketi');
-    html += '        <div class="btn-group"><button type="button" class="btn btn-prev" onclick="prevSection(6)">← Geri</button><button type="button" class="btn btn-next" onclick="nextSection(8)">İleri →</button></div>';
-    html += '      </div>';
-
-    // SECTION 8
-    html += '      <div class="section" id="section8">';
-    html += '        <div class="section-title"><span class="section-icon">🔧</span><h2>TEKNİK SERVİS</h2></div>';
-    html += q('roomTechnicalSystems', 'Oda Teknik Sistemleri');
-    html += q('maintenanceResponse', 'Arıza Bildirimi ve Giderme');
-    html += q('environmentLighting', 'Çevre Aydınlatma ve Düzeni');
-    html += q('poolWaterCleaning', 'Havuz Suyu Temizliği');
-    html += q('technicalStaffCare', 'Personelin İlgi ve Nezaketi');
-    html += '        <div class="btn-group"><button type="button" class="btn btn-prev" onclick="prevSection(7)">← Geri</button><button type="button" class="btn btn-next" onclick="nextSection(9)">İleri →</button></div>';
-    html += '      </div>';
-
-    // SECTION 9
-    html += '      <div class="section" id="section9">';
-    html += '        <div class="section-title"><span class="section-icon">🎭</span><h2>EĞLENCE HİZMETLERİ</h2></div>';
-    html += q('daytimeActivities', 'Animasyon Ekibi ile Gündüz Aktiviteleri');
-    html += q('sportsAreas', 'Aktivite ve Spor Alanları ve Ekipmanları');
-    html += q('eveningShows', 'Akşam Aktiviteleri ve Showlar');
-    html += q('miniclubActivities', 'Miniclub Aktiviteleri');
-    html += q('entertainmentStaffCare', 'Personelin İlgi ve Nezaketi');
-    html += '        <div class="btn-group"><button type="button" class="btn btn-prev" onclick="prevSection(8)">← Geri</button><button type="button" class="btn btn-next" onclick="nextSection(10)">İleri →</button></div>';
-    html += '      </div>';
-
-    // SECTION 10
-    html += '      <div class="section" id="section10">';
-    html += '        <div class="section-title"><span class="section-icon">⭐</span><h2>DİĞER HİZMETLER</h2></div>';
-    html += q('landscaping', 'Genel Düzenleme / Peyzaj');
-    html += q('spaServices', 'Sauna-Hamam Hizmetleri');
-    html += q('shopBehavior', 'Hotel Genel Esnaf Davranışları');
-    html += q('priceQuality', 'Fiyat Kalitesi ve İlişkisi');
-    html += '        <div class="btn-group"><button type="button" class="btn btn-prev" onclick="prevSection(9)">← Geri</button><button type="button" class="btn btn-next" onclick="nextSection(11)">İleri →</button></div>';
-    html += '      </div>';
-
-    // SECTION 11
-    html += '      <div class="section" id="section11">';
-    html += '        <div class="section-title"><span class="section-icon">📝</span><h2>ÖNERİLERİNİZ</h2></div>';
-
-    html += '        <div class="form-group">';
-    html += '          <label>Otelimizde Daha Önce Bulundunuz Mu? *</label>';
-    html += '          <div class="yes-no-buttons">';
-    html += '            <label class="yn-btn"><input type="radio" name="previousStay" value="Evet" required><span>Evet</span></label>';
-    html += '            <label class="yn-btn"><input type="radio" name="previousStay" value="Hayır"><span>Hayır</span></label>';
-    html += '          </div>';
+    html += '        <div class="btn-group">';
+    html += '          <div></div>';
+    html += '          <button type="button" class="btn btn-next" onclick="nextSection(2)">İleri →</button>';
     html += '        </div>';
 
-    html += '        <div class="form-group"><label>Hizmetinden Dolayı Övgüye Bulunduğunuz Personelin İsmi</label><input type="text" name="praisedStaff"></div>';
-
-    html += '        <div class="form-group"><label>Genel Düşünce ve Yorumlarınız (0-500 karakter)</label><textarea name="generalComments" maxlength="500" rows="4"></textarea><small class="char-count">0 / 500</small></div>';
-
-    html += '        <div class="form-group">';
-    html += '          <label>Tekrar Gelir Misiniz? *</label>';
-    html += '          <div class="yes-no-buttons">';
-    html += '            <label class="yn-btn"><input type="radio" name="willReturn" value="Evet" required><span>Evet</span></label>';
-    html += '            <label class="yn-btn"><input type="radio" name="willReturn" value="Hayır"><span>Hayır</span></label>';
-    html += '          </div>';
-    html += '        </div>';
-
-    html += '        <div class="form-group">';
-    html += '          <label>Bizi Çevrenize Tavsiye Eder Misiniz? *</label>';
-    html += '          <div class="yes-no-buttons">';
-    html += '            <label class="yn-btn"><input type="radio" name="wouldRecommend" value="Evet" required><span>Evet</span></label>';
-    html += '            <label class="yn-btn"><input type="radio" name="wouldRecommend" value="Hayır"><span>Hayır</span></label>';
-    html += '          </div>';
-    html += '        </div>';
-
-    html += '        <div class="btn-group"><button type="button" class="btn btn-prev" onclick="prevSection(10)">← Geri</button><button type="submit" class="btn btn-submit">✅ Anketi Gönder</button></div>';
     html += '      </div>';
+
+    for (var s = 0; s < SECTION_DEFS.length; s++) {
+        html += buildSection(SECTION_DEFS[s]);
+    }
 
     html += '    </form>';
     html += '  </div>';
@@ -617,7 +718,6 @@ function renderApp() {
 
     document.getElementById('app').innerHTML = html;
 
-    // Events
     var form = document.getElementById('mainForm');
     if (form) {
         form.addEventListener('submit', function (e) {
@@ -634,6 +734,46 @@ function renderApp() {
 }
 
 // ---------------------------------------------------------------------------
+// SUBMIT / THANK YOU
+// ---------------------------------------------------------------------------
+async function submitSurvey(form) {
+    var data = collectFormData(form);
+
+    try {
+        var body = new URLSearchParams();
+        body.append('data', JSON.stringify(data));
+
+        var res = await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            body: body
+        });
+
+        if (!res.ok) {
+            throw new Error('HTTP ' + res.status);
+        }
+
+        var json = await res.json();
+
+        if (json.status === 'success') {
+            showThankYou();
+        } else {
+            alert('Gönderim hatası: ' + (json.message || 'Bilinmeyen hata'));
+        }
+    } catch (err) {
+        console.error(err);
+        alert('Anket gönderilemedi. Lütfen tekrar deneyin.');
+    }
+}
+
+function showThankYou() {
+    var survey = document.getElementById('surveyForm');
+    var thank = document.getElementById('thankYou');
+
+    if (survey) survey.style.display = 'none';
+    if (thank) thank.style.display = 'block';
+}
+
+// ---------------------------------------------------------------------------
 // DOM READY
 // ---------------------------------------------------------------------------
 document.addEventListener('DOMContentLoaded', function () {
@@ -641,7 +781,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 // ---------------------------------------------------------------------------
-// GLOBAL FUNCTIONS
+// GLOBALS
 // ---------------------------------------------------------------------------
 window.nextSection = nextSection;
 window.prevSection = prevSection;
@@ -649,3 +789,66 @@ window.showKvkk = showKvkk;
 window.closeKvkk = closeKvkk;
 window.resetForm = resetForm;
 window.initStars = initStars;
+```
+
+---
+
+## Çok önemli: `style.css` içine bunu ekleyin / eski yıldız stilini değiştirin
+
+Bu script ile birlikte yıldızların görünmesi ve tıklanması için şu CSS olsun:
+
+```css
+.stars {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+    line-height: 1;
+}
+
+.stars input[type="radio"] {
+    display: none;
+}
+
+.stars .star {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    font-size: 34px;
+    line-height: 1;
+    color: #d9d9d9;
+    transition: transform 0.15s ease, color 0.15s ease;
+    pointer-events: auto;
+    background: transparent;
+    border: 0;
+    padding: 0 2px;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.stars .star:hover {
+    transform: translateY(-1px);
+}
+
+.stars .star.selected {
+    color: #f5b301 !important;
+}
+```
+
+---
+
+## Son yapmanız gereken
+1. `script.js` dosyasını tamamen bununla değiştirin  
+2. `index.html` içinde sadece `div id="app"` + `kvkkModal` + `thankYou` kalsın  
+3. `style.css` yıldız bloğunu yukarıdakiyle değiştirin  
+4. `GOOGLE_SCRIPT_URL` satırına kendi `/exec` linkinizi yazın  
+5. **Ctrl + F5** yapın  
+6. Gerekirse GitHub’a commit/push
+
+---
+
+Eğer isterseniz bir sonraki mesajda size **bu pakete uygun son `index.html`** dosyasını da tekrar tek parça veririm.
