@@ -13,9 +13,10 @@
     <!-- DİL SEÇİMİ -->
     <div class="language-selector" id="languageSelector">
         <div class="lang-header">
-    <img src="logo.png" alt="Hotel Logo" style="width:150px; margin-bottom:15px;">
-    <h2>Select Language / Dil Seçin</h2>
+            <img src="logo.png?v=1" alt="Hotel Logo" style="width:150px; margin-bottom:15px;">
+            <h2>Select Language / Dil Seçin</h2>
         </div>
+
         <div class="lang-grid">
             <button class="lang-btn" onclick="setLanguage('tr')">
                 <span class="flag">🇹🇷</span>
@@ -49,7 +50,7 @@
         
         <!-- HEADER -->
         <div class="header">
-            <img src="logo.png" alt="Hotel Logo" style="width:120px; margin-bottom:10px;">
+            <img src="logo.png?v=1" alt="Hotel Logo" style="width:120px; margin-bottom:10px;">
             <h1 data-translate="hotelName">Concordia Celes Hotel</h1>
             <p data-translate="surveyTitle">Misafir Memnuniyet Anketi</p>
             <div class="lang-change" onclick="changeLanguage()">
@@ -64,7 +65,7 @@
             </div>
         </div>
 
-        <form id="mainForm">
+        <form id="mainForm" novalidate>
 
             <!-- ========== BÖLÜM 1: GENEL BİLGİLER ========== -->
             <div class="section active" id="section1">
@@ -118,17 +119,34 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label data-translate="checkIn">Giriş Tarihi *</label>
-                        <input type="date" name="checkIn" required>
+                        <input type="date" name="checkIn" required id="checkInDate">
                     </div>
                     <div class="form-group">
                         <label data-translate="checkOut">Çıkış Tarihi *</label>
-                        <input type="date" name="checkOut" required>
+                        <input type="date" name="checkOut" required id="checkOutDate">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label data-translate="email">Mail Adresi</label>
                     <input type="email" name="email" placeholder="ornek@email.com">
+                </div>
+
+                <!-- KVKK ONAY -->
+                <div class="form-group">
+                    <div class="kvkk-box">
+                        <label class="kvkk-label">
+                            <input type="checkbox" name="kvkkOnay" id="kvkkOnay">
+                            <span>
+                                <span data-translate="kvkkText">
+                                    Kişisel verilerimin Concordia Celes Hotel tarafından misafir memnuniyeti amacıyla işlenmesine onay veriyorum.
+                                </span>
+                                <a href="#" onclick="showKvkk(); return false;">
+                                    📄 <span data-translate="kvkkLink">KVKK Aydınlatma Metni</span>
+                                </a>
+                            </span>
+                        </label>
+                    </div>
                 </div>
 
                 <div class="btn-group">
@@ -194,19 +212,19 @@
                 </div>
 
                 <div class="rating-item">
-                    <label data-translate="grWelcomeQuality">Karşılama Kalitesi</label>
+                    <label data-translate="grWelcomeQuality">Misafir ile İletişimi</label>
                     <div class="stars" data-name="grWelcomeQuality"></div>
                     <input type="hidden" name="grWelcomeQuality">
                 </div>
 
                 <div class="rating-item">
-                    <label data-translate="problemSolving">Sorunları Çözüme Kavuşturma</label>
+                    <label data-translate="problemSolving">Bilgilendirme Yeterliliği</label>
                     <div class="stars" data-name="problemSolving"></div>
                     <input type="hidden" name="problemSolving">
                 </div>
 
                 <div class="rating-item">
-                    <label data-translate="guestFollowUp">Misafir Takibi</label>
+                    <label data-translate="guestFollowUp">Personelin İlgi ve Nezaketi</label>
                     <div class="stars" data-name="guestFollowUp"></div>
                     <input type="hidden" name="guestFollowUp">
                 </div>
@@ -280,11 +298,11 @@
                 </div>
             </div>
 
-            <!-- ========== BÖLÜM 5: YİYECEK HİZMETLERİ & MUTFAK ========== -->
+            <!-- ========== BÖLÜM 5: MUTFAK ========== -->
             <div class="section" id="section5">
                 <div class="section-title">
                     <span class="section-icon">🍽️</span>
-                    <h2 data-translate="foodServices">YİYECEK HİZMETLERİ & MUTFAK</h2>
+                    <h2 data-translate="foodServices">MUTFAK</h2>
                 </div>
 
                 <div class="rating-item">
@@ -294,33 +312,15 @@
                 </div>
 
                 <div class="rating-item">
-                    <label data-translate="breakfastQuality">Kahvaltı Büfesi Sunumu ve Kalitesi</label>
-                    <div class="stars" data-name="breakfastQuality"></div>
-                    <input type="hidden" name="breakfastQuality">
-                </div>
-
-                <div class="rating-item">
                     <label data-translate="lunchVariety">Öğle Yemeği Büfesi Çeşitliliği</label>
                     <div class="stars" data-name="lunchVariety"></div>
                     <input type="hidden" name="lunchVariety">
                 </div>
 
                 <div class="rating-item">
-                    <label data-translate="lunchQuality">Öğle Yemeği Sunumu ve Kalitesi</label>
-                    <div class="stars" data-name="lunchQuality"></div>
-                    <input type="hidden" name="lunchQuality">
-                </div>
-
-                <div class="rating-item">
                     <label data-translate="dinnerVariety">Akşam Yemeği Büfesi Çeşitliliği</label>
                     <div class="stars" data-name="dinnerVariety"></div>
                     <input type="hidden" name="dinnerVariety">
-                </div>
-
-                <div class="rating-item">
-                    <label data-translate="dinnerQuality">Akşam Yemeği Sunumu ve Kalitesi</label>
-                    <div class="stars" data-name="dinnerQuality"></div>
-                    <input type="hidden" name="dinnerQuality">
                 </div>
 
                 <div class="rating-item">
@@ -351,11 +351,11 @@
                 </div>
             </div>
 
-            <!-- ========== BÖLÜM 6: SERVİS VE BARLAR ========== -->
+            <!-- ========== BÖLÜM 6: BARLAR ========== -->
             <div class="section" id="section6">
                 <div class="section-title">
                     <span class="section-icon">🍸</span>
-                    <h2 data-translate="barsServices">SERVİS VE BARLAR</h2>
+                    <h2 data-translate="barsServices">BARLAR</h2>
                 </div>
 
                 <div class="rating-item">
@@ -679,5 +679,200 @@
 
 <script src="translations.js"></script>
 <script src="script.js"></script>
+
+<!-- KVKK MODAL -->
+<div id="kvkkModal" style="
+    display:none;
+    position:fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    background:rgba(0,0,0,0.7);
+    z-index:9999;
+    overflow-y:auto;
+    padding:20px;
+">
+    <div style="
+        background:white;
+        margin:20px auto;
+        padding:30px;
+        max-width:600px;
+        border-radius:15px;
+    ">
+        <h2 style="color:#1a1a3e;">
+            🔒 KVKK Aydınlatma Metni
+        </h2>
+        <hr>
+        <p><b>Veri Sorumlusu:</b><br>
+        Concordia Celes Hotel<br>
+        info@concordiaceles.com</p>
+
+        <p><b>Toplanan Kişisel Veriler:</b><br>
+        Ad Soyad, Cinsiyet, Uyruk, 
+        Oda Numarası, Giriş-Çıkış Tarihi, 
+        E-posta Adresi, Memnuniyet Puanları</p>
+
+        <p><b>İşleme Amacı:</b><br>
+        Misafir memnuniyetini ölçmek ve 
+        hizmet kalitesini artırmak</p>
+
+        <p><b>Saklama Süresi:</b><br>
+        Verileriniz 2 yıl süreyle saklanacaktır.</p>
+
+        <p><b>Haklarınız:</b><br>
+        ✅ Verilerinize erişim hakkı<br>
+        ✅ Düzeltme talep etme hakkı<br>
+        ✅ Silme talep etme hakkı<br>
+        ✅ İşlemeye itiraz hakkı</p>
+
+        <p><b>İletişim:</b><br>
+        📧 info@concordiaceles.com<br>
+        🌐 www.concordiaceles.com</p>
+
+        <button onclick="closeKvkk()" style="
+            background:#1a1a3e;
+            color:white;
+            padding:12px 30px;
+            border:none;
+            border-radius:8px;
+            cursor:pointer;
+            font-size:16px;
+            margin-top:15px;
+            width:100%;
+        ">
+            ✓ Anladım, Kapat
+        </button>
+    </div>
+</div>
+
+<script>
+let currentSectionIndex = 0;
+
+function getSections() {
+    return Array.from(document.querySelectorAll('.section'));
+}
+
+function updateProgressBar() {
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const sections = getSections();
+
+    if (!progressBar || !progressText || sections.length < 2) return;
+
+    const percent = Math.round((currentSectionIndex / (sections.length - 1)) * 100);
+    progressBar.style.width = percent + '%';
+    progressText.textContent = percent + '%';
+}
+
+function showSection(index) {
+    const sections = getSections();
+    if (!sections.length) return;
+
+    if (index < 0) index = 0;
+    if (index >= sections.length) index = sections.length - 1;
+
+    sections.forEach((sec, i) => {
+        sec.classList.toggle('active', i === index);
+    });
+
+    currentSectionIndex = index;
+    updateProgressBar();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function validateCurrentSection() {
+    const sections = getSections();
+    const active = sections[currentSectionIndex];
+    if (!active) return true;
+
+    const requiredFields = active.querySelectorAll('[required]');
+    for (const el of requiredFields) {
+        if (el.type === 'radio') {
+            const group = active.querySelectorAll(`input[name="${el.name}"]`);
+            const checked = Array.from(group).some(r => r.checked);
+            if (!checked) {
+                alert('Lütfen zorunlu alanları doldurun.');
+                return false;
+            }
+        } else if (!el.value.trim()) {
+            alert('Lütfen zorunlu alanları doldurun.');
+            el.focus();
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/*
+  Butonlarda section numarası kullanıldığı için:
+  nextSection(1) -> section 2
+  nextSection(2) -> section 3
+  prevSection(2) -> section 1
+  prevSection(11) -> section 10
+*/
+function nextSection(sectionNumber = currentSectionIndex + 1) {
+    if (!validateCurrentSection()) return;
+    showSection(sectionNumber);
+}
+
+function prevSection(sectionNumber = currentSectionIndex + 1) {
+    showSection(Math.max(0, sectionNumber - 2));
+}
+
+function initStars() {
+    document.querySelectorAll('.stars').forEach(stars => {
+        const inputs = stars.querySelectorAll('input[type="radio"]');
+
+        inputs.forEach(input => {
+            input.addEventListener('change', () => {
+                const name = input.name;
+                const value = parseInt(input.value, 10);
+
+                stars.querySelectorAll('label').forEach(label => {
+                    const radio = label.querySelector('input[type="radio"]');
+                    if (!radio || radio.name !== name) return;
+
+                    const radioVal = parseInt(radio.value, 10);
+                    label.classList.toggle('selected', radioVal <= value);
+                });
+            });
+        });
+    });
+}
+
+function showKvkk() {
+    const modal = document.getElementById('kvkkModal');
+    if (modal) modal.style.display = 'block';
+}
+
+function closeKvkk() {
+    const modal = document.getElementById('kvkkModal');
+    if (modal) modal.style.display = 'none';
+}
+
+function resetForm() {
+    const form = document.getElementById('mainForm');
+    const thank = document.getElementById('thankYou');
+    const survey = document.getElementById('surveyForm');
+
+    if (form) form.reset();
+    if (thank) thank.style.display = 'none';
+    if (survey) survey.style.display = 'block';
+
+    currentSectionIndex = 0;
+    showSection(0);
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    initStars();
+    showSection(0);
+
+    const printDate = document.getElementById('printDate');
+    if (printDate) {
+        printDate.textContent = new Date().toLocaleString('tr-TR');
+    }
+});
+</script>
+
 </body>
 </html>
