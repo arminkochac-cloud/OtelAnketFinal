@@ -437,3 +437,45 @@ textarea {
         font-size: 24px;
     }
 }
+/* ⭐ YILDIZ SİSTEMİ - KESİN ÇALIŞIR */
+.stars {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  direction: ltr; /* Soldan sağa zorla */
+}
+
+/* Radio butonlarını tamamen kaldır (JS yetmezse diye) */
+.stars input[type="radio"] {
+  display: none !important;
+  visibility: hidden !important;
+  position: absolute !important;
+  width: 0 !important;
+  height: 0 !important;
+  opacity: 0 !important;
+}
+
+/* Yıldız Görünümü */
+.stars .star {
+  font-size: 32px;
+  color: #cbd5e1; /* Pasif: Gri */
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.2s, transform 0.2s;
+  line-height: 1;
+  padding: 2px;
+}
+
+.stars .star:hover {
+  transform: scale(1.15);
+  color: #fbbf24; /* Hover: Açık Sarı */
+}
+
+.stars .star.selected {
+  color: #f59e0b !important; /* Aktif: Koyu Sarı */
+}
+
+/* Hata Durumu */
+.stars.error .star {
+  color: #ef4444 !important;
+}
