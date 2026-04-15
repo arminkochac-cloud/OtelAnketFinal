@@ -43,6 +43,12 @@ document.addEventListener('DOMContentLoaded', () => {
   updateProgress();
   showStep(1);
   console.log('🚀 Sistem hazır. 6 dil aktif.');
+  
+  // 🔑 YÜKLEME EKRANINI GİZLE
+  setTimeout(() => {
+    const loader = document.getElementById('loadingOverlay');
+    if (loader) loader.classList.add('hidden');
+  }, 300); // 0.3 saniye sonra otomatik kapanır
 });
 
 // 🔹 ADIM GÖSTERME
