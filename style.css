@@ -16,6 +16,18 @@ body {
   border-radius: var(--radius); box-shadow: var(--shadow);
   overflow: hidden; margin: 20px auto;
 }
+/* DİL ÇUBUĞU */
+.lang-bar {
+  display: flex; justify-content: center; gap: 8px; padding: 12px;
+  background: #f1f5f9; border-bottom: 1px solid var(--border); flex-wrap: wrap;
+}
+.lang-btn {
+  padding: 6px 10px; border: 1px solid var(--border); background: #fff;
+  border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; transition: 0.2s;
+}
+.lang-btn:hover { background: #e2e8f0; }
+.lang-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
 .app-header {
   background: linear-gradient(135deg, var(--primary), var(--secondary));
   color: #fff; padding: 30px 24px; text-align: center;
