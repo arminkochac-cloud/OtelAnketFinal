@@ -1,8 +1,3 @@
-Konsol hatası (`Unexpected identifier 'Услуги'`) **Rusça (`ru`) bölümündeki `q_bellboyService` anahtarının bozuk kopyalanmasından** kaynaklanıyor. Ayrıca Lehçe (`pl`) bölümünde `kvkkModalText` başında çift tırnak kalmış. Bu iki hata JavaScript'in tamamen durmasına neden oluyor.
-
-Aşağıda **tüm dil bölümleri tek tek kontrol edilmiş, tırnak/virgül hataları giderilmiş, syntax hatası içermeyen, production'a hazır** `script.js` dosyası var. Lütfen GitHub'da `script.js` → **Edit** → İçeriği **tamamen sil** → Aşağıdaki kodu yapıştır → **Commit changes**.
-
-```javascript
 'use strict';
 console.log('✅ script.js yüklendi.');
 
