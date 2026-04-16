@@ -1,12 +1,35 @@
+Tabii. Aşağıya **tam temiz, final `script.js`** sürümünü tek parça halinde veriyorum.
+
+> Bu dosya:
+> - KVKK’yı sadece **modal** yapar
+> - Yıldızları sadece **departman sorularında** gösterir
+> - Bölüm ilerleme / geri dönüşü çalıştırır
+> - Formu Apps Script’e gönderir
+> - Anket bitince teşekkür ekranını açar
+
+> **Önemli:**  
+> İlk satırdaki `GOOGLE_SCRIPT_URL` kısmına kendi **/exec** linkinizi koyun.  
+> Ben örnek olarak sizin önceki Apps Script URL’nizi yazdım.
+
+---
+
+## `script.js` — final sürüm
+
+```javascript
 // ============================================================================
 // CONCORDIA CELES HOTEL - FRONTEND SCRIPT
-// KVKK MODAL + STAR RATING + SECTION NAVIGATION
+// FINAL CLEAN VERSION
+// KVKK MODAL + STAR RATING + SECTION NAVIGATION + FORM SUBMISSION
 // ============================================================================
 
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxIa9CA3zdU8pLQPvHxEUQpk3umjLjh_tWeYzQKCDnVWdcEToA0GwnlkL1zsx8LpeI3pw/exec';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxQXQnpJIwj4vvKbSrEVJUmKWGQxJyJiKls2m-hLbMdHpD0cBSewzGGYPe3gtkhBWGR/exec';
+// Eğer kendi /exec linkiniz farklıysa bu satırı değiştirin.
 
 let currentSectionIndex = 0;
 
+// ---------------------------------------------------------------------------
+// SECTIONS
+// ---------------------------------------------------------------------------
 function getSections() {
     return Array.from(document.querySelectorAll('.section'));
 }
@@ -18,7 +41,7 @@ function updateProgressBar() {
 
     if (!progressBar || !progressText || sections.length < 2) return;
 
-    const percent = Math.round((currentSectionIndex / (sections.length - 1)) * 100);
+    const percent = Math.round(((currentSectionIndex + 1) / sections.length) * 100);
     progressBar.style.width = percent + '%';
     progressText.textContent = percent + '%';
 }
@@ -44,7 +67,7 @@ function validateCurrentSection() {
     const active = sections[currentSectionIndex];
     if (!active) return true;
 
-    // 1) Normal required alanlar
+    // 1) Required alanlar
     const requiredFields = active.querySelectorAll('[required]');
     for (const el of requiredFields) {
         if (el.type === 'radio') {
@@ -66,7 +89,7 @@ function validateCurrentSection() {
         }
     }
 
-    // 2) Departman puanları zorunlu olsun
+    // 2) Bu bölümdeki yıldız puanları
     const hiddenRatings = active.querySelectorAll('.rating-item input[type="hidden"][name]');
     for (const hidden of hiddenRatings) {
         if (!String(hidden.value || '').trim()) {
@@ -78,7 +101,7 @@ function validateCurrentSection() {
     return true;
 }
 
-// HTML'deki butonlar sizin yapınıza göre section numarası gönderiyor
+// HTML’de butonlar section numarası gönderiyor:
 // nextSection(1) => section2
 // nextSection(2) => section3
 function nextSection(sectionNumber = currentSectionIndex + 1) {
@@ -90,9 +113,9 @@ function prevSection(sectionNumber = currentSectionIndex + 1) {
     showSection(Math.max(0, sectionNumber - 2));
 }
 
-// ==============================
+// ---------------------------------------------------------------------------
 // KVKK MODAL
-// ==============================
+// ---------------------------------------------------------------------------
 function showKvkk() {
     const modal = document.getElementById('kvkkModal');
     if (modal) modal.style.display = 'block';
@@ -105,61 +128,84 @@ function closeKvkk() {
 
 window.addEventListener('click', function (e) {
     const modal = document.getElementById('kvkkModal');
-    if (e.target === modal) closeKvkk();
+    if (e.target === modal) {
+        closeKvkk();
+    }
 });
 
-// ==============================
-// STAR RATING OLUŞTURMA
-// Sadece .rating-item içindeki .stars[data-name] alanlarına uygulanır
+// ESC ile kapat
+window.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+        closeKvkk();
+    }
+});
+
+// ---------------------------------------------------------------------------
+// STAR RATING
+// Sadece .rating-item içindeki .stars[data-name] alanlarında çalışır
 // KVKK kısmına uygulanmaz
-// ==============================
+// ---------------------------------------------------------------------------
+function syncStarContainer(container) {
+    const fieldName = container.getAttribute('data-name');
+    const hiddenInput = container.parentElement.querySelector(`input[type="hidden"][name="${fieldName}"]`);
+    const value = parseInt((hiddenInput && hiddenInput.value) ? hiddenInput.value : '0', 10) || 0;
+
+    container.querySelectorAll('.star').forEach(label => {
+        const starValue = parseInt(label.getAttribute('data-value'), 10);
+        label.classList.toggle('selected', starValue <= value);
+    });
+}
+
 function initStars() {
     document.querySelectorAll('.rating-item .stars[data-name]').forEach(container => {
-        if (container.dataset.ready === '1') return;
+        if (container.dataset.ready === '1') {
+            syncStarContainer(container);
+            return;
+        }
+
         container.dataset.ready = '1';
 
         const fieldName = container.getAttribute('data-name');
         const hiddenInput = container.parentElement.querySelector(`input[type="hidden"][name="${fieldName}"]`);
 
-        // 5 yıldız oluştur
+        // 1-5 yıldız oluştur
         let html = '';
-        for (let i = 5; i >= 1; i--) {
+        for (let i = 1; i <= 5; i++) {
             html += `
-                <label class="star" data-value="${i}" title="${i} yıldız">
-                    <input type="radio" name="${fieldName}_rating" value="${i}">
-                    <span>★</span>
-                </label>
+                <span class="star" data-value="${i}" role="button" tabindex="0" aria-label="${i} yıldız">
+                    ★
+                </span>
             `;
         }
         container.innerHTML = html;
 
-        const radios = container.querySelectorAll(`input[name="${fieldName}_rating"]`);
+        const stars = Array.from(container.querySelectorAll('.star'));
 
-        function updateStars() {
-            const checked = Array.from(radios).find(r => r.checked);
-            const value = checked ? parseInt(checked.value, 10) : 0;
-
-            if (hiddenInput) hiddenInput.value = value || '';
-
-            container.querySelectorAll('.star').forEach(label => {
-                const radio = label.querySelector('input[type="radio"]');
-                const radioVal = parseInt(radio.value, 10);
-                label.classList.toggle('selected', radioVal <= value);
-            });
+        function setRating(value) {
+            if (hiddenInput) hiddenInput.value = String(value);
+            syncStarContainer(container);
         }
 
-        radios.forEach(radio => {
-            radio.addEventListener('change', updateStars);
+        stars.forEach(star => {
+            const value = parseInt(star.getAttribute('data-value'), 10);
+
+            star.addEventListener('click', () => setRating(value));
+
+            star.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setRating(value);
+                }
+            });
         });
 
-        // İlk durumu temizle
-        updateStars();
+        syncStarContainer(container);
     });
 }
 
-// ==============================
+// ---------------------------------------------------------------------------
 // CHAR COUNTER
-// ==============================
+// ---------------------------------------------------------------------------
 function initCharCounter() {
     const textarea = document.querySelector('textarea[name="generalComments"]');
     const counter = document.querySelector('.char-count');
@@ -174,9 +220,37 @@ function initCharCounter() {
     update();
 }
 
-// ==============================
-// FORM GÖNDERİMİ
-// ==============================
+// ---------------------------------------------------------------------------
+// DATES
+// ---------------------------------------------------------------------------
+function setDefaultDates() {
+    const checkIn = document.getElementById('checkInDate');
+    const checkOut = document.getElementById('checkOutDate');
+
+    if (!checkIn || !checkOut) return;
+
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    const todayStr = `${yyyy}-${mm}-${dd}`;
+
+    checkIn.min = todayStr;
+    checkOut.min = todayStr;
+
+    checkIn.addEventListener('change', () => {
+        if (checkIn.value) {
+            checkOut.min = checkIn.value;
+            if (checkOut.value && checkOut.value < checkIn.value) {
+                checkOut.value = checkIn.value;
+            }
+        }
+    });
+}
+
+// ---------------------------------------------------------------------------
+// FORM DATA / SUBMISSION
+// ---------------------------------------------------------------------------
 function collectFormData(form) {
     const fd = new FormData(form);
     const data = {};
@@ -185,18 +259,65 @@ function collectFormData(form) {
         data[key] = value;
     }
 
-    // checkbox
     const kvkk = document.getElementById('kvkkOnay');
     data.kvkkOnay = kvkk ? kvkk.checked : false;
 
+    // İsteğe bağlı: submit sırasında otomatik tarih
+    data.date = new Date().toLocaleString('tr-TR');
+
     return data;
+}
+
+function validateEntireForm(form) {
+    if (!form) return false;
+
+    // Tüm required alanlar
+    const requiredFields = form.querySelectorAll('[required]');
+    const processedRadioNames = new Set();
+
+    for (const el of requiredFields) {
+        if (el.type === 'radio') {
+            if (processedRadioNames.has(el.name)) continue;
+            processedRadioNames.add(el.name);
+
+            const group = form.querySelectorAll(`input[name="${el.name}"]`);
+            const checked = Array.from(group).some(r => r.checked);
+            if (!checked) {
+                alert('Lütfen zorunlu alanları doldurun.');
+                return false;
+            }
+        } else if (el.type === 'checkbox') {
+            if (!el.checked) {
+                alert('Lütfen zorunlu alanları doldurun.');
+                return false;
+            }
+        } else if (!String(el.value || '').trim()) {
+            alert('Lütfen zorunlu alanları doldurun.');
+            el.focus();
+            return false;
+        }
+    }
+
+    // Tüm yıldız alanları dolu mu?
+    const hiddenRatings = form.querySelectorAll('.rating-item input[type="hidden"][name]');
+    for (const hidden of hiddenRatings) {
+        if (!String(hidden.value || '').trim()) {
+            alert('Lütfen tüm departman sorularını puanlayın.');
+            return false;
+        }
+    }
+
+    return true;
 }
 
 async function submitSurvey(form) {
     const data = collectFormData(form);
 
-    // KVKK onayı zorunlu olsun istiyorsanız açın:
-    // if (!data.kvkkOnay) { alert('KVKK onayı gereklidir.'); return; }
+    // KVKK zorunlu olsun istiyorsanız burayı açın:
+    // if (!data.kvkkOnay) {
+    //     alert('KVKK onayı gereklidir.');
+    //     return;
+    // }
 
     try {
         const url = GOOGLE_SCRIPT_URL + '?data=' + encodeURIComponent(JSON.stringify(data));
@@ -207,6 +328,7 @@ async function submitSurvey(form) {
         }
 
         const json = await res.json();
+
         if (json.status === 'success') {
             showThankYou();
         } else {
@@ -241,37 +363,28 @@ function resetForm() {
     initCharCounter();
 }
 
-// ==============================
-// EK AYARLAR
-// ==============================
-function setDefaultDates() {
-    const checkIn = document.getElementById('checkInDate');
-    const checkOut = document.getElementById('checkOutDate');
-
-    if (checkIn && checkOut) {
-        const today = new Date();
-        const yyyy = today.getFullYear();
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        const dd = String(today.getDate()).padStart(2, '0');
-        const todayStr = `${yyyy}-${mm}-${dd}`;
-
-        checkIn.min = todayStr;
-        checkOut.min = todayStr;
-
-        checkIn.addEventListener('change', () => {
-            if (checkIn.value) {
-                checkOut.min = checkIn.value;
-                if (checkOut.value && checkOut.value < checkIn.value) {
-                    checkOut.value = checkIn.value;
-                }
-            }
-        });
-    }
+// ---------------------------------------------------------------------------
+// LANGUAGE HELPERS (translations.js varsa onunla çalışır)
+// ---------------------------------------------------------------------------
+if (typeof window.changeLanguage !== 'function') {
+    window.changeLanguage = function () {
+        console.warn('changeLanguage() translations.js içinde tanımlı değil.');
+    };
 }
 
-// ==============================
+if (typeof window.setLanguage !== 'function') {
+    window.setLanguage = function () {
+        console.warn('setLanguage() translations.js içinde tanımlı değil.');
+        const surveyForm = document.getElementById('surveyForm');
+        const languageSelector = document.getElementById('languageSelector');
+        if (surveyForm) surveyForm.style.display = 'block';
+        if (languageSelector) languageSelector.style.display = 'none';
+    };
+}
+
+// ---------------------------------------------------------------------------
 // DOM READY
-// ==============================
+// ---------------------------------------------------------------------------
 document.addEventListener('DOMContentLoaded', function () {
     initStars();
     initCharCounter();
@@ -282,13 +395,70 @@ document.addEventListener('DOMContentLoaded', function () {
     if (form) {
         form.addEventListener('submit', function (e) {
             e.preventDefault();
-            if (!validateCurrentSection()) return;
+
+            if (!validateEntireForm(form)) return;
             submitSurvey(form);
         });
     }
-
-    const printDate = document.getElementById('printDate');
-    if (printDate) {
-        printDate.textContent = new Date().toLocaleString('tr-TR');
-    }
 });
+
+// ---------------------------------------------------------------------------
+// GLOBAL FUNCTIONS
+// ---------------------------------------------------------------------------
+window.nextSection = nextSection;
+window.prevSection = prevSection;
+window.showKvkk = showKvkk;
+window.closeKvkk = closeKvkk;
+window.resetForm = resetForm;
+window.initStars = initStars;
+```
+
+---
+
+## Çok önemli
+Bu script’in düzgün çalışması için `style.css` içinde yıldızlar için şu CSS de olmalı:
+
+```css
+.stars {
+    display: inline-flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.stars .star {
+    cursor: pointer;
+    font-size: 32px;
+    line-height: 1;
+    color: #d9d9d9;
+    transition: transform 0.15s ease, color 0.15s ease;
+    user-select: none;
+}
+
+.stars .star:hover {
+    transform: translateY(-1px);
+}
+
+.stars .star.selected {
+    color: var(--warning-color);
+}
+
+.stars .star input {
+    display: none;
+}
+```
+
+---
+
+## Bu sürüm neyi düzeltiyor?
+- KVKK artık sadece modal
+- Yıldızlar sadece departman sorularında
+- Bölüm geçişleri düzgün
+- Puanlar hidden input’a yazılıyor
+- Form Apps Script’e gönderiliyor
+- `resetForm()` anketi sıfırlıyor
+- Eksik fonksiyonlar yüzünden hata çıkmıyor
+
+---
+
+İsterseniz bir sonraki mesajda size **`translations.js` için de tam uyumlu son düzeltme paketi** hazırlayayım.
