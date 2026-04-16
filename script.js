@@ -66,7 +66,7 @@ function showStep(n) {
     target.classList.add('active');
     currentStep = n;
     updateProgress();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: 'smooth'
   }
 }
 
