@@ -1,108 +1,175 @@
-'use strict';
-console.log('✅ script.js yüklendi.');
+var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxIa9CA3zdU8pLQPvHxEUQpk3umjLjh_tWeYzQKCDnVWdcEToA0GwnlkL1zsx8LpeI3pw/exec';
 
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxQXQnpJIwj4vvKbSrEVJUmKWGQxJyJiKls2m-hLbMdHpD0cBSewzGGYPe3gtkhBWGR/exec';
-let currentLang = localStorage.getItem('surveyLang') || 'tr';
-let currentStep = 1;
-const totalSteps = 3;
+var currentSection = 1;
+var totalSections = 11;
 
-const i18n = {
-  tr: { pageTitle:"Misafir Anketi", hotelName:"Concordia Celes Hotel", surveyTitle:"Misafir Memnuniyet Anketi", step1Title:"👤 Genel Bilgiler", fullName:"Ad Soyad *", fullNamePh:"Adınız Soyadınız", roomNo:"Oda Numarası *", roomNoPh:"Örn: 305", checkIn:"Giriş Tarihi *", checkOut:"Çıkış Tarihi *", kvkkText:"KVKK Aydınlatma Metni", kvkkLink:"Metni Gör", nextBtn:"İleri →", prevBtn:"← Geri", step2Title:"⭐ Departman Değerlendirmeleri", dept_frontOffice:"ÖN BÜRO RESEPSİYON", q_welcomeGreeting:"Giriş Karşılama", q_checkInProcess:"C/İn İşlemleri", q_facilityInfo:"Tesis Hakkında Bilgilendirme", q_frontDeskCare:"Personelin İlgi ve Nezaketi", q_bellboyService:"Bellboy Hizmetleri", dept_guestRelations:"GUEST RELATIONS", q_grWelcomeQuality:"Karşılama Kalitesi", q_problemSolving:"Sorunları Çözüme Kavuşturma", q_guestFollowUp:"Misafir Takibi", dept_housekeeping:"KAT HİZMETLERİ", q_initialRoomCleaning:"İlk Varışınızda Oda Temizliği", q_roomAppearance:"Oda Fiziki Görünümü ve Konforu", q_dailyRoomCleaning:"Konaklama Süresince Oda Temizliği", q_minibarService:"Minibar Hizmeti", q_publicAreaCleaning:"Genel Alan Temizliği", q_beachPoolCleaning:"Sahil ve Havuz Çevre Temizliği", q_housekeepingStaffCare:"Personelin İlgi ve Nezaketi", dept_foodKitchen:"YİYECEK HİZMETLERİ & MUTFAK", q_breakfastVariety:"Kahvaltı Büfesi Çeşitliliği", q_breakfastQuality:"Kahvaltı Büfesi Sunumu ve Kalitesi", q_lunchVariety:"Öğle Yemeği Büfesi Çeşitliliği", q_lunchQuality:"Öğle Yemeği Sunumu ve Kalitesi", q_dinnerVariety:"Akşam Yemeği Büfesi Çeşitliliği", q_dinnerQuality:"Akşam Yemeği Sunumu ve Kalitesi", q_alacarteQuality:"Alacart Restaurant Yemeği Sunumu ve Kalitesi", q_kitchenHygiene:"Mutfağın Hijyen ve Temizliği", q_foodStaffCare:"Personelin İlgi ve Nezaketi", dept_bars:"SERVİS ve BARLAR", q_poolBarQuality:"Pool Bar Servis Kalitesi", q_lobbyBarQuality:"Lobby Bar Servis Kalitesi", q_snackBarQuality:"Snack Bar Servis Kalitesi", q_drinkQuality:"İçki Kalitesi ve Sunumu", q_barHygiene:"Barların Hijyen ve Temizliği", q_barStaffCare:"Personelin İlgi ve Nezaketi", dept_restaurant:"RESTAURANT HİZMETLERİ", q_restaurantLayout:"Restaurant Düzeni ve Kalitesi", q_restaurantCapacity:"Restaurant Yer Yeterliliği", q_restaurantHygiene:"Restaurant Hijyen ve Temizliği", q_snackbarRestaurant:"Snackbar Restaurant Hizmeti", q_alacarteRestaurant:"Alacart Restaurant Hizmeti ve Personel İlgisi", q_restaurantStaffCare:"Personelin İlgi ve Nezaketi", dept_technical:"TEKNİK SERVİS", q_roomTechnicalSystems:"Oda Teknik Sistemleri", q_maintenanceResponse:"Arıza Bildirimi ve Giderme", q_environmentLighting:"Çevre Aydınlatma ve Düzeni", q_poolWaterCleaning:"Havuz Suyu Temizliği", q_technicalStaffCare:"Personelin İlgi ve Nezaketi", dept_entertainment:"EĞLENCE HİZMETLERİ", q_daytimeActivities:"Animasyon Ekibi ile Gündüz Aktiviteleri", q_sportsAreas:"Aktivite ve Spor Alanları ve Ekipmanları", q_eveningShows:"Akşam Aktiviteleri ve Showlar", q_miniclubActivities:"Miniclub Aktiviteleri", q_entertainmentStaffCare:"Personelin İlgi ve Nezaketi", dept_other:"DİĞER HİZMETLER", q_landscaping:"Genel Düzenleme / Peyzaj", q_spaServices:"Sauna-Hamam Hizmetleri", q_shopBehavior:"Hotel Genel Esnaf Davranışları", q_priceQuality:"Fiyat Kalitesi ve İlişkisi", step3Title:"💬 Önerileriniz & Sonuç", q_previousStay:"Otelimizde Daha Önce Bulundunuz Mu? *", yes:"Evet", no:"Hayır", q_praisedStaff:"Hizmetinden Dolayı Övgüye Bulunduğunuz Personelin İsmi", praisedStaffPh:"Personel ismi...", q_comments:"Genel Düşünce ve Yorumlarınız (0-500 karakter)", commentsPh:"Yorumunuzu yazın...", q_willReturn:"Tekrar Gelir Misiniz? *", q_recommend:"Bizi Çevrenize Tavsiye Eder Misiniz? *", submitBtn:"✅ Anketi Gönder", thankTitle:"Teşekkür Ederiz!", thankMsg:"Değerli görüşleriniz başarıyla kaydedildi.", newSurvey:"Yeni Anket", kvkkModalTitle:"KVKK Aydınlatma Metni", kvkkModalText:"Kişisel verileriniz anket değerlendirme ve hizmet kalitesi artırma amaçlarıyla işlenmektedir. Verileriniz 2 yıl süreyle saklanacak olup, dilediğiniz zaman silinmesini talep edebilirsiniz.", closeBtn:"Anladım, Kapat", alertRequired:"Lütfen zorunlu alanları doldurun.", alertKvkk:"Lütfen KVKK onayını verin.", alertStars:"Lütfen tüm soruları yıldızlarla puanlayın.", alertDate:"Çıkış tarihi, giriş tarihinden sonra olmalıdır.", welcomeTitle:"Hoş Geldiniz", selectLang:"Lütfen dilinizi seçin" },
-  en: { pageTitle:"Guest Survey", hotelName:"Concordia Celes Hotel", surveyTitle:"Guest Satisfaction Survey", step1Title:"👤 General Info", fullName:"Full Name *", fullNamePh:"Your Full Name", roomNo:"Room Number *", roomNoPh:"e.g. 305", checkIn:"Check-in Date *", checkOut:"Check-out Date *", kvkkText:"KVKK Clarification Text", kvkkLink:"View Text", nextBtn:"Next →", prevBtn:"← Back", step2Title:"⭐ Department Evaluation", dept_frontOffice:"FRONT OFFICE", q_welcomeGreeting:"Welcome Greeting", q_checkInProcess:"Check-in Process", q_facilityInfo:"Facility Information", q_frontDeskCare:"Staff Care & Courtesy", q_bellboyService:"Bellboy Services", dept_guestRelations:"GUEST RELATIONS", q_grWelcomeQuality:"Welcome Quality", q_problemSolving:"Problem Resolution", q_guestFollowUp:"Guest Follow-up", dept_housekeeping:"HOUSEKEEPING", q_initialRoomCleaning:"Initial Room Cleaning", q_roomAppearance:"Room Appearance & Comfort", q_dailyRoomCleaning:"Daily Room Cleaning", q_minibarService:"Minibar Service", q_publicAreaCleaning:"Public Area Cleaning", q_beachPoolCleaning:"Beach & Pool Area Cleaning", q_housekeepingStaffCare:"Staff Care & Courtesy", dept_foodKitchen:"FOOD & KITCHEN", q_breakfastVariety:"Breakfast Buffet Variety", q_breakfastQuality:"Breakfast Presentation & Quality", q_lunchVariety:"Lunch Buffet Variety", q_lunchQuality:"Lunch Presentation & Quality", q_dinnerVariety:"Dinner Buffet Variety", q_dinnerQuality:"Dinner Presentation & Quality", q_alacarteQuality:"A la Carte Quality", q_kitchenHygiene:"Kitchen Hygiene & Cleanliness", q_foodStaffCare:"Staff Care & Courtesy", dept_bars:"BARS & SERVICE", q_poolBarQuality:"Pool Bar Service Quality", q_lobbyBarQuality:"Lobby Bar Service Quality", q_snackBarQuality:"Snack Bar Service Quality", q_drinkQuality:"Drink Quality & Presentation", q_barHygiene:"Bar Hygiene & Cleanliness", q_barStaffCare:"Staff Care & Courtesy", dept_restaurant:"RESTAURANT SERVICES", q_restaurantLayout:"Restaurant Layout & Quality", q_restaurantCapacity:"Restaurant Capacity", q_restaurantHygiene:"Restaurant Hygiene & Cleanliness", q_snackbarRestaurant:"Snackbar Restaurant Service", q_alacarteRestaurant:"A la Carte Service & Staff Care", q_restaurantStaffCare:"Staff Care & Courtesy", dept_technical:"TECHNICAL SERVICE", q_roomTechnicalSystems:"Room Technical Systems", q_maintenanceResponse:"Maintenance Request & Resolution", q_environmentLighting:"Environment Lighting & Layout", q_poolWaterCleaning:"Pool Water Cleaning", q_technicalStaffCare:"Staff Care & Courtesy", dept_entertainment:"ENTERTAINMENT", q_daytimeActivities:"Daytime Activities with Animation Team", q_sportsAreas:"Sports Areas & Equipment", q_eveningShows:"Evening Activities & Shows", q_miniclubActivities:"Miniclub Activities", q_entertainmentStaffCare:"Staff Care & Courtesy", dept_other:"OTHER SERVICES", q_landscaping:"General Layout / Landscaping", q_spaServices:"Sauna & Hammam Services", q_shopBehavior:"Hotel General Vendor Behavior", q_priceQuality:"Price Quality & Relationship", step3Title:"💬 Suggestions & Result", q_previousStay:"Have you stayed with us before? *", yes:"Yes", no:"No", q_praisedStaff:"Name of Staff Member to Praise", praisedStaffPh:"Staff name...", q_comments:"General Comments (0-500 chars)", commentsPh:"Write your comments...", q_willReturn:"Will you return? *", q_recommend:"Would you recommend us? *", submitBtn:"✅ Submit Survey", thankTitle:"Thank You!", thankMsg:"Your valuable feedback has been recorded.", newSurvey:"New Survey", kvkkModalTitle:"KVKK Clarification Text", kvkkModalText:"Your personal data is processed for survey evaluation and service quality improvement. Data will be kept for 2 years and can be deleted upon request.", closeBtn:"Understood, Close", alertRequired:"Please fill in required fields.", alertKvkk:"Please accept KVKK consent.", alertStars:"Please rate all questions with stars.", alertDate:"Check-out date must be after check-in date.", welcomeTitle:"Welcome", selectLang:"Please select your language" },
-  de: { pageTitle:"Gästebefragung", hotelName:"Concordia Celes Hotel", surveyTitle:"Gästebefragungsformular", step1Title:"👤 Allgemeine Infos", fullName:"Vor- und Nachname *", fullNamePh:"Ihr vollständiger Name", roomNo:"Zimmernummer *", roomNoPh:"z.B. 305", checkIn:"Anreisedatum *", checkOut:"Abreisedatum *", kvkkText:"KVKK-Hinweis", kvkkLink:"Text ansehen", nextBtn:"Weiter →", prevBtn:"← Zurück", step2Title:"⭐ Abteilungsbewertung", dept_frontOffice:"REZEPTION", q_welcomeGreeting:"Begrüßung", q_checkInProcess:"Check-in Prozess", q_facilityInfo:"Einrichtungsinformation", q_frontDeskCare:"Personalbetreuung", q_bellboyService:"Gepäckdienst", dept_guestRelations:"GUEST RELATIONS", q_grWelcomeQuality:"Begrüßungsqualität", q_problemSolving:"Problemlösung", q_guestFollowUp:"Gästebetreuung", dept_housekeeping:"HAUSHALT", q_initialRoomCleaning:"Erste Zimmerreinigung", q_roomAppearance:"Zimmeraussehen & Komfort", q_dailyRoomCleaning:"Tägliche Zimmerreinigung", q_minibarService:"Minibar-Service", q_publicAreaCleaning:"Reinigung öffentlicher Bereiche", q_beachPoolCleaning:"Strand- & Poolbereichsreinigung", q_housekeepingStaffCare:"Personalbetreuung", dept_foodKitchen:"KÜCHE & SPEISEN", q_breakfastVariety:"Frühstücksbuffet Vielfalt", q_breakfastQuality:"Frühstück Präsentation & Qualität", q_lunchVariety:"Mittagsbuffet Vielfalt", q_lunchQuality:"Mittagessen Präsentation & Qualität", q_dinnerVariety:"Abendbuffet Vielfalt", q_dinnerQuality:"Abendessen Präsentation & Qualität", q_alacarteQuality:"À-la-carte Qualität", q_kitchenHygiene:"Küchenhygiene & Sauberkeit", q_foodStaffCare:"Personalbetreuung", dept_bars:"BARS & SERVICE", q_poolBarQuality:"Poolbar Servicequalität", q_lobbyBarQuality:"Lobbybar Servicequalität", q_snackBarQuality:"Snackbar Servicequalität", q_drinkQuality:"Getränkequalität & Präsentation", q_barHygiene:"Barhygiene & Sauberkeit", q_barStaffCare:"Personalbetreuung", dept_restaurant:"RESTAURANTDIENSTLEISTUNGEN", q_restaurantLayout:"Restaurantlayout & Qualität", q_restaurantCapacity:"Restaurantkapazität", q_restaurantHygiene:"Restauranthygiene & Sauberkeit", q_snackbarRestaurant:"Snackbar-Restaurantservice", q_alacarteRestaurant:"À-la-carte-Service & Personalbetreuung", q_restaurantStaffCare:"Personalbetreuung", dept_technical:"TECHNISCHER DIENST", q_roomTechnicalSystems:"Zimmertechniksysteme", q_maintenanceResponse:"Wartungsanfrage & Lösung", q_environmentLighting:"Umgebungsbeleuchtung & Layout", q_poolWaterCleaning:"Poolwasserreinigung", q_technicalStaffCare:"Personalbetreuung", dept_entertainment:"UNTERHALTUNG", q_daytimeActivities:"Tagesaktivitäten mit Animationsteam", q_sportsAreas:"Sportbereiche & Ausrüstung", q_eveningShows:"Abendaktivitäten & Shows", q_miniclubActivities:"Miniclub-Aktivitäten", q_entertainmentStaffCare:"Personalbetreuung", dept_other:"SONSTIGE DIENSTLEISTUNGEN", q_landscaping:"Allgemeine Gestaltung / Landschaft", q_spaServices:"Sauna & Hammam Dienste", q_shopBehavior:"Allgemeines Vendor-Verhalten", q_priceQuality:"Preis-Leistungs-Verhältnis", step3Title:"💬 Vorschläge & Ergebnis", q_previousStay:"Waren Sie schon einmal bei uns? *", yes:"Ja", no:"Nein", q_praisedStaff:"Name des zu lobenden Personals", praisedStaffPh:"Personalname...", q_comments:"Allgemeine Kommentare (0-500 Z.)", commentsPh:"Kommentar schreiben...", q_willReturn:"Werden Sie wiederkommen? *", q_recommend:"Würden Sie uns weiterempfehlen? *", submitBtn:"✅ Umfrage absenden", thankTitle:"Vielen Dank!", thankMsg:"Ihr wertvolles Feedback wurde gespeichert.", newSurvey:"Neue Umfrage", kvkkModalTitle:"KVKK-Hinweis", kvkkModalText:"Ihre personenbezogenen Daten werden zur Umfrageauswertung und Serviceverbesserung verarbeitet. Daten werden 2 Jahre aufbewahrt und können auf Antrag gelöscht werden.", closeBtn:"Verstanden, Schließen", alertRequired:"Bitte füllen Sie die Pflichtfelder aus.", alertKvkk:"Bitte stimmen Sie der KVKK-Einwilligung zu.", alertStars:"Bitte bewerten Sie alle Fragen mit Sternen.", alertDate:"Das Abreisedatum muss nach dem Anreisedatum liegen.", welcomeTitle:"Willkommen", selectLang:"Bitte wählen Sie Ihre Sprache" },
-  ru: { pageTitle:"Анкета гостя", hotelName:"Concordia Celes Hotel", surveyTitle:"Анкета удовлетворенности", step1Title:"👤 Общая информация", fullName:"ФИО *", fullNamePh:"Ваше полное имя", roomNo:"Номер комнаты *", roomNoPh:"Например: 305", checkIn:"Дата заезда *", checkOut:"Дата выезда *", kvkkText:"Текст KVKK", kvkkLink:"Посмотреть текст", nextBtn:"Далее →", prevBtn:"← Назад", step2Title:"⭐ Оценка отделов", dept_frontOffice:"РЕЦЕПЦИЯ", q_welcomeGreeting:"Приветствие", q_checkInProcess:"Процесс заселения", q_facilityInfo:"Информация об объекте", q_frontDeskCare:"Внимание персонала", q_bellboyService:"Услуги носильщика", dept_guestRelations:"GUEST RELATIONS", q_grWelcomeQuality:"Качество приветствия", q_problemSolving:"Решение проблем", q_guestFollowUp:"Сопровождение гостя", dept_housekeeping:"СЛУЖБА ПОРЯДКА", q_initialRoomCleaning:"Первая уборка номера", q_roomAppearance:"Внешний вид и комфорт номера", q_dailyRoomCleaning:"Ежедневная уборка", q_minibarService:"Мини-бар", q_publicAreaCleaning:"Уборка общих зон", q_beachPoolCleaning:"Уборка пляжа и бассейна", q_housekeepingStaffCare:"Внимание персонала", dept_foodKitchen:"КУХНЯ И ПИТАНИЕ", q_breakfastVariety:"Разнообразие завтрака", q_breakfastQuality:"Подача и качество завтрака", q_lunchVariety:"Разнообразие обеда", q_lunchQuality:"Подача и качество обеда", q_dinnerVariety:"Разнообразие ужина", q_dinnerQuality:"Подача и качество ужина", q_alacarteQuality:"Качество à la carte", q_kitchenHygiene:"Гигиена и чистота кухни", q_foodStaffCare:"Внимание персонала", dept_bars:"БАРЫ И ОБСЛУЖИВАНИЕ", q_poolBarQuality:"Качество обслуживания у бассейна", q_lobbyBarQuality:"Качество обслуживания в лобби-баре", q_snackBarQuality:"Качество обслуживания в снек-баре", q_drinkQuality:"Качество и подача напитков", q_barHygiene:"Гигиена и чистота баров", q_barStaffCare:"Внимание персонала", dept_restaurant:"РЕСТОРАННЫЕ УСЛУГИ", q_restaurantLayout:"Планировка и качество ресторана", q_restaurantCapacity:"Вместимость ресторана", q_restaurantHygiene:"Гигиена и чистота ресторана", q_snackbarRestaurant:"Обслуживание в снек-ресторане", q_alacarteRestaurant:"Обслуживание à la carte и внимание персонала", q_restaurantStaffCare:"Внимание персонала", dept_technical:"ТЕХНИЧЕСКАЯ СЛУЖБА", q_roomTechnicalSystems:"Технические системы номера", q_maintenanceResponse:"Сообщение и устранение неисправностей", q_environmentLighting:"Освещение и планировка территории", q_poolWaterCleaning:"Очистка воды в бассейне", q_technicalStaffCare:"Внимание персонала", dept_entertainment:"РАЗВЛЕЧЕНИЯ", q_daytimeActivities:"Дневные мероприятия с аниматорами", q_sportsAreas:"Спортивные зоны и оборудование", q_eveningShows:"Вечерние мероприятия и шоу", q_miniclubActivities:"Мероприятия мини-клуба", q_entertainmentStaffCare:"Внимание персонала", dept_other:"ПРОЧИЕ УСЛУГИ", q_landscaping:"Общее благоустройство / Ландшафт", q_spaServices:"Услуги сауны и хаммама", q_shopBehavior:"Поведение персонала отелей/магазинов", q_priceQuality:"Соотношение цены и качества", step3Title:"💬 Ваши предложения и итог", q_previousStay:"Вы останавливались у нас раньше? *", yes:"Да", no:"Нет", q_praisedStaff:"Имя сотрудника, которого хотите похвалить", praisedStaffPh:"Имя сотрудника...", q_comments:"Общие мысли и комментарии (0-500 символов)", commentsPh:"Напишите ваш отзыв...", q_willReturn:"Вы вернетесь к нам снова? *", q_recommend:"Порекомендуете ли вы нас друзьям? *", submitBtn:"✅ Отправить анкету", thankTitle:"Спасибо!", thankMsg:"Ваш ценный отзыв успешно сохранен.", newSurvey:"Новая анкета", kvkkModalTitle:"Текст KVKK", kvkkModalText:"Ваши персональные данные обрабатываются для оценки анкеты и улучшения качества обслуживания. Данные хранятся 2 года и могут быть удалены по запросу.", closeBtn:"Понятно, Закрыть", alertRequired:"Пожалуйста, заполните обязательные поля.", alertKvkk:"Пожалуйста, примите согласие KVKK.", alertStars:"Пожалуйста, оцените все вопросы звездами.", alertDate:"Дата выезда должна быть позже даты заезда.", welcomeTitle:"Добро пожаловать", selectLang:"Пожалуйста, выберите язык" },
-  pl: { pageTitle:"Ankieta gościa", hotelName:"Concordia Celes Hotel", surveyTitle:"Ankieta satysfakcji", step1Title:"👤 Informacje ogólne", fullName:"Imię i nazwisko *", fullNamePh:"Twoje pełne imię", roomNo:"Numer pokoju *", roomNoPh:"np. 305", checkIn:"Data przyjazdu *", checkOut:"Data wyjazdu *", kvkkText:"Tekst KVKK", kvkkLink:"Zobacz tekst", nextBtn:"Dalej →", prevBtn:"← Wstecz", step2Title:"⭐ Ocena działów", dept_frontOffice:"RECEPCJA", q_welcomeGreeting:"Powitanie", q_checkInProcess:"Proces zameldowania", q_facilityInfo:"Informacje o obiekcie", q_frontDeskCare:"Opieka personelu", q_bellboyService:"Usługi bagażowe", dept_guestRelations:"GUEST RELATIONS", q_grWelcomeQuality:"Jakość powitania", q_problemSolving:"Rozwiązywanie problemów", q_guestFollowUp:"Opieka nad gościem", dept_housekeeping:"SŁUŻBA PIĘTER", q_initialRoomCleaning:"Pierwsze sprzątanie pokoju", q_roomAppearance:"Wygląd i komfort pokoju", q_dailyRoomCleaning:"Codzienne sprzątanie", q_minibarService:"Minibar", q_publicAreaCleaning:"Sprzątanie stref wspólnych", q_beachPoolCleaning:"Sprzątanie plaży i basenu", q_housekeepingStaffCare:"Opieka personelu", dept_foodKitchen:"KUCHNIA I GASTRONOMIA", q_breakfastVariety:"Różnorodność śniadania", q_breakfastQuality:"Podanie i jakość śniadania", q_lunchVariety:"Różnorodność obiadu", q_lunchQuality:"Podanie i jakość obiadu", q_dinnerVariety:"Różnorodność kolacji", q_dinnerQuality:"Podanie i jakość kolacji", q_alacarteQuality:"Jakość à la carte", q_kitchenHygiene:"Higiena i czystość kuchni", q_foodStaffCare:"Opieka personelu", dept_bars:"BARY I OBSŁUGA", q_poolBarQuality:"Jakość obsługi przy basenie", q_lobbyBarQuality:"Jakość obsługi w lobby barze", q_snackBarQuality:"Jakość obsługi w snack barze", q_drinkQuality:"Jakość i podanie napojów", q_barHygiene:"Higiena i czystość barów", q_barStaffCare:"Opieka personelu", dept_restaurant:"USŁUGI RESTAURACYJNE", q_restaurantLayout:"Układ i jakość restauracji", q_restaurantCapacity:"Pojemność restauracji", q_restaurantHygiene:"Higiena i czystość restauracji", q_snackbarRestaurant:"Obsługa w snack restauracji", q_alacarteRestaurant:"Obsługa à la carte i opieka personelu", q_restaurantStaffCare:"Opieka personelu", dept_technical:"SŁUŻBA TECHNICZNA", q_roomTechnicalSystems:"Systemy techniczne pokoju", q_maintenanceResponse:"Zgłoszenie i usuwanie usterek", q_environmentLighting:"Oświetlenie i układ terenu", q_poolWaterCleaning:"Czyszczenie wody w basenie", q_technicalStaffCare:"Opieka personelu", dept_entertainment:"ROZRYWKA", q_daytimeActivities:"Dzienné aktywności z zespołem animacji", q_sportsAreas:"Strefy sportowe i sprzęt", q_eveningShows:"Wieczorne aktywności i pokazy", q_miniclubActivities:"Aktywności mini klubu", q_entertainmentStaffCare:"Opieka personelu", dept_other:"INNE USŁUGI", q_landscaping:"Ogólne zagospodarowanie / Krajobraz", q_spaServices:"Usługi sauny i hammamu", q_shopBehavior:"Zachowanie personelu sklepów/hotelu", q_priceQuality:"Stosunek jakości do ceny", step3Title:"💬 Twoje sugestie i wynik", q_previousStay:"Czy byłeś u nas wcześniej? *", yes:"Tak", no:"Nie", q_praisedStaff:"Imię pracownika do pochwały", praisedStaffPh:"Imię pracownika...", q_comments:"Ogólne myśli i komentarze (0-500 znaków)", commentsPh:"Napisz swoją opinię...", q_willReturn:"Czy wrócisz do nas? *", q_recommend:"Czy polecisz nas znajomym? *", submitBtn:"✅ Wyślij ankietę", thankTitle:"Dziękujemy!", thankMsg:"Twoja cenna opinia została zapisana.", newSurvey:"Nowa ankieta", kvkkModalTitle:"Tekst KVKK", kvkkModalText:"Twoje dane osobowe są przetwarzane w celu oceny ankiety i poprawy jakości usług. Dane będą przechowywane przez 2 lata i mogą zostać usunięte na żądanie.", closeBtn:"Zrozumiałem, Zamknij", alertRequired:"Proszę wypełnić wymagane pola.", alertKvkk:"Proszę zaakceptować zgodę KVKK.", alertStars:"Proszę ocenić wszystkie pytania gwiazdkami.", alertDate:"Data wyjazdu musi być późniejsza niż data przyjazdu.", welcomeTitle:"Witamy", selectLang:"Proszę wybrać język" },
-  ro: { pageTitle:"Chestionar oaspeți", hotelName:"Concordia Celes Hotel", surveyTitle:"Chestionar de satisfacție", step1Title:"👤 Informații generale", fullName:"Nume și prenume *", fullNamePh:"Numele dvs. complet", roomNo:"Număr cameră *", roomNoPh:"ex: 305", checkIn:"Data sosirii *", checkOut:"Data plecării *", kvkkText:"Text KVKK", kvkkLink:"Vezi textul", nextBtn:"Următorul →", prevBtn:"← Înapoi", step2Title:"⭐ Evaluare departamente", dept_frontOffice:"RECEPȚIE", q_welcomeGreeting:"Salut de bun venit", q_checkInProcess:"Proces check-in", q_facilityInfo:"Informații facilități", q_frontDeskCare:"Atenția personalului", q_bellboyService:"Servicii bagaje", dept_guestRelations:"GUEST RELATIONS", q_grWelcomeQuality:"Calitatea salutului", q_problemSolving:"Rezolvarea problemelor", q_guestFollowUp:"Urmărirea oaspeților", dept_housekeeping:"SERVICII DE CAMERĂ", q_initialRoomCleaning:"Curățenia inițială a camerei", q_roomAppearance:"Aspectul și confortul camerei", q_dailyRoomCleaning:"Curățenia zilnică", q_minibarService:"Serviciu minibar", q_publicAreaCleaning:"Curățenia zonelor comune", q_beachPoolCleaning:"Curățenia plajei și piscinei", q_housekeepingStaffCare:"Atenția personalului", dept_foodKitchen:"BUCĂTĂRIE ȘI RESTAURANT", q_breakfastVariety:"Varietatea micului dejun", q_breakfastQuality:"Prezentarea și calitatea micului dejun", q_lunchVariety:"Varietatea prânzului", q_lunchQuality:"Prezentarea și calitatea prânzului", q_dinnerVariety:"Varietatea cinei", q_dinnerQuality:"Prezentarea și calitatea cinei", q_alacarteQuality:"Calitatea à la carte", q_kitchenHygiene:"Igiena și curățenia bucătăriei", q_foodStaffCare:"Atenția personalului", dept_bars:"BARURI ȘI SERVICII", q_poolBarQuality:"Calitatea serviciului la barul piscinei", q_lobbyBarQuality:"Calitatea serviciului la lobby bar", q_snackBarQuality:"Calitatea serviciului la snack bar", q_drinkQuality:"Calitatea și prezentarea băuturilor", q_barHygiene:"Igiena și curățenia barurilor", q_barStaffCare:"Atenția personalului", dept_restaurant:"SERVICII RESTAURANT", q_restaurantLayout:"Amenajarea și calitatea restaurantului", q_restaurantCapacity:"Capacitatea restaurantului", q_restaurantHygiene:"Igiena și curățenia restaurantului", q_snackbarRestaurant:"Serviciul snack restaurant", q_alacarteRestaurant:"Serviciul à la carte și atenția personalului", q_restaurantStaffCare:"Atenția personalului", dept_technical:"SERVICIU TEHNIC", q_roomTechnicalSystems:"Sisteme tehnice cameră", q_maintenanceResponse:"Raportarea și remedierea defecțiunilor", q_environmentLighting:"Iluminarea și amenajarea mediului", q_poolWaterCleaning:"Curățarea apei piscinei", q_technicalStaffCare:"Atenția personalului", dept_entertainment:"ENTERTAINMENT", q_daytimeActivities:"Activități de zi cu echipa de animație", q_sportsAreas:"Zone sportive și echipamente", q_eveningShows:"Activități de seară și spectacole", q_miniclubActivities:"Activități miniclub", q_entertainmentStaffCare:"Atenția personalului", dept_other:"ALTE SERVICII", q_landscaping:"Amenajare generală / Peisagistică", q_spaServices:"Servicii saună-hamam", q_shopBehavior:"Comportamentul general al personalului/magazinelor", q_priceQuality:"Raportul calitate-preț", step3Title:"💬 Sugestiile dvs. și rezultat", q_previousStay:"Ați mai stat la noi înainte? *", yes:"Da", no:"Nu", q_praisedStaff:"Numele personalului de lăudat", praisedStaffPh:"Numele angajatului...", q_comments:"Gânduri și comentarii generale (0-500 caractere)", commentsPh:"Scrieți părerea dvs...", q_willReturn:"Veți reveni? *", q_recommend:"Ne-ați recomanda prietenilor? *", submitBtn:"✅ Trimite chestionarul", thankTitle:"Mulțumim!", thankMsg:"Feedback-ul tău valoros a fost înregistrat.", newSurvey:"Chestionar nou", kvkkModalTitle:"Text KVKK", kvkkModalText:"Datele dvs. cu caracter personal sunt procesate pentru evaluarea chestionarului și îmbunătățirea calității serviciilor. Datele vor fi păstrate 2 ani și pot fi șterse la cerere.", closeBtn:"Am înțeles, Închide", alertRequired:"Vă rugăm să completați câmpurile obligatorii.", alertKvkk:"Vă rugăm să acceptați consimțământul KVKK.", alertStars:"Vă rugăm să evaluați toate întrebările cu stele.", alertDate:"Data plecării trebuie să fie după data sosirii.", welcomeTitle:"Bine ați venit", selectLang:"Vă rugăm să selectați limba" }
-};
-
-// 🔹 DİL DEĞİŞTİRME
-function setLang(lang) {
-  if (!i18n[lang]) return;
-  currentLang = lang;
-  localStorage.setItem('surveyLang', lang);
-  document.documentElement.lang = lang;
-  
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.getAttribute('data-i18n');
-    if (i18n[lang][key]) el.textContent = i18n[lang][key];
-  });
-  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-    const key = el.getAttribute('data-i18n-placeholder');
-    if (i18n[lang][key]) el.placeholder = i18n[lang][key];
-  });
-  document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
-}
-
-// 🔹 DİL SEÇİM & BAŞLATMA
-function selectLang(lang) {
-  localStorage.setItem('surveyLang', lang);
-  startSurvey(lang);
-}
-
-function startSurvey(lang) {
-  setLang(lang);
-  const langScreen = document.getElementById('langScreen');
-  if (langScreen) langScreen.classList.add('hidden');
-  
-  const container = document.getElementById('surveyContainer');
-  if (container) {
-    container.style.display = 'block';
-    container.classList.add('fade-in-up');
-  }
-  
-  initStars();
-  handleCharCount();
-  updateProgress();
-  showStep(1);
-  console.log('🚀 Anket başlatıldı. Dil:', lang.toUpperCase());
-}
-
-// 🔹 ADIM GÖSTERME
-function showStep(n) {
-  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-  const target = document.querySelector(`.step[data-step="${n}"]`);
-  if (target) {
-    target.classList.add('active');
-    currentStep = n;
-    updateProgress();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-}
-
-function nextStep() {
-  if (!validateStep(currentStep)) return;
-  showStep(currentStep + 1);
-}
-function prevStep() { showStep(currentStep - 1); }
-
-// 🔹 VALIDASYON
-function validateStep(step) {
-  const section = document.querySelector(`.step[data-step="${step}"]`);
-  if (!section) return true;
-  const required = section.querySelectorAll('[required]');
-  
-  for (const el of required) {
-    if (el.type === 'checkbox' && !el.checked) { alert(i18n[currentLang].alertKvkk); el.focus(); return false; }
-    if (el.type === 'hidden' && !el.value) { alert(i18n[currentLang].alertStars); return false; }
-    if (el.type !== 'hidden' && !el.value.trim()) { alert(i18n[currentLang].alertRequired); el.focus(); return false; }
-  }
-  
-  if (step === 1) {
-    const checkIn = section.querySelector('[name="checkIn"]');
-    const checkOut = section.querySelector('[name="checkOut"]');
-    if (checkIn && checkOut && checkIn.value && checkOut.value && new Date(checkOut.value) <= new Date(checkIn.value)) {
-      alert(i18n[currentLang].alertDate);
-      checkOut.focus();
-      return false;
+document.addEventListener('DOMContentLoaded', function() {
+    initStars();
+    
+    var form = document.getElementById('mainForm');
+    if(form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            var formData = new FormData(this);
+            var data = {};
+            formData.forEach(function(value, key) {
+                data[key] = value;
+            });
+            data.date = new Date().toLocaleString('tr-TR');
+            
+            // LocalStorage yedek
+            var surveys = JSON.parse(
+                localStorage.getItem('hotelSurveys') || '[]'
+            );
+            surveys.push(data);
+            localStorage.setItem(
+                'hotelSurveys', 
+                JSON.stringify(surveys)
+            );
+            
+            // Google Sheets'e gonder
+            var encodedData = encodeURIComponent(
+                JSON.stringify(data)
+            );
+            var img = new Image();
+            img.src = GOOGLE_SCRIPT_URL + 
+                '?data=' + encodedData;
+            console.log('Gonderildi!');
+            
+            // Tesekkur ekrani
+            document.getElementById('surveyForm')
+                .style.display = 'none';
+            document.getElementById('thankYou')
+                .style.display = 'block';
+        });
     }
-  }
-  return true;
+});
+
+function initStars() {
+    document.querySelectorAll('.stars').forEach(
+        function(container) {
+            if(container.children.length === 0) {
+                for(var i=1; i<=5; i++) {
+                    var s = document.createElement('span');
+                    s.className = 'star';
+                    s.dataset.value = i;
+                    s.textContent = '★';
+                    container.appendChild(s);
+                }
+            }
+            var hiddenInput = document.querySelector(
+                'input[name="' + container.dataset.name + '"]'
+            );
+            var stars = container.querySelectorAll('.star');
+            if(hiddenInput && hiddenInput.value) {
+                highlightStars(stars, hiddenInput.value);
+            }
+            stars.forEach(function(star) {
+                star.addEventListener('mouseenter', function() {
+                    highlightStars(stars, star.dataset.value);
+                });
+                star.addEventListener('mouseleave', function() {
+                    highlightStars(
+                        stars, 
+                        hiddenInput ? hiddenInput.value : 0
+                    );
+                });
+                star.addEventListener('click', function() {
+                    if(hiddenInput) {
+                        hiddenInput.value = star.dataset.value;
+                    }
+                    highlightStars(stars, star.dataset.value);
+                });
+            });
+        }
+    );
 }
 
-// 🔹 YILDIZ SİSTEMİ
-function initStars() {
-  document.querySelectorAll('.stars').forEach(container => {
-    if (container.dataset.ready === '1') return;
-    container.dataset.ready = '1';
-    container.style.direction = 'ltr';
-    container.style.unicodeBidi = 'isolate
+function highlightStars(stars, value) {
+    stars.forEach(function(s) {
+        s.classList.toggle(
+            'selected',
+            parseInt(s.dataset.value) <= parseInt(value || 0)
+        );
+    });
+}
+
+function nextSection(current) {
+    var section = document.getElementById('section' + current);
+    
+    // Text ve select kontrol
+    var inputs = section.querySelectorAll(
+        'input[type="text"][required], select[required]'
+    );
+    var bos = false;
+    inputs.forEach(function(input) {
+        if(input.value.trim() === '') {
+            bos = true;
+        }
+    });
+    if(bos) {
+        alert("Lutfen zorunlu alanlari doldurun.");
+        return;
+    }
+    
+    // Radio kontrol
+    var radioGroups = {};
+    section.querySelectorAll(
+        'input[type="radio"][required]'
+    ).forEach(function(radio) {
+        radioGroups[radio.name] = true;
+    });
+    
+    for(var name in radioGroups) {
+        var checked = section.querySelector(
+            'input[name="' + name + '"]:checked'
+        );
+        if(!checked) {
+            alert("Lutfen bir secim yapin.");
+            return;
+        }
+    }
+    
+    // Ileri git
+    document.getElementById('section' + current)
+        .classList.remove('active');
+    document.getElementById('section' + (current + 1))
+        .classList.add('active');
+    
+    var progressPct = ((current + 1) / totalSections * 100);
+    document.getElementById('progressBar').style.width = 
+        progressPct + '%';
+    document.getElementById('progressText').textContent = 
+        Math.round(progressPct) + '%';
+    
+    window.scrollTo({top: 0, behavior: 'smooth'});
+    initStars();
+}
+
+function prevSection(current) {
+    document.getElementById('section' + current)
+        .classList.remove('active');
+    document.getElementById('section' + (current - 1))
+        .classList.add('active');
+    
+    var pct = ((current - 2) / totalSections * 100);
+    document.getElementById('progressBar').style.width = 
+        pct + '%';
+    document.getElementById('progressText').textContent = 
+        Math.round(pct) + '%';
+}
+
+function resetForm() {
+    document.getElementById('mainForm').reset();
+    document.getElementById('surveyForm').style.display = 'none';
+    document.getElementById('thankYou').style.display = 'none';
+    document.getElementById('languageSelector').style.display = 'block';
+    document.getElementById('progressBar').style.width = '0%';
+    document.getElementById('progressText').textContent = '0%';
+    currentSection = 1;
+    document.querySelectorAll('.section').forEach(function(s) {
+        s.classList.remove('active');
+    });
+    document.getElementById('section1').classList.add('active');
+}
