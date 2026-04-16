@@ -39,10 +39,8 @@ function setLang(lang) {
 document.addEventListener('DOMContentLoaded', () => {
   const savedLang = localStorage.getItem('surveyLang');
   if (savedLang && i18n[savedLang]) {
-    // Daha önce dil seçilmişse direkt anketi başlat
     startSurvey(savedLang);
   } else {
-    // İlk kez açılıyorsa dil ekranını göster
     document.getElementById('langScreen').classList.remove('hidden');
   }
 });
@@ -57,9 +55,7 @@ function startSurvey(lang) {
   document.getElementById('langScreen').classList.add('hidden');
   const container = document.getElementById('surveyContainer');
   container.style.display = 'block';
-  container.classList.add('fade-in-up');
   
-  // Bileşenleri başlat
   initStars();
   handleCharCount();
   updateProgress();
