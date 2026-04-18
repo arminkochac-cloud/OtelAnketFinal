@@ -1,4 +1,4 @@
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxIa9CA3zdU8pLQPvHxEUQpk3umjLjh_tWeYzQKCDnVWdcEToA0GwnlkL1zsx8LpeI3pw/exec';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyKdyuBxdAkMIysfkeWBWnvTs5zij85uckBxojxbU6CEMupe8DDdaiK4Sp6Cr_d0H6K4Q/exec';
 
 let currentSection = 1;
 const totalSections = 11;
