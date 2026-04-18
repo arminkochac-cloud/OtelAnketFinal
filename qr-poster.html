@@ -7,13 +7,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body { 
+
+        body {
             font-family: 'Poppins', sans-serif;
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
             background: #0a0a1a;
         }
 
@@ -21,42 +21,25 @@
             width: 480px;
             text-align: center;
             padding: 35px 30px;
-            background: linear-gradient(
-                160deg, 
-                #1a1a3e 0%, 
-                #0d0d2b 50%,
-                #1a1a3e 100%
-            );
+            background: linear-gradient(160deg, #1a1a3e 0%, #0d0d2b 50%, #1a1a3e 100%);
             border-radius: 20px;
             border: 1px solid rgba(255,215,0,0.3);
-            box-shadow: 
-                0 0 40px rgba(255,215,0,0.1),
-                0 20px 60px rgba(0,0,0,0.5);
+            box-shadow: 0 0 40px rgba(255,215,0,0.1), 0 20px 60px rgba(0,0,0,0.5);
             position: relative;
             overflow: hidden;
         }
 
-        /* Köşe süslemeleri */
         .poster::before {
             content: '';
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: 
-                radial-gradient(
-                    circle at 20% 20%, 
-                    rgba(255,215,0,0.05) 0%, 
-                    transparent 50%
-                ),
-                radial-gradient(
-                    circle at 80% 80%, 
-                    rgba(255,215,0,0.05) 0%, 
-                    transparent 50%
-                );
+            background:
+                radial-gradient(circle at 20% 20%, rgba(255,215,0,0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,215,0,0.05) 0%, transparent 50%);
             pointer-events: none;
         }
 
-        /* Logo kutusu */
         .logo-box {
             background: white;
             width: 110px;
@@ -75,7 +58,6 @@
             width: 90px;
         }
 
-        /* Otel adı */
         .hotel-name {
             font-family: 'Playfair Display', serif;
             color: #FFD700;
@@ -86,7 +68,6 @@
             letter-spacing: 1px;
         }
 
-        /* Yıldızlar */
         .stars {
             color: #FFD700;
             font-size: 18px;
@@ -94,21 +75,14 @@
             letter-spacing: 3px;
         }
 
-        /* Ayraç çizgisi */
         .divider {
             width: 80%;
             margin: 12px auto;
             border: none;
             height: 1px;
-            background: linear-gradient(
-                to right,
-                transparent,
-                rgba(255,215,0,0.5),
-                transparent
-            );
+            background: linear-gradient(to right, transparent, rgba(255,215,0,0.5), transparent);
         }
 
-        /* Dil yazıları */
         .survey-titles {
             margin-bottom: 12px;
         }
@@ -127,7 +101,6 @@
             font-weight: 500;
         }
 
-        /* QR Kod kutusu */
         .qr-container {
             position: relative;
             display: inline-block;
@@ -140,9 +113,7 @@
             border-radius: 15px;
             display: inline-block;
             border: 3px solid #FFD700;
-            box-shadow: 
-                0 0 30px rgba(255,215,0,0.2),
-                0 10px 30px rgba(0,0,0,0.3);
+            box-shadow: 0 0 30px rgba(255,215,0,0.2), 0 10px 30px rgba(0,0,0,0.3);
         }
 
         .qr-box img {
@@ -151,7 +122,6 @@
             display: block;
         }
 
-        /* Köşe süsleri QR */
         .corner {
             position: absolute;
             width: 20px;
@@ -164,7 +134,6 @@
         .corner-bl { bottom: -5px; left: -5px; border-width: 0 0 3px 3px; }
         .corner-br { bottom: -5px; right: -5px; border-width: 0 3px 3px 0; }
 
-        /* Tarama metni */
         .scan-texts {
             margin: 12px 0;
         }
@@ -183,7 +152,6 @@
             margin-bottom: 5px;
         }
 
-        /* Dil butonları */
         .languages {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -199,10 +167,8 @@
             font-size: 12px;
             font-weight: 500;
             border: 1px solid rgba(255,215,0,0.3);
-            transition: all 0.3s;
         }
 
-        /* Footer */
         .footer {
             margin-top: 15px;
             padding-top: 12px;
@@ -234,21 +200,15 @@
 <body>
 
 <div class="poster">
-
-    <!-- LOGO -->
     <div class="logo-box">
         <img src="logo.png" alt="Concordia Celes Hotel">
     </div>
 
-    <!-- OTEL ADI -->
     <h1 class="hotel-name">Concordia Celes Hotel</h1>
-
-    <!-- YILDIZLAR -->
     <div class="stars">★ ★ ★ ★ ★</div>
 
     <hr class="divider">
 
-    <!-- 6 DİL ANKET BAŞLIĞI -->
     <div class="survey-titles">
         <p>🇹🇷 Misafir Memnuniyet Anketi</p>
         <p>🇬🇧 Guest Satisfaction Survey</p>
@@ -260,19 +220,16 @@
 
     <hr class="divider">
 
-    <!-- QR KOD -->
     <div class="qr-container">
         <div class="corner corner-tl"></div>
         <div class="corner corner-tr"></div>
         <div class="corner corner-bl"></div>
         <div class="corner corner-br"></div>
         <div class="qr-box">
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://arminkochac-cloud.github.io/ConcordiaCelesHotelOnlineAnket/ 
-                 alt="QR Code">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https%3A%2F%2Farminkochac-cloud.github.io%2FConcordiaCelesHotelOnlineAnket%2Findex.html" alt="QR Code">
         </div>
     </div>
 
-    <!-- TARAMA METNİ 6 DİL -->
     <div class="scan-texts">
         <p>📱 QR kodu telefonunuzla okutun</p>
         <p>🇬🇧 Scan the QR code with your phone</p>
@@ -284,7 +241,6 @@
 
     <hr class="divider">
 
-    <!-- DİL BUTONLARI -->
     <div class="languages">
         <div class="lang-tag">🇹🇷 Türkçe</div>
         <div class="lang-tag">🇬🇧 English</div>
@@ -294,14 +250,12 @@
         <div class="lang-tag">🇷🇴 Română</div>
     </div>
 
-    <!-- FOOTER -->
     <div class="footer">
         <hr class="divider">
         <p>Görüşleriniz bizim için çok değerlidir.</p>
         <p>Your feedback is very valuable to us.</p>
         <p class="website">www.concordiaceles.com</p>
     </div>
-
 </div>
 
 </body>
