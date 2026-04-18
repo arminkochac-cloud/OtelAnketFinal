@@ -4,7 +4,6 @@ var currentSection = 1;
 var totalSections = 11;
 
 document.addEventListener('DOMContentLoaded', function() {
-    initStars();
     
     var form = document.getElementById('mainForm');
     if(form) {
@@ -16,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
             formData.forEach(function(value, key) {
                 data[key] = value;
             });
-            data.date = new Date().toLocaleString('tr-TR');
+            data.tarih = new Date().toLocaleString('tr-TR');
             
             // LocalStorage yedek
             var surveys = JSON.parse(
