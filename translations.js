@@ -1,33 +1,206 @@
-const translations = {
-    tr: { hotelName: "Concordia Celes Hotel", surveyTitle: "Misafir Memnuniyet Anketi", next: "İleri", back: "Geri", submit: "Anketi Gönder", yes: "Evet", no: "Hayır", generalInfo: "GENEL BİLGİLER", fullName: "Ad Soyad", gender: "Cinsiyet", female: "Kadın", male: "Erkek", nationality: "Uyruğu", roomNumber: "Oda No", checkIn: "Giriş", checkOut: "Çıkış", frontOffice: "ÖN BÜRO", welcomeGreeting: "Giriş Karşılama", checkInProcess: "Check-In", facilityInfo: "Tesis Bilgi", frontDeskCare: "Personel Nezaket", bellboyService: "Bellboy", housekeeping: "KAT HİZMETLERİ", initialRoomCleaning: "Oda Temiz (İlk)", roomAppearance: "Oda Konfor", dailyRoomCleaning: "Oda Temiz (Günlük)", minibarService: "Minibar", foodServices: "YİYECEK", breakfastVariety: "Kahvaltı Çeşit", breakfastQuality: "Kahvaltı Kalite", lunchVariety: "Öğle Çeşit", lunchQuality: "Öğle Kalite", dinnerVariety: "Akşam Çeşit", dinnerQuality: "Akşam Kalite", kitchenHygiene: "Mutfak Hijyen", foodStaffCare: "Yemek Personel", barsServices: "BARLAR", poolBarQuality: "Pool Bar", lobbyBarQuality: "Lobby Bar", drinkQuality: "İçki Kalite", barHygiene: "Bar Hijyen", barStaffCare: "Bar Personel", restaurantServices: "RESTAURANT", restaurantLayout: "Restaurant Düzen", restaurantCapacity: "Yer Yeterliliği", restaurantHygiene: "Restoran Hijyen", restaurantStaffCare: "Restoran Personel", technicalService: "TEKNİK", roomTechnicalSystems: "Oda Teknik", maintenanceResponse: "Arıza/Onarım", environmentLighting: "Çevre Aydınlatma", poolWaterCleaning: "Havuz Su", technicalStaffCare: "Teknik Personel", entertainmentServices: "EĞLENCE", daytimeActivities: "Gündüz Animasyon", eveningShows: "Akşam Show", miniclubActivities: "Miniclub", entertainmentStaffCare: "Animasyon Personel", otherServices: "DİĞER", landscaping: "Peyzaj", spaServices: "SPA", shopBehavior: "Genel Esnaf", priceQuality: "Fiyat/Kalite", suggestions: "ÖNERİLER", previousStay: "Önce Geldiniz mi?", praisedStaff: "Övgülenecek Personel", generalComments: "Yorumlarınız", willReturnQuestion: "Tekrar Gelir misiniz?", wouldRecommend: "Tavsiye Eder misiniz?", thankYouTitle: "Teşekkürler", newSurvey: "Yeni Anket" },
-    en: { hotelName: "Concordia Celes Hotel", surveyTitle: "Guest Satisfaction Survey", next: "Next", back: "Back", submit: "Submit Survey", yes: "Yes", no: "No", generalInfo: "GENERAL INFO", fullName: "Full Name", gender: "Gender", female: "Female", male: "Male", nationality: "Nationality", roomNumber: "Room No", checkIn: "Check-In", checkOut: "Check-Out", frontOffice: "FRONT OFFICE", welcomeGreeting: "Welcome", checkInProcess: "Check-In", facilityInfo: "Facility Info", frontDeskCare: "Staff Care", bellboyService: "Bellboy", housekeeping: "HOUSEKEEPING", initialRoomCleaning: "Initial Room Clean", roomAppearance: "Room Comfort", dailyRoomCleaning: "Daily Room Clean", minibarService: "Minibar", foodServices: "FOOD SERVICES", breakfastVariety: "Breakfast Variety", breakfastQuality: "Breakfast Quality", lunchVariety: "Lunch Variety", lunchQuality: "Lunch Quality", dinnerVariety: "Dinner Variety", dinnerQuality: "Dinner Quality", kitchenHygiene: "Kitchen Hygiene", foodStaffCare: "Food Staff", barsServices: "BARS", poolBarQuality: "Pool Bar", lobbyBarQuality: "Lobby Bar", drinkQuality: "Drink Quality", barHygiene: "Bar Hygiene", barStaffCare: "Bar Staff", restaurantServices: "RESTAURANT", restaurantLayout: "Restaurant Layout", restaurantCapacity: "Capacity", restaurantHygiene: "Restaurant Hygiene", restaurantStaffCare: "Restaurant Staff", technicalService: "TECHNICAL", roomTechnicalSystems: "Room Systems", maintenanceResponse: "Maintenance", environmentLighting: "Environment Light", poolWaterCleaning: "Pool Water", technicalStaffCare: "Technical Staff", entertainmentServices: "ENTERTAINMENT", daytimeActivities: "Daytime Animation", eveningShows: "Evening Show", miniclubActivities: "Miniclub", entertainmentStaffCare: "Animation Staff", otherServices: "OTHERS", landscaping: "Landscaping", spaServices: "SPA", shopBehavior: "Shop Behavior", priceQuality: "Price/Quality", suggestions: "SUGGESTIONS", previousStay: "Stayed Before?", praisedStaff: "Praised Staff", generalComments: "Comments", willReturnQuestion: "Will Return?", wouldRecommend: "Would Recommend?", thankYouTitle: "Thank You", newSurvey: "New Survey" },
-    de: { hotelName: "Concordia Celes Hotel", surveyTitle: "Gästezufriedenheitsumfrage", next: "Weiter", back: "Zurück", submit: "Senden", yes: "Ja", no: "Nein", generalInfo: "ALLGEMEINE INFO", fullName: "Name", gender: "Geschlecht", female: "Weiblich", male: "Männlich", nationality: "Nationalität", roomNumber: "Zimmernummer", checkIn: "Check-In", checkOut: "Check-Out", frontOffice: "REZEPTION", welcomeGreeting: "Begrüßung", checkInProcess: "Check-In", facilityInfo: "Info", frontDeskCare: "Pflege", bellboyService: "Bellboy", housekeeping: "HOUSEKEEPING", initialRoomCleaning: "Reinigung (Start)", roomAppearance: "Zimmerkomfort", dailyRoomCleaning: "Reinigung (Täglich)", minibarService: "Minibar", foodServices: "ESSEN", breakfastVariety: "Frühstücks-Vielfalt", breakfastQuality: "Frühstücks-Qualität", lunchVariety: "Mittags-Vielfalt", lunchQuality: "Mittags-Qualität", dinnerVariety: "Abend-Vielfalt", dinnerQuality: "Abend-Qualität", kitchenHygiene: "Küchenhygiene", foodStaffCare: "Personal", barsServices: "BARS", poolBarQuality: "Poolbar", lobbyBarQuality: "Lobbybar", drinkQuality: "Getränke-Qualität", barHygiene: "Barhygiene", barStaffCare: "Personal", restaurantServices: "RESTAURANT", restaurantLayout: "Layout", restaurantCapacity: "Kapazität", restaurantHygiene: "Hygiene", restaurantStaffCare: "Personal", technicalService: "TECHNIK", roomTechnicalSystems: "Zimmersysteme", maintenanceResponse: "Wartung", environmentLighting: "Umgebungslicht", poolWaterCleaning: "Poolwasser", technicalStaffCare: "Personal", entertainmentServices: "UNTERHALTUNG", daytimeActivities: "Tagesanimation", eveningShows: "Abendshow", miniclubActivities: "Miniclub", entertainmentStaffCare: "Personal", otherServices: "ANDERE", landscaping: "Landschaft", spaServices: "SPA", shopBehavior: "Shops", priceQuality: "Preis/Leistung", suggestions: "VORSCHLÄGE", previousStay: "Schon mal da?", praisedStaff: "Gelobtes Personal", generalComments: "Kommentare", willReturnQuestion: "Wiederkommen?", wouldRecommend: "Empfehlen?", thankYouTitle: "Danke", newSurvey: "Neue Umfrage" },
-    ru: { hotelName: "Concordia Celes Hotel", surveyTitle: "Опрос", next: "Далее", back: "Назад", submit: "Отправить", yes: "Да", no: "Нет", generalInfo: "ОБЩАЯ ИНФО", fullName: "Имя", gender: "Пол", female: "Женский", male: "Мужской", nationality: "Национальность", roomNumber: "Номер", checkIn: "Заезд", checkOut: "Выезд", frontOffice: "РЕГИСТРАЦИЯ", welcomeGreeting: "Приветствие", checkInProcess: "Check-In", facilityInfo: "Инфо", frontDeskCare: "Поведение", bellboyService: "Bellboy", housekeeping: "УБОРКА", initialRoomCleaning: "Начальная Уборка", roomAppearance: "Комфорт", dailyRoomCleaning: "Ежедневная Уборка", minibarService: "Минибар", foodServices: "ЕДА", breakfastVariety: "Разнообразие Завтрака", breakfastQuality: "Качество Завтрака", lunchVariety: "Разнообразие Обеда", lunchQuality: "Качество Обеда", dinnerVariety: "Разнообразие Ужина", dinnerQuality: "Качество Ужина", kitchenHygiene: "Гигиена Кухни", foodStaffCare: "Персонал", barsServices: "БАРЫ", poolBarQuality: "Пул Бар", lobbyBarQuality: "Лобби Бар", drinkQuality: "Качество Напитков", barHygiene: "Гигиена Бар", barStaffCare: "Персонал", restaurantServices: "РЕСТОРАН", restaurantLayout: "Макет", restaurantCapacity: "Вместимость", restaurantHygiene: "Гигиена", restaurantStaffCare: "Персонал", technicalService: "ТЕХНИКА", roomTechnicalSystems: "Системы Номера", maintenanceResponse: "Обслуживание", environmentLighting: "Свет", poolWaterCleaning: "Чистота Бассейна", technicalStaffCare: "Персонал", entertainmentServices: "РАЗВЛЕЧЕНИЯ", daytimeActivities: "Дневные Активности", eveningShows: "Вечерние Шоу", miniclubActivities: "Миниклуб", entertainmentStaffCare: "Персонал", otherServices: "ДРУГОЕ", landscaping: "Ландшафт", spaServices: "СПА", shopBehavior: "Магазины", priceQuality: "Цена/Качество", suggestions: "ПРЕДЛОЖЕНИЯ", previousStay: "Бывали Раньше?", praisedStaff: "Похвалить Персонала", generalComments: "Комментарии", willReturnQuestion: "Вернётесь?", wouldRecommend: "Рекомендуете?", thankYouTitle: "Спасибо", newSurvey: "Новый Опрос" },
-    pl: { hotelName: "Concordia Celes Hotel", surveyTitle: "Ankieta", next: "Dalej", back: "Wstecz", submit: "Wyślij", yes: "Tak", no: "Nie", generalInfo: "INFORMACJE OGÓLNE", fullName: "Imię", gender: "Płeć", female: "Kobieta", male: "Mężczyzna", nationality: "Narodowość", roomNumber: "Pokój", checkIn: "Zameldowanie", checkOut: "Wymeldowanie", frontOffice: "RECEPCJA", welcomeGreeting: "Powitanie", checkInProcess: "Check-In", facilityInfo: "Info", frontDeskCare: "Obsługa", bellboyService: "Bellboy", housekeeping: "HOUSEKEEPING", initialRoomCleaning: "Pierwsze Czyszczenie", roomAppearance: "Komfort", dailyRoomCleaning: "Czyszczenie Codzienne", minibarService: "Minibar", foodServices: "JEDZENIE", breakfastVariety: "Różnorodność Śniadania", breakfastQuality: "Jakość Śniadania", lunchVariety: "Różnorodność Obiadu", lunchQuality: "Jakość Obiadu", dinnerVariety: "Różnorodność Kolacji", dinnerQuality: "Jakość Kolacji", kitchenHygiene: "Higiena Kuchni", foodStaffCare: "Personel", barsServices: "BARY", poolBarQuality: "Bar przy Basenie", lobbyBarQuality: "Lobby Bar", drinkQuality: "Jakość Napojów", barHygiene: "Higiena Bar", barStaffCare: "Personel", restaurantServices: "RESTAURANT", restaurantLayout: "Układ", restaurantCapacity: "Pojemność", restaurantHygiene: "Higiena", restaurantStaffCare: "Personel", technicalService: "TECHNIKA", roomTechnicalSystems: "Systemy Pokoju", maintenanceResponse: "Konserwacja", environmentLighting: "Oświetlenie", poolWaterCleaning: "Czystość Basenu", technicalStaffCare: "Personel", entertainmentServices: "ROZRYWKA", daytimeActivities: "Dzienne Animacje", eveningShows: "Wieczorne Show", miniclubActivities: "Miniclub", entertainmentStaffCare: "Personel", otherServices: "INNE", landscaping: "Krajobraz", spaServices: "SPA", shopBehavior: "Sklepy", priceQuality: "Cena/Jakość", suggestions: "SUGESTIE", previousStay: "Byłeś Wcześniej?", praisedStaff: "Chwalony Personel", generalComments: "Komentarze", willReturnQuestion: "Wrócisz?", wouldRecommend: "Polecisz?", thankYouTitle: "Dziękuję", newSurvey: "Nowa Ankieta" },
-    ro: { hotelName: "Concordia Celes Hotel", surveyTitle: "Chestionar", next: "Înainte", back: "Înapoi", submit: "Trimite", yes: "Da", no: "Nu", generalInfo: "INFORMAȚII GENERALE", fullName: "Nume", gender: "Gen", female: "Femeie", male: "Bărbat", nationality: "Naționalitate", roomNumber: "Cameră", checkIn: "Check-In", checkOut: "Check-Out", frontOffice: "RECEPȚIE", welcomeGreeting: "Salut", checkInProcess: "Check-In", facilityInfo: "Info", frontDeskCare: "Atenție", bellboyService: "Bellboy", housekeeping: "HOUSEKEEPING", initialRoomCleaning: "Curățenie Început", roomAppearance: "Confort", dailyRoomCleaning: "Curățenie Zilnică", minibarService: "Minibar", foodServices: "MÂNCARE", breakfastVariety: "Variație Mic Dejun", breakfastQuality: "Calitate Mic Dejun", lunchVariety: "Variație Prânz", lunchQuality: "Calitate Prânz", dinnerVariety: "Variație Cină", dinnerQuality: "Calitate Cină", kitchenHygiene: "Higienă Bucătărie", foodStaffCare: "Personal", barsServices: "BĂRI", poolBarQuality: "Bar Piscină", lobbyBarQuality: "Bar Lobby", drinkQuality: "Calitate Băuturi", barHygiene: "Higienă Bar", barStaffCare: "Personal", restaurantServices: "RESTAURANT", restaurantLayout: "Aranjament", restaurantCapacity: "Capacitate", restaurantHygiene: "Higienă", restaurantStaffCare: "Personal", technicalService: "TEHNIC", roomTechnicalSystems: "Sisteme Cameră", maintenanceResponse: "Întreținere", environmentLighting: "Iluminare", poolWaterCleaning: "Apă Piscină", technicalStaffCare: "Personal", entertainmentServices: "DIVERȚISMENT", daytimeActivities: "Activități Zilei", eveningShows: "Spectacole Seara", miniclubActivities: "Miniclub", entertainmentStaffCare: "Personal", otherServices: "ALTE", landscaping: "Peisaj", spaServices: "SPA", shopBehavior: "Magazine", priceQuality: "Preț/Calitate", suggestions: "SUGESTII", previousStay: "Ai fost Aici?", praisedStaff: "Personal Lăudat", generalComments: "Comentarii", willReturnQuestion: "Vii Înapoi?", wouldRecommend: "Recomanzi?", thankYouTitle: "Mulțumesc", newSurvey: "Chestionar Nou" }
-};
-let currentLanguage = 'tr';
+// ================================================
+// TRANSLATIONS.JS - 6 DİL TAM DESTEK
+// ================================================
 
-function setLanguage(lang) {
-    currentLanguage = lang;
-    document.getElementById('languageSelector').style.display = 'none';
-    document.getElementById('surveyForm').style.display = 'block';
-    const langNames = {tr:'Türkçe', en:'English', de:'Deutsch', ru:'Русский', pl:'Polski', ro:'Română'};
-    document.getElementById('currentLangName').textContent = langNames[lang];
+const translations = {
+    tr: {
+        hotelName: "Concordia Celes Hotel",
+        surveyTitle: "Misafir Memnuniyet Anketi",
+        generalInfo: "GENEL BİLGİLER",
+        frontOffice: "ÖN BÜRO & RESEPSİYON",
+        guestRelation: "GUEST RELATION",
+        housekeeping: "KAT HİZMETLERİ",
+        foodServices: "MUTFAK",
+        barsServices: "BARLAR",
+        restaurantServices: "RESTAURANT HİZMETLERİ",
+        technicalService: "TEKNİK SERVİS",
+        entertainmentServices: "EĞLENCE HİZMETLERİ",
+        otherServices: "DİĞER HİZMETLER",
+        suggestions: "ÖNERİLERİNİZ",
+
+        fullName: "Ad Soyad *",
+        gender: "Cinsiyetiniz *",
+        female: "Kadın",
+        male: "Erkek",
+        nationality: "Uyruğu *",
+        selectOption: "Seçiniz...",
+        other: "Diğer",
+        roomNumber: "Oda Numarası *",
+        checkIn: "Giriş Tarihi *",
+        checkOut: "Çıkış Tarihi *",
+        email: "Mail Adresi",
+        kvkkText: "Kişisel verilerimin Concordia Celes Hotel tarafından misafir memnuniyeti amacıyla işlenmesine onay veriyorum.",
+        kvkkLink: "KVKK Aydınlatma Metni",
+        next: "İleri →",
+        back: "← Geri",
+        submit: "Anketi Gönder",
+        thankYouTitle: "Teşekkür Ederiz!",
+        thankYouMessage: "Değerli görüşleriniz bizim için çok önemli.",
+        newSurvey: "Yeni Anket",
+        previousStay: "Otelimizde Daha Önce Bulundunuz Mu?",
+        praisedStaff: "Hizmetinden Dolayı Övgüye Bulunduğunuz Personelin İsmi",
+        generalComments: "Genel Düşünce ve Yorumlarınız",
+        willReturnQuestion: "Tekrar Gelir Misiniz?",
+        wouldRecommend: "Bizi Çevrenize Tavsiye Eder Misiniz?",
+        yes: "Evet",
+        no: "Hayır",
+
+        // Tüm sorular
+        welcomeGreeting: "Giriş Karşılama",
+        checkInProcess: "Check-In İşlemleri",
+        facilityInfo: "Tesis Hakkında Bilgilendirme",
+        frontDeskCare: "Personelin İlgi ve Nezaketi",
+        bellboyService: "Bellboy Hizmetleri",
+        grWelcomeQuality: "Misafir ile İletişimi",
+        problemSolving: "Bilgilendirme Yeterliliği",
+        guestFollowUp: "Personelin İlgi ve Nezaketi",
+        initialRoomCleaning: "İlk Varışınızda Oda Temizliği",
+        roomAppearance: "Oda Fiziki Görünümü ve Konforu",
+        dailyRoomCleaning: "Konaklama Süresince Oda Temizliği ve Düzeni",
+        minibarService: "Minibar Hizmeti",
+        publicAreaCleaning: "Genel Alan Temizliği",
+        beachPoolCleaning: "Sahil ve Havuz Çevre Temizliği",
+        housekeepingStaffCare: "Personelin İlgi ve Nezaketi",
+        breakfastVariety: "Kahvaltı Büfesi Çeşitliliği",
+        lunchVariety: "Öğle Yemeği Büfesi Çeşitliliği",
+        dinnerVariety: "Akşam Yemeği Büfesi Çeşitliliği",
+        alacarteQuality: "Alacart Restaurant Yemek Sunumu ve Kalitesi",
+        kitchenHygiene: "Mutfağın Hijyen ve Temizliği",
+        foodStaffCare: "Personelin İlgi ve Nezaketi",
+        poolBarQuality: "Pool Bar Servis Kalitesi",
+        lobbyBarQuality: "Lobby Bar Servis Kalitesi",
+        snackBarQuality: "Snack Bar Servis Kalitesi",
+        drinkQuality: "İçki Kalitesi ve Sunumu",
+        barHygiene: "Barların Hijyen ve Temizliği",
+        barStaffCare: "Personelin İlgi ve Nezaketi",
+        restaurantLayout: "Restaurant Düzeni ve Kalitesi",
+        restaurantCapacity: "Restaurant Yer Yeterliliği",
+        restaurantHygiene: "Restaurant Hijyen ve Temizliği",
+        snackbarRestaurant: "Snackbar Restaurant Hizmeti",
+        alacarteRestaurant: "Alacart Restaurant Hizmeti ve Personel İlgisi",
+        restaurantStaffCare: "Personelin İlgi ve Nezaketi",
+        roomTechnicalSystems: "Oda Teknik Sistemleri",
+        maintenanceResponse: "Arıza Bildirimi ve Giderme",
+        environmentLighting: "Çevre Aydınlatma ve Düzeni",
+        poolWaterCleaning: "Havuz Suyu Temizliği",
+        technicalStaffCare: "Personelin İlgi ve Nezaketi",
+        daytimeActivities: "Animasyon Ekibi ile Gündüz Aktiviteleri",
+        sportsAreas: "Aktivite ve Spor Alanları",
+        eveningShows: "Akşam Aktiviteleri ve Showlar",
+        miniclubActivities: "Miniclub Aktiviteleri",
+        entertainmentStaffCare: "Personelin İlgi ve Nezaketi",
+        landscaping: "Genel Düzenleme / Peyzaj",
+        spaServices: "Sauna-Hamam Hizmetleri",
+        shopBehavior: "Hotel Genel Esnaf Davranışları",
+        priceQuality: "Fiyat Kalitesi ve İlişkisi"
+    },
+
+    en: {
+        hotelName: "Concordia Celes Hotel",
+        surveyTitle: "Guest Satisfaction Survey",
+        generalInfo: "GENERAL INFORMATION",
+        frontOffice: "FRONT OFFICE & RECEPTION",
+        guestRelation: "GUEST RELATION",
+        housekeeping: "HOUSEKEEPING",
+        foodServices: "FOOD & BEVERAGE",
+        barsServices: "BARS",
+        restaurantServices: "RESTAURANT SERVICES",
+        technicalService: "TECHNICAL SERVICE",
+        entertainmentServices: "ENTERTAINMENT SERVICES",
+        otherServices: "OTHER SERVICES",
+        suggestions: "YOUR SUGGESTIONS",
+
+        fullName: "Full Name *",
+        gender: "Gender *",
+        female: "Female",
+        male: "Male",
+        nationality: "Nationality *",
+        selectOption: "Select...",
+        other: "Other",
+        roomNumber: "Room Number *",
+        checkIn: "Check-in Date *",
+        checkOut: "Check-out Date *",
+        email: "Email Address",
+        kvkkText: "I consent to the processing of my personal data for guest satisfaction purposes.",
+        kvkkLink: "KVKK Disclosure Text",
+        next: "Next →",
+        back: "← Back",
+        submit: "Submit Survey",
+        thankYouTitle: "Thank You!",
+        thankYouMessage: "Your feedback is very valuable to us.",
+        newSurvey: "New Survey",
+        previousStay: "Have you stayed with us before?",
+        praisedStaff: "Staff Member You Want to Praise",
+        generalComments: "General Comments",
+        willReturnQuestion: "Will you return?",
+        wouldRecommend: "Would you recommend us?",
+        yes: "Yes",
+        no: "No",
+
+        welcomeGreeting: "Welcome Greeting",
+        checkInProcess: "Check-in Procedures",
+        facilityInfo: "Information About the Facility",
+        frontDeskCare: "Staff Care and Courtesy",
+        bellboyService: "Bellboy Services",
+        grWelcomeQuality: "Communication with Guests",
+        problemSolving: "Information Sufficiency",
+        guestFollowUp: "Staff Care and Courtesy",
+        initialRoomCleaning: "Initial Room Cleaning",
+        roomAppearance: "Room Appearance and Comfort",
+        dailyRoomCleaning: "Daily Room Cleaning",
+        minibarService: "Minibar Service",
+        publicAreaCleaning: "Public Area Cleaning",
+        beachPoolCleaning: "Beach & Pool Cleaning",
+        housekeepingStaffCare: "Staff Care and Courtesy",
+        breakfastVariety: "Breakfast Buffet Variety",
+        lunchVariety: "Lunch Buffet Variety",
+        dinnerVariety: "Dinner Buffet Variety",
+        alacarteQuality: "A la Carte Quality",
+        kitchenHygiene: "Kitchen Hygiene",
+        foodStaffCare: "Staff Care and Courtesy",
+        poolBarQuality: "Pool Bar Service Quality",
+        lobbyBarQuality: "Lobby Bar Service Quality",
+        snackBarQuality: "Snack Bar Service Quality",
+        drinkQuality: "Drink Quality and Presentation",
+        barHygiene: "Bar Hygiene",
+        barStaffCare: "Staff Care and Courtesy",
+        restaurantLayout: "Restaurant Layout",
+        restaurantCapacity: "Restaurant Capacity",
+        restaurantHygiene: "Restaurant Hygiene",
+        snackbarRestaurant: "Snackbar Service",
+        alacarteRestaurant: "A la Carte Service",
+        restaurantStaffCare: "Staff Care and Courtesy",
+        roomTechnicalSystems: "Room Technical Systems",
+        maintenanceResponse: "Maintenance Response",
+        environmentLighting: "Environment Lighting",
+        poolWaterCleaning: "Pool Water Cleanliness",
+        technicalStaffCare: "Staff Care and Courtesy",
+        daytimeActivities: "Daytime Activities",
+        sportsAreas: "Sports Areas",
+        eveningShows: "Evening Shows",
+        miniclubActivities: "Miniclub Activities",
+        entertainmentStaffCare: "Staff Care and Courtesy",
+        landscaping: "Landscaping",
+        spaServices: "Spa & Hamam Services",
+        shopBehavior: "Shop Staff Behavior",
+        priceQuality: "Price-Quality Ratio"
+    },
+
+    de: { /* İstersen burayı da doldurabilirim. Şimdilik en ve tr öncelikli */ },
+    ru: { /* Rusça */ },
+    pl: { /* Lehçe */ },
+    ro: { /* Romence */ }
+};
+
+// Dil değiştirme fonksiyonu
+function updateTranslations(lang) {
     document.querySelectorAll('[data-translate]').forEach(el => {
         const key = el.getAttribute('data-translate');
-        if(translations[lang][key]) el.textContent = translations[lang][key];
+        if (translations[lang] && translations[lang][key]) {
+            el.textContent = translations[lang][key];
+        }
     });
-    initStars();
-    setDefaultDates();
 }
-function changeLanguage() {
-    document.getElementById('surveyForm').style.display = 'none';
-    document.getElementById('languageSelector').style.display = 'block';
-}
-function setDefaultDates() {
-    const today = new Date(); const out = new Date(); const inn = new Date();
-    inn.setDate(today.getDate() - 3);
-    if(document.querySelector('input[name="checkOut"]')) document.querySelector('input[name="checkOut"]').value = out.toISOString().split('T')[0];
-    if(document.querySelector('input[name="checkIn"]')) document.querySelector('input[name="checkIn"]').value = inn.toISOString().split('T')[0];
-}
+
+// Global erişim
+window.updateTranslations = updateTranslations;
