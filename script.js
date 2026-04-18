@@ -159,29 +159,6 @@ function prevSection(current) {
     document.getElementById('progressText').textContent = 
         Math.round(pct) + '%';
 }
-function showKvkk() {
-    const modal = document.getElementById('kvkkModal');
-    if (modal) modal.style.display = 'block';
-}
-
-function closeKvkk() {
-    const modal = document.getElementById('kvkkModal');
-    if (modal) modal.style.display = 'none';
-}
-
-window.addEventListener('click', function (e) {
-    const modal = document.getElementById('kvkkModal');
-    if (e.target === modal) {
-        closeKvkk();
-    }
-});
-
-// ESC ile kapat
-window.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') {
-        closeKvkk();
-    }
-});
 function resetForm() {
     document.getElementById('mainForm').reset();
     document.getElementById('surveyForm').style.display = 'none';
