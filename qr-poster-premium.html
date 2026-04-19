@@ -29,48 +29,45 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 40px 35px;
+            padding: 45px 40px;
         }
         .logo {
-            width: 170px;
+            width: 155px;
             margin-bottom: 15px;
-            filter: drop-shadow(0 8px 15px rgba(212, 175, 55, 0.4));
+            filter: drop-shadow(0 8px 20px rgba(212, 175, 55, 0.5));
         }
         .hotel-name {
             font-family: 'Playfair Display', serif;
-            font-size: 34px;
+            font-size: 36px;
             color: #e8c670;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             letter-spacing: 2px;
         }
         .stars {
             color: #d4af37;
             font-size: 26px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             letter-spacing: 6px;
         }
         .main-title {
             color: #e8c670;
-            font-size: 22px;
+            font-size: 21px;
             font-weight: 600;
-            margin: 10px 0 5px;
-        }
-        .subtitle {
-            color: #a5b4c4;
-            font-size: 16px;
-            margin-bottom: 35px;
+            margin: 8px 0 25px;
+            text-align: center;
+            line-height: 1.3;
         }
         .qr-container {
             background: white;
             padding: 25px;
             border-radius: 20px;
             box-shadow: 0 15px 45px rgba(0,0,0,0.6);
-            border: 8px solid #d4af37;
-            margin: 25px 0 30px;
+            border: 7px solid #d4af37;
+            margin-bottom: 30px;
         }
         .qr-container img {
-            width: 260px;
-            height: 260px;
+            width: 255px;
+            height: 255px;
         }
         .scan-text {
             color: #e8c670;
@@ -89,7 +86,7 @@
         .languages {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
+            gap: 10px;
             width: 100%;
             max-width: 480px;
             margin-bottom: 40px;
@@ -97,10 +94,9 @@
         .lang {
             background: rgba(212, 175, 55, 0.12);
             color: #e8c670;
-            padding: 12px 15px;
-            border-radius: 12px;
+            padding: 11px 14px;
+            border-radius: 10px;
             font-size: 13.5px;
-            font-weight: 500;
             border: 1px solid rgba(212, 175, 55, 0.4);
         }
         .footer {
@@ -113,7 +109,6 @@
             color: #e8c670;
             font-size: 14.5px;
             margin-top: 10px;
-            font-weight: 500;
         }
 
         @media print {
@@ -124,7 +119,7 @@
                 width: 210mm; 
                 height: 297mm; 
                 margin: 0; 
-                padding: 40px 35px;
+                padding: 45px 40px;
             }
         }
     </style>
@@ -136,8 +131,14 @@
     <div class="hotel-name">CONCORDIA CELES HOTEL</div>
     <div class="stars">★★★★★</div>
     
-    <div class="main-title">Misafir Memnuniyet Anketi</div>
-    <div class="subtitle">Guest Satisfaction Survey</div>
+    <div class="main-title">
+        Misafir Memnuniyet Anketi<br>
+        Guest Satisfaction Survey<br>
+        Gästebefragung zur Zufriedenheit<br>
+        Опрос удовлетворенности гостей<br>
+        Ankieta satysfakcji gości<br>
+        Chestionar de satisfacție a oaspeților
+    </div>
 
     <div class="qr-container">
         <img src="https://api.qrserver.com/v1/create-qr-code/?size=520x520&color=1a2533&bgcolor=FFFFFF&data=https://arminkochac-cloud.github.io/ConcordiaCelesHotelOnlineAnket/" 
@@ -146,28 +147,3 @@
 
     <div class="scan-text">QR Kodu Telefonunuzla Okutun</div>
     <div class="scan-sub">
-        🇹🇷 Telefonunuzun kamerasını QR koda tutun<br>
-        🇬🇧 Scan the QR code with your phone<br>
-        🇩🇪 Scannen Sie den QR-Code mit Ihrem Handy<br>
-        🇷🇺 Отсканируйте QR-код телефоном<br>
-        🇵🇱 Zeskanuj kod QR swoim telefonem<br>
-        🇷🇴 Scanați codul QR cu telefonul
-    </div>
-
-    <div class="languages">
-        <div class="lang">🇹🇷 Türkçe</div>
-        <div class="lang">🇬🇧 English</div>
-        <div class="lang">🇩🇪 Deutsch</div>
-        <div class="lang">🇷🇺 Русский</div>
-        <div class="lang">🇵🇱 Polski</div>
-        <div class="lang">🇷🇴 Română</div>
-    </div>
-
-    <div class="footer">
-        Misafir yorumlarınız bizim için çok değerlidir.<br>
-        <span class="web">www.concordiaceles.com</span>
-    </div>
-</div>
-
-</body>
-</html>
