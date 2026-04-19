@@ -196,29 +196,32 @@ window.addEventListener('keydown', function (e) {
 });
 
 function setDefaultDates() {
-    const checkIn = document.querySelector('input[name="checkIn"]');
-    const checkOut = document.querySelector('input[name="checkOut"]');
-
-    if (!checkIn || !checkOut) return;
-
     const today = new Date();
-    const threeDaysAgo = new Date();
-    threeDaysAgo.setDate(today.getDate() - 3);
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(today.getFullYear() - 1);
 
-    if (!checkIn.value) checkIn.value = formatDate(threeDaysAgo);
-    if (!checkOut.value) checkOut.value = formatDate(today);
+    const checkIn = document.getElementById('checkInDate');
+    const checkOut = document.getElementById('checkOutDate');
 
-    checkIn.min = formatDate(threeDaysAgo);
-    checkOut.min = formatDate(threeDaysAgo);
+    if (checkIn) {
+        checkIn.min = oneYearAgo.toISOString().split('T')[0];   // 1 yıl öncesi
+        checkIn.value = today.toISOString().split('T')[0];      // Varsayılan bugün
+    }
 
-    checkIn.addEventListener('change', () => {
-        if (checkIn.value) {
+    if (checkOut) {
+        checkOut.min = oneYearAgo.toISOString().split('T')[0];  // Geçmiş tarih serbest
+        checkOut.value = today.toISOString().split('T')[0];     // Varsayılan bugün
+    }
+
+    // Check-in değişirse check-out minimumunu güncelle
+    if (checkIn && checkOut) {
+        checkIn.addEventListener('change', () => {
             checkOut.min = checkIn.value;
-            if (checkOut.value && checkOut.value < checkIn.value) {
+            if (checkOut.value < checkIn.value) {
                 checkOut.value = checkIn.value;
             }
-        }
-    });
+        });
+    }
 }
 
 function collectFormData(form) {
