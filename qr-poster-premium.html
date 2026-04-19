@@ -28,23 +28,29 @@
             overflow: hidden;
             page-break-after: always;
         }
-        .logo { width: 125px; margin: 10px auto 15px; }
+        .logo {
+            width: 125px;
+            margin: 10px auto 15px;
+        }
         .hotel-name {
             font-family: 'Playfair Display', serif;
-            font-size: 28px;
+            font-size: 29px;
             color: #e8c670;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             letter-spacing: 1.5px;
         }
-        .stars { color: #d4af37; font-size: 22px; margin-bottom: 15px; letter-spacing: 5px; }
-
-        .main-title {
-            color: #e8c670;
-            font-size: 17px;
-            font-weight: 600;
-            margin: 8px 0 18px;
+        .stars {
+            color: #d4af37;
+            font-size: 22px;
+            margin-bottom: 18px;
+            letter-spacing: 5px;
         }
-
+        .title {
+            color: #e2e8f0;
+            font-size: 15.5px;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
         .qr-container {
             background: white;
             padding: 20px;
@@ -54,36 +60,35 @@
             box-shadow: 0 12px 40px rgba(0,0,0,0.5);
             border: 5px solid #d4af37;
         }
-        .qr-container img { width: 215px; height: 215px; }
-
+        .qr-container img {
+            width: 215px;
+            height: 215px;
+        }
         .scan-text {
-            color: #e8c670;
-            font-size: 16.5px;
+            color: #d4af37;
+            font-size: 17px;
             font-weight: 600;
-            margin: 12px 0 8px;
+            margin: 12px 0 6px;
         }
         .scan-sub {
             color: #a5b4c4;
-            font-size: 12.5px;
+            font-size: 13px;
             line-height: 1.5;
-            margin-bottom: 20px;
         }
-
         .languages {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 8px;
-            margin-top: 10px;
+            margin-top: 15px;
         }
         .lang {
             background: rgba(212, 175, 55, 0.1);
             color: #d4af37;
-            padding: 8px 6px;
-            border-radius: 8px;
-            font-size: 12px;
+            padding: 9px 8px;
+            border-radius: 9px;
+            font-size: 12.2px;
             border: 1px solid rgba(212, 175, 55, 0.3);
         }
-
         .footer {
             margin-top: 25px;
             color: #64748b;
@@ -110,26 +115,16 @@
         <img src="logo.png" class="logo" alt="Logo">
         <div class="hotel-name">Concordia Celes Hotel</div>
         <div class="stars">★★★★★</div>
-        
-        <div class="main-title">
-            Misafir Memnuniyet Anketi<br>
-            <span style="font-size:15px; color:#a5b4c4;">Guest Satisfaction Survey</span>
-        </div>
+        <div class="title">Misafir Memnuniyet Anketi</div>
+        <div class="title" style="font-size:13.5px; color:#a5b4c4;">Guest Satisfaction Survey</div>
 
         <div class="qr-container">
             <img src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&color=1a2533&bgcolor=FFFFFF&data=https://arminkochac-cloud.github.io/ConcordiaCelesHotelOnlineAnket/" 
                  alt="QR Code">
         </div>
 
-        <div class="scan-text">QR Kodu Telefonunuzla Okutun</div>
-        <div class="scan-sub">
-            Scan the QR code with your phone<br>
-            Scannez le code QR avec votre téléphone<br>
-            Scannen Sie den QR-Code mit Ihrem Handy<br>
-            Отсканируйте QR-код телефоном<br>
-            Zeskanuj kod QR telefonem<br>
-            Scanați codul QR cu telefonul
-        </div>
+        <div class="scan-text">QR Kodu Okutarak Anketi Doldurun</div>
+        <div class="scan-sub">Telefonunuzun kamerasını QR koda tutunuz</div>
 
         <div class="languages">
             <div class="lang">🇹🇷 Türkçe</div>
@@ -146,31 +141,21 @@
         </div>
     </div>
 
-    <!-- 2. Poster (A4'in alt yarısı) - Aynı tasarım -->
+    <!-- 2. Poster (A4'in alt yarısı) -->
     <div class="poster">
         <img src="logo.png" class="logo" alt="Logo">
         <div class="hotel-name">Concordia Celes Hotel</div>
         <div class="stars">★★★★★</div>
-        
-        <div class="main-title">
-            Misafir Memnuniyet Anketi<br>
-            <span style="font-size:15px; color:#a5b4c4;">Guest Satisfaction Survey</span>
-        </div>
+        <div class="title">Misafir Memnuniyet Anketi</div>
+        <div class="title" style="font-size:13.5px; color:#a5b4c4;">Guest Satisfaction Survey</div>
 
         <div class="qr-container">
             <img src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&color=1a2533&bgcolor=FFFFFF&data=https://arminkochac-cloud.github.io/ConcordiaCelesHotelOnlineAnket/" 
                  alt="QR Code">
         </div>
 
-        <div class="scan-text">QR Kodu Telefonunuzla Okutun</div>
-        <div class="scan-sub">
-            Scan the QR code with your phone<br>
-            Scannez le code QR avec votre téléphone<br>
-            Scannen Sie den QR-Code mit Ihrem Handy<br>
-            Отсканируйте QR-код телефоном<br>
-            Zeskanuj kod QR telefonem<br>
-            Scanați codul QR cu telefonul
-        </div>
+        <div class="scan-text">QR Kodu Okutarak Anketi Doldurun</div>
+        <div class="scan-sub">Telefonunuzun kamerasını QR koda tutunuz</div>
 
         <div class="languages">
             <div class="lang">🇹🇷 Türkçe</div>
