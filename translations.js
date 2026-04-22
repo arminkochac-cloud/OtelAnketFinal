@@ -160,9 +160,9 @@ const translations = {
         frontDeskCare: "Staff Courtesy and Attention",
         bellboyService: "Bellboy Services",
 
-        grWelcomeQuality: "information literacy",
+        grWelcomeQuality: "Information Sufficiency",
         problemSolving: "Problem Solving",
-        guestFollowUp: "Guest Follow-up",
+        guestFollowUp: "Staff Courtesy and Attention",
 
         initialRoomCleaning: "Initial Room Cleaning",
         roomAppearance: "Room Appearance and Comfort",
@@ -270,9 +270,9 @@ const translations = {
         frontDeskCare: "Freundlichkeit und Aufmerksamkeit des Personals",
         bellboyService: "Bellboy-Service",
 
-        grWelcomeQuality: "Informationskompetenz",
+        grWelcomeQuality: "Ausreichende Information",
         problemSolving: "Problemlösung",
-        guestFollowUp: "Gästebetreuung",
+        guestFollowUp: "Freundlichkeit und Aufmerksamkeit des Personals",
 
         initialRoomCleaning: "Erstreinigung des Zimmers",
         roomAppearance: "Zimmerkomfort",
@@ -380,9 +380,9 @@ const translations = {
         frontDeskCare: "Вежливость и внимание персонала",
         bellboyService: "Услуги носильщика",
 
-        grWelcomeQuality: "информационная компетентность",
+        grWelcomeQuality: "Достаточность информации",
         problemSolving: "Решение проблем",
-        guestFollowUp: "Сопровождение гостя",
+        guestFollowUp: "Вежливость и внимательность персонала",
 
         initialRoomCleaning: "Первичная уборка номера",
         roomAppearance: "Внешний вид и комфорт номера",
@@ -490,9 +490,9 @@ const translations = {
         frontDeskCare: "Uprzejmość i troska personelu",
         bellboyService: "Usługi bagażowego",
 
-        grWelcomeQuality: "kompetencje informacyjne",
+        grWelcomeQuality: "Wystarczalność informacji",
         problemSolving: "Rozwiązywanie problemów",
-        guestFollowUp: "Opieka nad gościem",
+        guestFollowUp: "Uprzejmość i troska personelu",
 
         initialRoomCleaning: "Pierwsze sprzątanie pokoju",
         roomAppearance: "Wygląd i komfort pokoju",
@@ -600,9 +600,9 @@ const translations = {
         frontDeskCare: "Amabilitatea și atenția personalului",
         bellboyService: "Servicii bellboy",
 
-        grWelcomeQuality: "competențe de informare",
+        grWelcomeQuality: "Suficiența informațiilor",
         problemSolving: "Rezolvarea problemelor",
-        guestFollowUp: "Urmărirea oaspetelui",
+        guestFollowUp: "Amabilitatea și atenția personalului",
 
         initialRoomCleaning: "Curățenia inițială a camerei",
         roomAppearance: "Aspectul și confortul camerei",
